@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Nathan Brouwer brouwern@gmail.com @lobrowR" />
+
+<meta name="date" content="2017-10-19" />
+
+<title>Merging data with dplyr: combining BBS bird counts and landcover data</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Merging data with dplyr: combining BBS bird counts and landcover data</h1>
+<h4 class="author"><em>Nathan Brouwer <a href="mailto:brouwern@gmail.com">brouwern@gmail.com</a> <span class="citation">@lobrowR</span></em></h4>
+<h4 class="date"><em>2017-10-19</em></h4>
+
+
+
+<div id="libraries" class="section level2">
+<h2>Libraries</h2>
+<p>BBS data for Pennsylvania are in the wildlifeR package, and we’ll use the dplyr package to “reshape” into the proper format for analysis.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
+<span class="kw">library</span>(wildlifeR)</code></pre></div>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>We’ll use 2 datasets:</p>
+<ol style="list-style-type: decimal">
+<li>Bird counts from the BBS data for PA, and</li>
+<li>USGS landcover classifications (eg urban, deciduous forest, etc) for a “buffer” 1 km around each BBS route in PA.</li>
+</ol>
+<p>You can learn more about these data sets using the help command ?BBS_PA and “BBS_PA_landcover_1km”.</p>
+<p>Load data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## BBS data for PA
+<span class="kw">data</span>(BBS_PA)
+
+##Landcover data for BBS routes in PA
+<span class="kw">data</span>(BBS_PA_landcover_1km)</code></pre></div>
+</div>
+<div id="look-at-the-dataframe" class="section level2">
+<h2>Look at the dataframe</h2>
+<p>This is a really really big dataset!</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BBS_PA)</code></pre></div>
+<pre><code>## [1] 244185      8</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(BBS_PA)</code></pre></div>
+<pre><code>## [1] &quot;countrynum&quot;   &quot;statenum&quot;     &quot;Route&quot;        &quot;RPID&quot;        
+## [5] &quot;Year&quot;         &quot;Aou&quot;          &quot;StopTotal&quot;    &quot;SpeciesTotal&quot;</code></pre>
+</div>
+<div id="select-focal-columns" class="section level2">
+<h2>Select focal columns</h2>
+<ul>
+<li>We can use the select() function from the dplyr package to isoalte the columns we want.</li>
+<li>We tell dplyr the dataframe we want to work on BBS_PA, then use a “pipe” %&gt;%, and then use the select command to tell it the columns we want.</li>
+<li>Let’s look at the Year, Aou species code, Route number, and StopTotal columns</li>
+<li>We’ll save them into a new object called BBS_PA2</li>
+<li>See page 60-61 in Beckerman et al’s book “Getting start with R: An introduction for biologists” for more info on select()</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#load dplyr if you haven't already</span>
+<span class="kw">library</span>(dplyr)
+
+<span class="co">#look at the names of the full dataframe</span>
+<span class="kw">names</span>(BBS_PA)</code></pre></div>
+<pre><code>## [1] &quot;countrynum&quot;   &quot;statenum&quot;     &quot;Route&quot;        &quot;RPID&quot;        
+## [5] &quot;Year&quot;         &quot;Aou&quot;          &quot;StopTotal&quot;    &quot;SpeciesTotal&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#use select() to isolate focal columns</span>
+## and put into a new dataframe
+BBS_PA2 &lt;-<span class="st"> </span>BBS_PA <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(Year, Aou, Route, StopTotal)
+
+
+<span class="co">#look at columns in new dataframe</span>
+<span class="kw">names</span>(BBS_PA2)</code></pre></div>
+<pre><code>## [1] &quot;Year&quot;      &quot;Aou&quot;       &quot;Route&quot;     &quot;StopTotal&quot;</code></pre>
+</div>
+<div id="select-focal-species" class="section level2">
+<h2>Select focal species</h2>
+<ul>
+<li>Each row is data on a different combination of: a species, a year, and a route</li>
+<li>We want to isoalte rows that just relate to our focal species; we’ll use the Scarlet Tanager</li>
+<li>The AOU (American ornithological Union) code for the Scarlet Tanager (SCTA) is 6080.<br />
+</li>
+<li>We can tell R to just give us data on SCTA using the fliter() command in the dplyr package.</li>
+<li>See page 62-65 in Beckerman et al’s book “Getting start with R: An introduction for biologists” for more info on filter()</li>
+</ul>
+<div id="an-example-dataframe" class="section level3">
+<h3>An example dataframe</h3>
+<pre><code>##      Year  Aou Route StopTotal                 
+## 2910 2011 5980     2        10                 
+## 2974 2012 5980     2         7                 
+## 3047 2013 5980     2         3                 
+## 2911 2011 6080     2         3 we want this row
+## 2909 2011 5950     2         3                 
+## 2973 2012 5950     2         1                 
+## 3046 2013 5950     2         4                 
+## 2975 2012 6080     2         3 we want this row
+## 2912 2011 6110     2         1                 
+## 2976 2012 6110     2         3                 
+## 3049 2013 6130     2        12                 
+## 3048 2013 6080     2         3 we want this row
+## 2913 2011 6120     2         1                 
+## 2977 2012 6120     2         1                 
+## 3050 2013 6140     2         7</code></pre>
+</div>
+<div id="select-just-focal-rows" class="section level3">
+<h3>Select just focal rows</h3>
+<div id="focal-bird-rows" class="section level4">
+<h4>Focal bird rows</h4>
+<ul>
+<li>The “%&gt;%” is called a pipe that connects the dataframe BBS_PA2 with the filter() command</li>
+<li>“==” in the filter() commands means “exactly equals”</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
+
+BBS_PA_SCTA &lt;-<span class="st"> </span>BBS_PA2 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Aou <span class="op">==</span><span class="st"> </span><span class="dv">6080</span>)</code></pre></div>
+</div>
+</div>
+<div id="merge-bbs-data-and-landcover-data" class="section level3">
+<h3>Merge BBS data and landcover data</h3>
+<p>Make a new dataframe that combines the bird count data AND the landcover data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBSdata_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">full_join</span>(BBS_PA_SCTA,
+                       BBS_PA_landcover_1km, 
+                       <span class="dt">by =</span> <span class="st">&quot;Route&quot;</span>)</code></pre></div>
+<p>Look at the dataframe</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(BBSdata_<span class="dv">3</span>)</code></pre></div>
+<pre><code>##   Year  Aou Route StopTotal BCR        State    RT..NAME RT..LENG. NLCD.0
+## 1 1970 6080     1         3  13 Pennsylvania SLIPPERY RK   42953.3      0
+## 2 1973 6080     1         1  13 Pennsylvania SLIPPERY RK   42953.3      0
+## 3 1976 6080     1         1  13 Pennsylvania SLIPPERY RK   42953.3      0
+## 4 1977 6080     1         1  13 Pennsylvania SLIPPERY RK   42953.3      0
+## 5 1982 6080     1         3  13 Pennsylvania SLIPPERY RK   42953.3      0
+## 6 1983 6080     1         1  13 Pennsylvania SLIPPERY RK   42953.3      0
+##   NLCD.11 NLCD.12 NLCD.21 NLCD.22 NLCD.23 NLCD.24 NLCD.31 NLCD.41 NLCD.42
+## 1     875       0    9025    4861    1085     230      12   44953     563
+## 2     875       0    9025    4861    1085     230      12   44953     563
+## 3     875       0    9025    4861    1085     230      12   44953     563
+## 4     875       0    9025    4861    1085     230      12   44953     563
+## 5     875       0    9025    4861    1085     230      12   44953     563
+## 6     875       0    9025    4861    1085     230      12   44953     563
+##   NLCD.43 NLCD.52 NLCD.71 NLCD.81 NLCD.82 NLCD.90 NLCD.95   SUM
+## 1     797      19    1334   15628   19044     159       6 98591
+## 2     797      19    1334   15628   19044     159       6 98591
+## 3     797      19    1334   15628   19044     159       6 98591
+## 4     797      19    1334   15628   19044     159       6 98591
+## 5     797      19    1334   15628   19044     159       6 98591
+## 6     797      19    1334   15628   19044     159       6 98591</code></pre>
+<p>Compare the size of this dataframe and the original landcover dataframe.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BBSdata_<span class="dv">3</span>)</code></pre></div>
+<pre><code>## [1] 3539   26</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BBS_PA_landcover_1km)</code></pre></div>
+<pre><code>## [1] 137  23</code></pre>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
