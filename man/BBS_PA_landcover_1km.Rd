@@ -12,16 +12,16 @@
   \item{RT..NAME}{Route name}
   \item{RT.LENG}{length of route}
   \item{NLCD.0}{amount of habitat in category 0 of the National Land Cover Database}
-  \item{NLCD.11}{NLCD.11}
+  \item{NLCD.11}{Open water}
   \item{NLCD.12}{NLCD.12}
   \item{NLCD.21}{NLCD.21}
   \item{NLCD.22}{NLCD.22}
   \item{NLCD.23}{NLCD.23}
   \item{NLCD.24}{NLCD.24}
   \item{NLCD.31}{NLCD.31}
-  \item{NLCD.41}{NLCD.41}
-  \item{NLCD.42}{NLCD.42}
-  \item{NLCD.43}{NLCD.43}
+  \item{NLCD.41}{Deciduous Forest; 1 of 3  forest landcover classes}
+  \item{NLCD.42}{Evergreen Forest; 1 of 3 forest landcover classes}
+  \item{NLCD.43}{Mixed Forest; 1 of 3forest landcover classes}
   \item{NLCD.52}{NLCD.52}
   \item{NLCD.71}{NLCD.71}
   \item{NLCD.81}{NLCD.81}
