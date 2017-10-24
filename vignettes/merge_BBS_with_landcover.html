@@ -12,7 +12,7 @@
 
 <meta name="author" content="Nathan Brouwer brouwern@gmail.com @lobrowR" />
 
-<meta name="date" content="2017-10-19" />
+<meta name="date" content="2017-10-24" />
 
 <title>Merging data with dplyr: combining BBS bird counts and landcover data</title>
 
@@ -70,47 +70,151 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Merging data with dplyr: combining BBS bird counts and landcover data</h1>
 <h4 class="author"><em>Nathan Brouwer <a href="mailto:brouwern@gmail.com">brouwern@gmail.com</a> <span class="citation">@lobrowR</span></em></h4>
-<h4 class="date"><em>2017-10-19</em></h4>
+<h4 class="date"><em>2017-10-24</em></h4>
 
 
 
-<div id="libraries" class="section level2">
-<h2>Libraries</h2>
-<p>BBS data for Pennsylvania are in the wildlifeR package, and we’ll use the dplyr package to “reshape” into the proper format for analysis.</p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This vignette walks through the process of taking 2 complimentary sets of data and “mergeing” them using the powerful function full_join() in the package dplyr. We’ll take data on 1) the number of birds observed along USGS Breeding Bird Survey (BBS) routes and merge that ecological data with 2) geographic information on the types of landcover along those routes. In addition to this primary tasks of merging datasets, we’ll also do several other things to clean up the data to make it easy to use.</p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<div id="books" class="section level3">
+<h3>Books</h3>
+<p>A good introduction to using dplyr is:</p>
+<p>Beckerman et al’s book “Getting start with R: An introduction for biologists” 2nd ed.</p>
+</div>
+<div id="websites" class="section level3">
+<h3>Websites</h3>
+<p>“Selecting columns and renaming are so easy with dplyr” <a href="https://blog.exploratory.io/selecting-columns-809bdd1ef615" class="uri">https://blog.exploratory.io/selecting-columns-809bdd1ef615</a></p>
+</div>
+</div>
+<div id="learning-objectives" class="section level2">
+<h2>Learning objectives</h2>
+<ul>
+<li>Practice using the package dplyr
+<ul>
+<li>use dplyr pipes: %&gt;%</li>
+</ul></li>
+<li>General dataframe cleaning with dplyr
+<ul>
+<li>Select focal columns using select()</li>
+<li>Select focal rows using filter()</li>
+<li>Change columns names with rename()</li>
+</ul></li>
+<li>Merge 2 dataframes using full_join()</li>
+<li>Plotting data using the ggpubr extension of ggplot2</li>
+</ul>
+</div>
+<div id="packages" class="section level2">
+<h2>Packages</h2>
+<ul>
+<li>dplry</li>
+<li>ggplot2</li>
+<li>ggpubr</li>
+<li>wildlifeR</li>
+</ul>
+</div>
+<div id="r-code" class="section level2">
+<h2>R code</h2>
+<div id="load-libraries" class="section level3">
+<h3>Load Libraries</h3>
+<p>BBS and landcover data for Pennsylvania are in the wildlifeR package, and we’ll use the dplyr package to “reshape” into the proper format for analysis.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
 <span class="kw">library</span>(wildlifeR)</code></pre></div>
 </div>
-<div id="data" class="section level2">
-<h2>Data</h2>
+<div id="data" class="section level3">
+<h3>Data</h3>
 <p>We’ll use 2 datasets:</p>
 <ol style="list-style-type: decimal">
 <li>Bird counts from the BBS data for PA, and</li>
 <li>USGS landcover classifications (eg urban, deciduous forest, etc) for a “buffer” 1 km around each BBS route in PA.</li>
 </ol>
 <p>You can learn more about these data sets using the help command ?BBS_PA and “BBS_PA_landcover_1km”.</p>
-<p>Load data</p>
+<p>Load both sets of data</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## BBS data for PA
 <span class="kw">data</span>(BBS_PA)
 
 ##Landcover data for BBS routes in PA
 <span class="kw">data</span>(BBS_PA_landcover_1km)</code></pre></div>
 </div>
-<div id="look-at-the-dataframe" class="section level2">
-<h2>Look at the dataframe</h2>
-<p>This is a really really big dataset!</p>
+<div id="look-at-the-bbs_pa-dataframes" class="section level3">
+<h3>Look at the BBS_PA dataframes</h3>
+<div id="definitions-of" class="section level4">
+<h4>Definitions of</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(BBS_PA)</code></pre></div>
+<pre><code>##   countrynum statenum Route RPID Year  Aou StopTotal SpeciesTotal
+## 1        840       72     1  101 1970 1940         2            2
+## 2        840       72     1  101 1970 2730         1            1
+## 3        840       72     1  101 1970 3091         2            2
+## 4        840       72     1  101 1970 3131         1            1
+## 5        840       72     1  101 1970 3160        21           30
+## 6        840       72     1  101 1970 3250         1            2</code></pre>
+<p>For our work, the important columns are</p>
+<ul>
+<li>Route: a categorical variables that defines the unique ID of each route in the State of PA</li>
+<li>Year: a numeric varibles that defines the year the data were collected. The minmum is 1966. This is a potential focal predictor variable for examining change over time.</li>
+<li>Aou: a code that designates each species, as defined by the American Ornithological Union (AOU). (Note that ths A is uppercase while the rest is lowercase)</li>
+<li>SpeciesTotal: the total number of individuals of a given species that were observed on a given route. This will be our focal response variable.</li>
+</ul>
+<p>(NOTE: We will <strong>not</strong> be using the “StopTotal” column. A BBS routes is composed of 50 point counts, called “stops.” StopTotal is the total number of stops out of 50 on which a given species in a given year was observed. Its max value is 50, or 100% of the 50 stops on the route)</p>
+<p>see ?BBS_PA for more information on these variables</p>
+</div>
+<div id="size-of-bbs_pa-dataframe" class="section level4">
+<h4>Size of BBS_PA dataframe</h4>
+<p>Thes BBS data is really really big dataset!:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BBS_PA)</code></pre></div>
 <pre><code>## [1] 244185      8</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(BBS_PA)</code></pre></div>
-<pre><code>## [1] &quot;countrynum&quot;   &quot;statenum&quot;     &quot;Route&quot;        &quot;RPID&quot;        
-## [5] &quot;Year&quot;         &quot;Aou&quot;          &quot;StopTotal&quot;    &quot;SpeciesTotal&quot;</code></pre>
-</div>
-<div id="select-focal-columns" class="section level2">
-<h2>Select focal columns</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(BBS_PA)</code></pre></div>
+<pre><code>##    countrynum     statenum      Route            RPID            Year     
+##  Min.   :840   Min.   :72   Min.   :  1.0   Min.   :101.0   Min.   :1966  
+##  1st Qu.:840   1st Qu.:72   1st Qu.: 31.0   1st Qu.:101.0   1st Qu.:1984  
+##  Median :840   Median :72   Median : 58.0   Median :101.0   Median :1997  
+##  Mean   :840   Mean   :72   Mean   :107.5   Mean   :101.1   Mean   :1995  
+##  3rd Qu.:840   3rd Qu.:72   3rd Qu.: 90.0   3rd Qu.:101.0   3rd Qu.:2007  
+##  Max.   :840   Max.   :72   Max.   :911.0   Max.   :203.0   Max.   :2016  
+##       Aou          StopTotal       SpeciesTotal   
+##  Min.   :   60   Min.   : 1.000   Min.   :  1.00  
+##  1st Qu.: 4610   1st Qu.: 2.000   1st Qu.:  2.00  
+##  Median : 5630   Median : 4.000   Median :  5.00  
+##  Mean   : 5493   Mean   : 7.239   Mean   : 13.78  
+##  3rd Qu.: 6670   3rd Qu.:10.000   3rd Qu.: 15.00  
+##  Max.   :22860   Max.   :50.000   Max.   :992.00</code></pre>
+<p>There are so many rows b/c</p>
 <ul>
-<li>We can use the select() function from the dplyr package to isoalte the columns we want.</li>
-<li>We tell dplyr the dataframe we want to work on BBS_PA, then use a “pipe” %&gt;%, and then use the select command to tell it the columns we want.</li>
-<li>Let’s look at the Year, Aou species code, Route number, and StopTotal columns</li>
+<li>There are 50 years of data.</li>
+<li>There are 202 species of birds observed during the BBS in Pennsylvania</li>
+<li>There are 137 routes in Pennsylvania</li>
+</ul>
+<p>Note, however, that if you multiply years<em>species</em>routes you get an even <strong>bigger</strong> number.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">50</span><span class="op">*</span><span class="dv">202</span><span class="op">*</span><span class="dv">137</span></code></pre></div>
+<pre><code>## [1] 1383700</code></pre>
+<p>This is because</p>
+<ul>
+<li>The number of routes has changed over time</li>
+<li>Data are only given for a species if it was obseved on a route</li>
+</ul>
+<p>Any important consequence of this is that there are only data on a species when it is actually obseved. So if a bird is see on route 99 in 2015 but not 2016, there is a row of data for it in 2015 but not 2016. Therefore, there are <strong>no zeros</strong> in the StopTotal column, which gives the number of of each species seen on a route in a given year.</p>
+<p>We can see using summary() that the minimum value in the StopTotal column is indeed 1; not a single zero.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(BBS_PA<span class="op">$</span>StopTotal)</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   2.000   4.000   7.239  10.000  50.000</code></pre>
+</div>
+</div>
+</div>
+<div id="isolate-focal-columns" class="section level2">
+<h2>Isolate focal columns</h2>
+<ul>
+<li>For our analyses we don’t need every column in the dataset</li>
+<li>Let’s look at the Year, Aou species code, Route number, and SpeciesTotal columns
+<ul>
+<li>All the data are from the state of Pennsyvlvania in the USA, so we don’t need these columns.</li>
+</ul></li>
+<li>We can use the select() function from the dplyr package to isolate the columns we want.</li>
+<li>We tell dplyr the dataframe we want to work on, BBS_PA, add a “pipe” %&gt;%, and then use the select() command to tell it the columns within the dataframe we want.</li>
 <li>We’ll save them into a new object called BBS_PA2</li>
+<li>Note that the “A” in “Aou”&quot; is uppercase while the rest are lowercase)</li>
 <li>See page 60-61 in Beckerman et al’s book “Getting start with R: An introduction for biologists” for more info on select()</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#load dplyr if you haven't already</span>
@@ -122,89 +226,316 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## [5] &quot;Year&quot;         &quot;Aou&quot;          &quot;StopTotal&quot;    &quot;SpeciesTotal&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#use select() to isolate focal columns</span>
 ## and put into a new dataframe
-BBS_PA2 &lt;-<span class="st"> </span>BBS_PA <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(Year, Aou, Route, StopTotal)
+##(Note that ths A in Aou is uppercase while the rest are lowercase)
+BBS_PA2 &lt;-<span class="st"> </span>BBS_PA <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(Year, Aou, Route, SpeciesTotal)
 
 
 <span class="co">#look at columns in new dataframe</span>
 <span class="kw">names</span>(BBS_PA2)</code></pre></div>
-<pre><code>## [1] &quot;Year&quot;      &quot;Aou&quot;       &quot;Route&quot;     &quot;StopTotal&quot;</code></pre>
-</div>
-<div id="select-focal-species" class="section level2">
-<h2>Select focal species</h2>
+<pre><code>## [1] &quot;Year&quot;         &quot;Aou&quot;          &quot;Route&quot;        &quot;SpeciesTotal&quot;</code></pre>
+<div id="isoalte-focal-species-using-filter" class="section level3">
+<h3>Isoalte focal species using filter()</h3>
 <ul>
 <li>Each row is data on a different combination of: a species, a year, and a route</li>
-<li>We want to isoalte rows that just relate to our focal species; we’ll use the Scarlet Tanager</li>
+<li>We want to isolate rows that just relate to our focal species; we’ll use the Scarlet Tanager</li>
 <li>The AOU (American ornithological Union) code for the Scarlet Tanager (SCTA) is 6080.<br />
 </li>
 <li>We can tell R to just give us data on SCTA using the fliter() command in the dplyr package.</li>
 <li>See page 62-65 in Beckerman et al’s book “Getting start with R: An introduction for biologists” for more info on filter()</li>
 </ul>
-<div id="an-example-dataframe" class="section level3">
-<h3>An example dataframe</h3>
-<pre><code>##      Year  Aou Route StopTotal                 
-## 2910 2011 5980     2        10                 
-## 2974 2012 5980     2         7                 
-## 3047 2013 5980     2         3                 
-## 2911 2011 6080     2         3 we want this row
-## 2909 2011 5950     2         3                 
-## 2973 2012 5950     2         1                 
-## 3046 2013 5950     2         4                 
-## 2975 2012 6080     2         3 we want this row
-## 2912 2011 6110     2         1                 
-## 2976 2012 6110     2         3                 
-## 3049 2013 6130     2        12                 
-## 3048 2013 6080     2         3 we want this row
-## 2913 2011 6120     2         1                 
-## 2977 2012 6120     2         1                 
-## 3050 2013 6140     2         7</code></pre>
-</div>
-<div id="select-just-focal-rows" class="section level3">
-<h3>Select just focal rows</h3>
-<div id="focal-bird-rows" class="section level4">
-<h4>Focal bird rows</h4>
+<div id="an-example-bbs-dataframe" class="section level4">
+<h4>An example BBS dataframe</h4>
 <ul>
-<li>The “%&gt;%” is called a pipe that connects the dataframe BBS_PA2 with the filter() command</li>
+<li>The following dataframe is a mock up of the general structure of the BBS data.</li>
+<li>In the “Aou” column are listed several numbers: 5980, 6080, 5950, 6110, and several others
+<ul>
+<li>Each one of these numbers represents a different species</li>
+<li>We want to isolate just teh codes 6080, which represent the scarlet tanager</li>
+<li>We want to discard the rest</li>
+</ul></li>
+</ul>
+<pre><code>##      Year  Aou Route SpeciesTotal                 
+## 2910 2011 5980     2           10                 
+## 2974 2012 5980     2            9                 
+## 3047 2013 5980     2            6                 
+## 2911 2011 6080     2            3 we want this row
+## 2909 2011 5950     2            4                 
+## 2973 2012 5950     2            1                 
+## 3046 2013 5950     2            5                 
+## 2975 2012 6080     2            3 we want this row
+## 2912 2011 6110     2            1                 
+## 2976 2012 6110     2            3                 
+## 3049 2013 6130     2           23                 
+## 3048 2013 6080     2            3 we want this row
+## 2913 2011 6120     2            4                 
+## 2977 2012 6120     2            2                 
+## 3050 2013 6140     2            7</code></pre>
+<p>That is, we want this</p>
+<pre><code>##   Year  Aou Route SpeciesTotal                 
+## 1 2011 6080     2            3 we want this row
+## 2 2012 6080     2            3 we want this row
+## 3 2013 6080     2            3 we want this row</code></pre>
+</div>
+</div>
+<div id="select-just-focal-rows-with-dplyrfilter" class="section level3">
+<h3>Select just focal rows with dplyr::filter()</h3>
+<div id="focal-bird-rows-6080-the-scarlet-tanager" class="section level4">
+<h4>Focal bird rows: 6080, the scarlet tanager</h4>
+<ul>
+<li>Again, the “%&gt;%” is called a pipe that connects the dataframe BBS_PA2 with the filter() command</li>
 <li>“==” in the filter() commands means “exactly equals”</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
 
 BBS_PA_SCTA &lt;-<span class="st"> </span>BBS_PA2 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Aou <span class="op">==</span><span class="st"> </span><span class="dv">6080</span>)</code></pre></div>
 </div>
+<div id="plot-filtered-bbs-data" class="section level4">
+<h4>Plot filtered BBS data</h4>
+<p>We can see how many birds were observed on all the routes each year using ggscatter() from the ggpubr() package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(ggpubr)
+<span class="kw">ggscatter</span>(<span class="dt">data =</span> BBS_PA_SCTA,
+          <span class="dt">y =</span> <span class="st">&quot;SpeciesTotal&quot;</span>,
+          <span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Note however that as discussed above this dataframe only contains data from routes where SCTA was observed; when SCTA wasn’t observed, nothing is recored at all, hence no zeros. We can see this with summary()</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(BBS_PA_SCTA)</code></pre></div>
+<pre><code>##       Year           Aou           Route        SpeciesTotal   
+##  Min.   :1966   Min.   :6080   Min.   :  1.0   Min.   : 1.000  
+##  1st Qu.:1983   1st Qu.:6080   1st Qu.: 29.0   1st Qu.: 3.000  
+##  Median :1996   Median :6080   Median : 56.0   Median : 7.000  
+##  Mean   :1995   Mean   :6080   Mean   :113.3   Mean   : 8.566  
+##  3rd Qu.:2007   3rd Qu.:6080   3rd Qu.: 88.5   3rd Qu.:12.000  
+##  Max.   :2016   Max.   :6080   Max.   :911.0   Max.   :44.000</code></pre>
+<p>Or by looking at a histogram</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">gghistogram</span>(BBS_PA_SCTA,
+            <span class="dt">x =</span> <span class="st">&quot;SpeciesTotal&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAFZUlEQVR4nO2d27ajKhQF8f9/+ow+I1tFiQWKBqHqITHbNQlUGy/k0mGSQ8KvO9A6CgIUBCgIUBCgIOCqoO4FKwhQEKAgQEGAggAFAQoCFAQoCFAQUE1Q+HCxveaoJ6hOe82hIEBBgIIABQEKAhQEKAhQEKAggAY0XzzsF+L8oILCX8l+YZMfU1D4u90vbPMjC5oU9H3tZ4+TFBRNbwwq6G+P4xZ0tNZ9EKxVEKxVEKxV0PFqTxQP13upUSmvIMgrCPIKgryCIK8gyCsI8gqCvIIgryDIx4L6+bDQXYKqNN4CCgIUBCgIUBCgIEBBgIIABQEKAhQEKAhQEKAgQEGAggAFAQoCFAQoCFAQoCBAQYCCAAUBCgIUBCgIUBCgIEBBgIIABQEKAhQEKAhQEKAgQEGAggAFAQoCMsbwGWzRl3pHErT8ukm8sMkPKyislIT9yIcXFCYF0fqvgg5+P2gYQWFyC8K1CoKVlwW9+uuHx4LmoV0TxM/ULiH1IOxKFBQ92Au6dKLYi6CwkCi5cKnRi6BTYxhL0JW8giA/hqDy/15lLEHug/YoCFAQkDrlOZUfQlD6RDEvP4SgK3kFQV5BkB9CkPugPalulwxlSEElY1FQbl5BkB9C0In/K3UsQVfyCoL8IIKK3+EbTFD5UMYSFFJ/zMwrCPIKgvwQgtwH7fEoBngeBCgIeHwf9LaPm1U/iq0F9LA5PX6YV9DqrjtBj+yDip/itzx+HvRyQefzCoK8giCvIMgrCPIKgryCIJ8URNcdL8AtCFAQoCBAQYCCAAUBCgIUBCgIUBBAPV2uFCp9qbczQeGvZL+wyY8paB7NfmGbH1PQXKMgqEkKyv39oFX1du6j/TeiM/q27HWqb0HxXZMoCOC+zccuBR0UKAjWK4hWzzuiMEWhwQWtjsK3XGq8XlBBXkGQVxDkFQR5BUFeQZBXEOQVBHkFQV5BkFcQ5BUEeQVBvlBQNBmtoOMHSWmt0JKgOj2qjIIABQEKAhQEKAhQEKAgQEGAggAFAQoCFAQoCFAQ0KqgZiaH2hC0n15sZnNqQxAV/BAFAQoCFAQoCFAQoCBAQYCCgAYFfX3X/ieXHw0KShSknuIhFAQoCHiFoF9+mugdglJP8RAKAloXlHhtpV5299G6oMzq+2x1ImjTmYooCHijoEen+MvbvO1Lveeq7z5DKm4zxKGfC4oeRBQM6oDSZqIOTa0Jiv6WsHVCXceCogenf5vniqCo+dAHVQWdyb8OBQEKAhQEKAiodqLYK+UDDOlLjV65OkAF3ZxvnsuCeqWWoBOtlBTfVZtfrKCardZpZURBHaMgQEGAggAFAQoCaggK+e8TLPPlGY3OM9/ZHcjsSXbDUxVBmwmQw9JlOinjzYRwQ+3Si9xiLslqIfNfbu4aJOaS3NpluLy9lRQ/KihM2YLiQOY48mpDkc1nt6D7BIUhBWWPI4T8dsM0oKCC2tIdVsuC7ng5bo+ibxYUdrdUniNoni98vaCQ3XrJKcGSeE7Q6unyarMSYb0Au5W5JLcnJcUVBN1xqbGaOX//pUbfKAhQEKAgQEGAggAFAQoCFAT8XFD0WZMvJd9iB9Fq4/q1oKJL3WQ2/bAXQWFzfyqcetiboP8X99ecYT3XvLxPFuLwpyq+u6GHP2F5/sSsxWch+uN+Rmm/JnQkaNpsD2G3sJnfira5XS5VdrF/tRq6QAiJsZ0TNDfXlaBp4yWeNv4Img/q231QLOgv2LWg1R/n+7At3992+RJbOch8ia3uRxC0GmSVo9jnZdaRoOVS4+p50Gf38++2K0Ez7fQkop1utdOTiHa61U5PIhrtVjsoCFAQoCBAQYCCAAUB/wHe0DeTx+c31AAAAABJRU5ErkJggg==" /><!-- --></p>
+</div>
+<div id="focal-year-rows" class="section level4">
+<h4>Focal year rows</h4>
+<p>For this exercise we are only going to consider data from 2006, since that is the year that the landcover data we’ll be merging with comes from. (notes that “Year” has a capital “Y” while the rest is lowercase).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_SCTA_<span class="dv">2</span> &lt;-<span class="st"> </span>BBS_PA_SCTA <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Year <span class="op">==</span><span class="st"> </span><span class="dv">2006</span>)</code></pre></div>
+<p>We can see that we’ve greatly reduced the size of the original dataframe</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BBS_PA)</code></pre></div>
+<pre><code>## [1] 244185      8</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BBS_PA_SCTA)</code></pre></div>
+<pre><code>## [1] 3535    4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BBS_PA_SCTA_<span class="dv">2</span>)</code></pre></div>
+<pre><code>## [1] 82  4</code></pre>
+</div>
+<div id="plot-filtered-scta-data" class="section level4">
+<h4>Plot filtered SCTA data</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">gghistogram</span>(<span class="dt">data =</span> BBS_PA_SCTA_<span class="dv">2</span>,
+          <span class="dt">x =</span> <span class="st">&quot;SpeciesTotal&quot;</span>)</code></pre></div>
+<pre><code>## Warning: Using `bins = 30` by default. Pick better value with the argument
+## `bins`.</code></pre>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAFMklEQVR4nO3c67aaMBRF4c37v3RHW+WSBGYCXjCZ68fRo3sJfENBOa0xmcPEt1fg7hEIIhBEIIhAEIEgJ4HGcRUIIhBEIIhAEIEgvKX/J+JfGmq9BLf0oZLMCbTcLxDcHaUxgZKJ7R5IoGxi/TRKdtcRqV5XqT2KJVezawJtrwpUnBBodyI91guUTsR0/FwaHmjaO8wLBDWBoCYQ1ASCmkBQEwhqAkFNIKgJBDWBoCYQ1ASCmkBQEwhqAkFNIKgJBDWBoCYQ1ASCmkBQKwH19Ofo9wBdeux7RSCIQBCBIAJBBIIIBBEIIhBEIIhAEIEgAkEEgggEEQgiEEQgiEAQgSACQQSCCAQRCCIQRCCIQBCBIAJBBIIIBBEIIhBEIIhAEIEgvBHPrW345oWhgFZf8raaFWi5P5axjGUaHigmgaomBIKJNVDxOzmXXfly76hAxWubC4EESicEggmBaKLyjeK4QJUfNUYEgppAUBMIagJBTSCoCQQ1gaAmENSGAorSjVATCGoDAcWShtpAQC1bNCjQmZpAUBsLyH1QFvdBEIEgAkHi4Leq2lBAvlHM42EeIhBEIIj7IEhpIyo2bGwgzwetIhBEIEhxJ91SGwroTE0gqA0GVPs10KMCReE2qA0FFKUboSYQ1J4Y6wNg7N9VfrQbf8X7B55B/Hy68zPuA/ugnoDechTrCqi9JhDUxgJyH5TFoxhEIIhAEPdBEN8HQTzMQwSCfBBo/yO7QPlF6dEE2lugQPlF6dEE2lugQPlF6dEE2lugQPlF6dEE2ltgD0DJmzyBYE4gmBMIxgRKx5KPmQKVxp7bcfQlb1M6mH7lW6dA6bDPIBgWCIYFKo4JdDwX218314YHuvAlb4MA7dUEgppAUBMIagJBTSCoCQQ1gaAmENQEgppAUBMIagJBTSCoCQQ1gaAmENQEgppAUBMIagJBTSCoNQMV/sG9QLsX+7fdJQJBBIIIBBEIIhBEIIhAEIEgAkEEgggEuS/QTb757cZAl1bwZREIIhBEIIhAEIEgAkEEgggEEQgiEEQgiECQ7wKV/+P4wY3FddnOF37hjdwf/DJQ7eB2vrgu/MAH2R8UCAYFgkGBYFAgGBQIBgWCQYFgUCAYrAZ68VdTdAcU21mBimMZS8vqCQSrNw5Q8iVvXeUlQA21DiIQRCCIQBCBIJffKPae6i2NnY8avefklgr0ntoP5ixQ97kIdLLcWrjBAgR69SpcKo8GNEIEgggEEQgiEEQgyAWgaPu/XM/z4nWt+c1s7VIi2hYwrxHMnwdKToDg+HJKqaI1j9UupbnwXCOaPw108HeY8vi8OhWteax2Kcm21pFWzX8IKKYmoG2p5bRndSEq5z/1DPoAUIwG1PiKiaYFxDQaUFuhfp91X6D2l2T9azI9ov4iUGQ/qzqVQPNpw58FiralNL8veE69D2j18PXz1a1YX6mZn+caVqtq/jzQOz9qrE6c/+5HjUEiEEQgiEAQgSACQQSCCAQRCPJVoM2/M9kZ2asdVF+6Td8Eav68m3XLv/YCFMnlqXLp196A/l3NP2vG+hzz8key2JYfU9uLN63lx7Msu3C24nFlc2N+Sim/JzoCmpLnQ2RXkpNam+dc1iuNvWAdX/lgZ5YfhW07BzQ/XFdAU+KyPVf8AJoP6uk+aAv0LHYNtLpxvox0PP/Z5UtsZVD5EltdjgC02siXHMUeL7OOgJaPGlffBz12P39/dgU05x5rUcw9Vu0ea1HMPVbtHmtRzI1X7R4RCCIQRCCIQBCBIAJB/gBjMDfa1QYCggAAAABJRU5ErkJggg==" /><!-- --></p>
+</div>
+</div>
+<div id="clean-landcover-data" class="section level3">
+<h3>Clean Landcover data</h3>
+<ul>
+<li>We’ll step back from the bird data now and switch to the data on the type of landcover surrounding the BBS routes.</li>
+<li>There are a large number of columns of data in the landcover dataframe</li>
+<li>Note that a couple of the columns names aren’t very good: “RT..NAME” and “RT..LENG.”</li>
+<li>Columns that start with “NLCD” have data on the number of pixels of a certain land cover class surrounding a rounte. There are about 15 or so of these, for everything from open water to tundra.</li>
+<li>See ?BBS_PA_landcover_1km for infromation on each of these</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(BBS_PA_landcover_1km)</code></pre></div>
+<pre><code>##  [1] &quot;Route&quot;     &quot;BCR&quot;       &quot;State&quot;     &quot;RT..NAME&quot;  &quot;RT..LENG.&quot;
+##  [6] &quot;NLCD.0&quot;    &quot;NLCD.11&quot;   &quot;NLCD.12&quot;   &quot;NLCD.21&quot;   &quot;NLCD.22&quot;  
+## [11] &quot;NLCD.23&quot;   &quot;NLCD.24&quot;   &quot;NLCD.31&quot;   &quot;NLCD.41&quot;   &quot;NLCD.42&quot;  
+## [16] &quot;NLCD.43&quot;   &quot;NLCD.52&quot;   &quot;NLCD.71&quot;   &quot;NLCD.81&quot;   &quot;NLCD.82&quot;  
+## [21] &quot;NLCD.90&quot;   &quot;NLCD.95&quot;   &quot;SUM&quot;</code></pre>
+<div id="isoalte-focal-columnsforest-cover" class="section level4">
+<h4>Isoalte focal columns:forest cover</h4>
+<p>Let’s focus on the columns that pertain to forest cover, which are contained in columns NLCD41, NLCD42, NLCD43. These represent three different types of forest, eg deciduous, coniferous, mixed. You find out information on them from the help file for the dataset using ?BBS_PA_landcover_1km.</p>
+<p>We can subset these columns as we did for the BBS bird count data using using select(). Note that there is a period between “NLCD” and the number, and that “SUM” is in all caps.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_landcover_1km_<span class="dv">2</span> &lt;-<span class="st"> </span>BBS_PA_landcover_1km <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(Route, NLCD.<span class="dv">41</span>, NLCD.<span class="dv">42</span>, NLCD.<span class="dv">43</span>, SUM)</code></pre></div>
+</div>
+<div id="add-up-total-forest-cover" class="section level4">
+<h4>Add up total forest cover</h4>
+<p>Let’s add up the NLCD.41, NLCD.42, and NLCD.43 columns</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">forest.total &lt;-<span class="st"> </span><span class="kw">rowSums</span>(BBS_PA_landcover_1km_<span class="dv">2</span>[<span class="kw">c</span>(<span class="st">&quot;NLCD.41&quot;</span>,
+                                 <span class="st">&quot;NLCD.42&quot;</span>,
+                                  <span class="st">&quot;NLCD.43&quot;</span>)])</code></pre></div>
+<p>We can add this new column to the dataframe like this</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>forest.total &lt;-<span class="st"> </span>forest.total</code></pre></div>
+<p>And see that it’s there using head()</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(BBS_PA_landcover_1km_<span class="dv">2</span>)</code></pre></div>
+<pre><code>##   Route NLCD.41 NLCD.42 NLCD.43   SUM forest.total
+## 1     1   44953     563     797 98591        46313
+## 2     2   25119    1130      48 82345        26297
+## 3     3   34154     521      78 86328        34753
+## 4     4   39813    1695      60 88526        41568
+## 5     5   32244    5892    3518 97708        41654
+## 6     6   50529    4674   13320 87503        68523</code></pre>
+<p>The “SUM” column tells us the total number of GIS pixels were actually used to determine all of the landcover in the BBS_PA_landcover_1km_2 dataframe. This varies a bit so we will actually want to use the percentage of forest cover, not the raw total. We can calcautle the percentage like this</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">forest.percent &lt;-<span class="st"> </span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>forest.total <span class="op">/</span><span class="st"> </span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>SUM</code></pre></div>
+<p>And add it to the dataframe like this</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>forest.percent &lt;-<span class="st"> </span>forest.percent</code></pre></div>
+<p>Note that we can actually do the math and add the new data to the dataframe in one step like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>forest.percent &lt;-<span class="st"> </span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>forest.total <span class="op">/</span><span class="st"> </span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>SUM</code></pre></div>
+<p>We don’t need the individual columns for each of the three cover classes anymore (NCLD.41, 42, 43) so we can use select() to focus just on our new forest.percent and forest.total columns</p>
+<p>We’ll call this new dataframe BBS_PA_landcover_1km_3</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_landcover_1km_<span class="dv">3</span> &lt;-<span class="st"> </span>BBS_PA_landcover_1km_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(Route, forest.total, SUM, forest.percent,
+         NLCD.<span class="dv">41</span>,NLCD.<span class="dv">42</span>,NLCD.<span class="dv">43</span>)</code></pre></div>
+</div>
 </div>
 <div id="merge-bbs-data-and-landcover-data" class="section level3">
 <h3>Merge BBS data and landcover data</h3>
-<p>Make a new dataframe that combines the bird count data AND the landcover data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBSdata_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">full_join</span>(BBS_PA_SCTA,
-                       BBS_PA_landcover_1km, 
+<p>We have reduced the size and made changes two dataframe: BBS_PA, with counts of birds, and BBS_PA_landcover_1km, which has information on the habitats around BBS routes in PA.</p>
+<p>Now we’ll make a new dataframe that <em>combines</em> these two sperate data sets. This is one of the most powerful features of R - taking big sets of data and with a few lines of codes merging them into a new data set.</p>
+<p>We’ll do this using thhe full_join() command from the dplyr package. All we need to do is 1) tell full_joing the names of the two data sets and 2) tell the function what column is shared between the data setst.</p>
+<p>The fact that the “Route” column occurs in both data sets allows them to be matached up.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_SCTA_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">full_join</span>(BBS_PA_SCTA_<span class="dv">2</span> ,
+                       BBS_PA_landcover_1km_<span class="dv">3</span>, 
                        <span class="dt">by =</span> <span class="st">&quot;Route&quot;</span>)</code></pre></div>
 <p>Look at the dataframe</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(BBSdata_<span class="dv">3</span>)</code></pre></div>
-<pre><code>##   Year  Aou Route StopTotal BCR        State    RT..NAME RT..LENG. NLCD.0
-## 1 1970 6080     1         3  13 Pennsylvania SLIPPERY RK   42953.3      0
-## 2 1973 6080     1         1  13 Pennsylvania SLIPPERY RK   42953.3      0
-## 3 1976 6080     1         1  13 Pennsylvania SLIPPERY RK   42953.3      0
-## 4 1977 6080     1         1  13 Pennsylvania SLIPPERY RK   42953.3      0
-## 5 1982 6080     1         3  13 Pennsylvania SLIPPERY RK   42953.3      0
-## 6 1983 6080     1         1  13 Pennsylvania SLIPPERY RK   42953.3      0
-##   NLCD.11 NLCD.12 NLCD.21 NLCD.22 NLCD.23 NLCD.24 NLCD.31 NLCD.41 NLCD.42
-## 1     875       0    9025    4861    1085     230      12   44953     563
-## 2     875       0    9025    4861    1085     230      12   44953     563
-## 3     875       0    9025    4861    1085     230      12   44953     563
-## 4     875       0    9025    4861    1085     230      12   44953     563
-## 5     875       0    9025    4861    1085     230      12   44953     563
-## 6     875       0    9025    4861    1085     230      12   44953     563
-##   NLCD.43 NLCD.52 NLCD.71 NLCD.81 NLCD.82 NLCD.90 NLCD.95   SUM
-## 1     797      19    1334   15628   19044     159       6 98591
-## 2     797      19    1334   15628   19044     159       6 98591
-## 3     797      19    1334   15628   19044     159       6 98591
-## 4     797      19    1334   15628   19044     159       6 98591
-## 5     797      19    1334   15628   19044     159       6 98591
-## 6     797      19    1334   15628   19044     159       6 98591</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(BBS_PA_SCTA_<span class="dv">3</span>)</code></pre></div>
+<pre><code>##   Year  Aou Route SpeciesTotal forest.total   SUM forest.percent NLCD.41
+## 1 2006 6080     2            6        26297 82345      0.3193515   25119
+## 2 2006 6080     3            6        34753 86328      0.4025693   34154
+## 3 2006 6080     4            3        41568 88526      0.4695570   39813
+## 4 2006 6080     5            1        41654 97708      0.4263110   32244
+## 5 2006 6080     6            8        68523 87503      0.7830932   50529
+## 6 2006 6080     8            5        56098 87248      0.6429718   49029
+##   NLCD.42 NLCD.43
+## 1    1130      48
+## 2     521      78
+## 3    1695      60
+## 4    5892    3518
+## 5    4674   13320
+## 6    4304    2765</code></pre>
 <p>Compare the size of this dataframe and the original landcover dataframe.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BBSdata_<span class="dv">3</span>)</code></pre></div>
-<pre><code>## [1] 3539   26</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BBS_PA_landcover_1km)</code></pre></div>
-<pre><code>## [1] 137  23</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#the BBS data that were merged</span>
+<span class="kw">dim</span>(BBS_PA_SCTA_<span class="dv">2</span>)</code></pre></div>
+<pre><code>## [1] 82  4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#the landcover data that were merged</span>
+<span class="kw">dim</span>(BBS_PA_landcover_1km_<span class="dv">3</span>)</code></pre></div>
+<pre><code>## [1] 137   7</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#the final merged dataframe</span>
+<span class="kw">dim</span>(BBS_PA_SCTA_<span class="dv">3</span>)</code></pre></div>
+<pre><code>## [1] 137  10</code></pre>
+</div>
+<div id="dealing-with-nas" class="section level3">
+<h3>Dealing with NAs</h3>
+<p>If we look at our new dataframe we see that some of our rows now contains NAs</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(BBS_PA_SCTA_<span class="dv">3</span>)</code></pre></div>
+<pre><code>##       Year           Aou           Route        SpeciesTotal   
+##  Min.   :2006   Min.   :6080   Min.   :  1.0   Min.   : 1.000  
+##  1st Qu.:2006   1st Qu.:6080   1st Qu.: 35.0   1st Qu.: 3.000  
+##  Median :2006   Median :6080   Median : 69.0   Median : 6.000  
+##  Mean   :2006   Mean   :6080   Mean   :137.2   Mean   : 8.341  
+##  3rd Qu.:2006   3rd Qu.:6080   3rd Qu.:132.0   3rd Qu.:10.000  
+##  Max.   :2006   Max.   :6080   Max.   :911.0   Max.   :42.000  
+##  NA's   :55     NA's   :55                     NA's   :55      
+##   forest.total        SUM         forest.percent       NLCD.41     
+##  Min.   : 1563   Min.   : 63828   Min.   :0.01881   Min.   : 1377  
+##  1st Qu.:35308   1st Qu.: 84435   1st Qu.:0.40257   1st Qu.:27990  
+##  Median :51222   Median : 87008   Median :0.59019   Median :40555  
+##  Mean   :47706   Mean   : 86994   Mean   :0.55450   Mean   :39383  
+##  3rd Qu.:62998   3rd Qu.: 89201   3rd Qu.:0.71135   3rd Qu.:50529  
+##  Max.   :84033   Max.   :110663   Max.   :0.96461   Max.   :73426  
+##                                                                    
+##     NLCD.42         NLCD.43     
+##  Min.   :   59   Min.   :    0  
+##  1st Qu.:  572   1st Qu.:  531  
+##  Median : 1707   Median : 1579  
+##  Mean   : 2891   Mean   : 5432  
+##  3rd Qu.: 4871   3rd Qu.: 8346  
+##  Max.   :11389   Max.   :39534  
+## </code></pre>
+<p>This occured b/c the original BBS data only contains data when a species is observed - if it isn’t seen, nothing is entered. So each “NA” in the new dataframe we made represents a route for which, in 2006, the SCTA wasn’t observed.</p>
+<p>Its easy to fix the Year and Aou columns because the all have the same values. All of the years = 2006, and all of the Aou columns = 6080, for Scarlet tanager. The following code will fill in any of the missing values</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_SCTA_<span class="dv">3</span><span class="op">$</span>Year &lt;-<span class="st"> </span><span class="dv">2006</span>
+BBS_PA_SCTA_<span class="dv">3</span><span class="op">$</span>Aou &lt;-<span class="st"> </span><span class="dv">6080</span></code></pre></div>
+<p>Actualy, since the code “6080” isn’t very meaningful, let’s add the letters “SCTA” to a column to make it easy to remembe what we are looking at. Let’s make a new column called “name” and put “SCTA” in it.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_SCTA_<span class="dv">3</span><span class="op">$</span>name &lt;-<span class="st"> &quot;SCTA&quot;</span></code></pre></div>
+<p>We’ll make this a factor variable</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_SCTA_<span class="dv">3</span><span class="op">$</span>name &lt;-<span class="st"> </span><span class="kw">factor</span>(BBS_PA_SCTA_<span class="dv">3</span><span class="op">$</span>name)</code></pre></div>
+<p>Summary will show us what we’ver done: now there are no NAs in Year or Aou and there’s a new column calld name</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(BBS_PA_SCTA_<span class="dv">3</span>)</code></pre></div>
+<pre><code>##       Year           Aou           Route        SpeciesTotal   
+##  Min.   :2006   Min.   :6080   Min.   :  1.0   Min.   : 1.000  
+##  1st Qu.:2006   1st Qu.:6080   1st Qu.: 35.0   1st Qu.: 3.000  
+##  Median :2006   Median :6080   Median : 69.0   Median : 6.000  
+##  Mean   :2006   Mean   :6080   Mean   :137.2   Mean   : 8.341  
+##  3rd Qu.:2006   3rd Qu.:6080   3rd Qu.:132.0   3rd Qu.:10.000  
+##  Max.   :2006   Max.   :6080   Max.   :911.0   Max.   :42.000  
+##                                                NA's   :55      
+##   forest.total        SUM         forest.percent       NLCD.41     
+##  Min.   : 1563   Min.   : 63828   Min.   :0.01881   Min.   : 1377  
+##  1st Qu.:35308   1st Qu.: 84435   1st Qu.:0.40257   1st Qu.:27990  
+##  Median :51222   Median : 87008   Median :0.59019   Median :40555  
+##  Mean   :47706   Mean   : 86994   Mean   :0.55450   Mean   :39383  
+##  3rd Qu.:62998   3rd Qu.: 89201   3rd Qu.:0.71135   3rd Qu.:50529  
+##  Max.   :84033   Max.   :110663   Max.   :0.96461   Max.   :73426  
+##                                                                    
+##     NLCD.42         NLCD.43        name    
+##  Min.   :   59   Min.   :    0   SCTA:137  
+##  1st Qu.:  572   1st Qu.:  531             
+##  Median : 1707   Median : 1579             
+##  Mean   : 2891   Mean   : 5432             
+##  3rd Qu.: 4871   3rd Qu.: 8346             
+##  Max.   :11389   Max.   :39534             
+## </code></pre>
+<p>To fill in the NAs for the SpeciesTotal column (the counts of the number of birds) requires a new function: is.na(). is.na() determiens if a row in a column has NA or it doesn’t. is.na() returns “TRUE” whenever there is an NA</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is.na</span>(BBS_PA_SCTA_<span class="dv">3</span><span class="op">$</span>SpeciesTotal)</code></pre></div>
+<pre><code>##   [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [12] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [23] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [34] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [45] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [56] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [67] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [78] FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+##  [89]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [100]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [111]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [122]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [133]  TRUE  TRUE  TRUE  TRUE  TRUE</code></pre>
+<p>We can use is.na with a function from dplyr called mutate() to change these NAs to 0s.</p>
+<p><strong>This code is pretty complex, actually, so don’t worry if you don’t get it the 1st try</strong> Actually, since its pretty trick for beginers, I’ve made a new function that does it more simply (see next chunk of code)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_SCTA_<span class="dv">4</span> &lt;-<span class="st">  </span>BBS_PA_SCTA_<span class="dv">3</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">SpeciesTotal =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(SpeciesTotal),<span class="dv">0</span>,SpeciesTotal))</code></pre></div>
+<p>Since the above code is rather long, the following function from the wildlifeR package will do the same thing</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_SCTA_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">NA_to_zero</span>(<span class="dt">dat =</span> BBS_PA_SCTA_<span class="dv">3</span>,
+           <span class="dt">column =</span> <span class="st">&quot;SpeciesTotal&quot;</span>)</code></pre></div>
+</div>
+<div id="plot-relationship-between-scta-and-forest-cover" class="section level3">
+<h3>PLot relationship between SCTA and forest cover</h3>
+<p>We can now finally check out the relationship between the Scarlet tanger and forest cover</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggscatter</span>(<span class="dt">data =</span> BBS_PA_SCTA_<span class="dv">3</span>,
+          <span class="dt">y =</span> <span class="st">&quot;SpeciesTotal&quot;</span>,
+          <span class="dt">x =</span> <span class="st">&quot;forest.percent&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="re-orgainzing-rows" class="section level3">
+<h3>Re-orgainzing rows</h3>
+<ul>
+<li>Dataframes typically put the information columns to the left and the data columns to the right</li>
+<li>We can reorder our columns in BBS_PA_SCTA_3 using select()</li>
+<li>We can also rename columns using the selection function using the format “new.name = old.name”</li>
+<li>Its generally good to use a consistent format for all of your column names</li>
+<li>I also think its good to avoid uppercase letters</li>
+<li>Using using standard abbreviations is also good b/c shorter names are easier to type; here I’ll use “spp” instead of “speices” , “for” instead of forest, and “tot” instead of “total”</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_SCTA_<span class="dv">4</span> &lt;-<span class="st"> </span>BBS_PA_SCTA_<span class="dv">3</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="dt">year =</span> Year, 
+                              <span class="dt">aou =</span> Aou, 
+                              <span class="dt">route =</span> Route, 
+                              <span class="dt">name =</span> name,
+                              <span class="dt">spp.tot =</span> SpeciesTotal,
+                              <span class="dt">for.tot =</span> forest.total,
+                              <span class="dt">NLCD.sum =</span> SUM,
+                              <span class="dt">for.percent =</span> forest.percent)</code></pre></div>
+</div>
+<div id="saving-to-.csv" class="section level3">
+<h3>Saving to .csv</h3>
+<p>When we have a dataset prepared its a good idea to save it to a spreadsheet as a .csv file for safe keeping. This is done with the write.csv() function</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write.csv</span>(BBS_PA_SCTA_<span class="dv">4</span>, <span class="dt">file =</span> <span class="st">&quot;SCTA_vs_forest_cover.csv&quot;</span>)</code></pre></div>
 </div>
 </div>
 

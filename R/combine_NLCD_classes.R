@@ -1,7 +1,5 @@
 #' Combine multiple landcover classes into a single combined group
 #'
-#'
-#'
 #' @param dat dataframe of NLCD landcover values
 #' @param numeric_cover_codes numeric codes for landcover classes
 #'

@@ -2,8 +2,7 @@
 title: "Merging data with dplyr: combining BBS bird counts and landcover data"
 author: "Nathan Brouwer  brouwern@gmail.com  @lobrowR"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-#output: rmarkdown::pdf
+output: rmarkdown::pdf_document
 vignette: >
   %\VignetteIndexEntry{Merging w/ dplyr}
   %\VignetteEncoding{UTF-8}
@@ -455,13 +454,31 @@ ggscatter(data = BBS_PA_SCTA_3,
 
 ### Re-orgainzing rows
 
-### Saving to .csv
+* Dataframes typically put the information columns to the left and the data columns to the right
+* We can reorder our columns in BBS_PA_SCTA_3 using select()
+* We can also rename columns using the selection function using the format "new.name = old.name"
+* Its generally good to use a consistent format for all of your column names
+* I also think its good to avoid uppercase letters
+* Using using standard abbreviations is also good b/c shorter names are easier to type; here I'll use "spp" instead of "speices" , "for" instead of forest, and "tot" instead of "total"
 
 
 ```{r}
-ggscatter(data = BBS_PA_SCTA_3,
-          y = "SpeciesTotal",
-          x = "NLCD.43")
+BBS_PA_SCTA_4 <- BBS_PA_SCTA_3 %>% select(year = Year, 
+                              aou = Aou, 
+                              route = Route, 
+                              name = name,
+                              spp.tot = SpeciesTotal,
+                              for.tot = forest.total,
+                              NLCD.sum = SUM,
+                              for.percent = forest.percent)
 ```
 
+
+### Saving to .csv
+
+When we have a dataset prepared its a good idea to save it to a spreadsheet as a .csv file for safe keeping.  This is done with the write.csv() function
+
+```{r, eval = FALSE}
+write.csv(BBS_PA_SCTA_4, file = "SCTA_vs_forest_cover.csv")
+```
 

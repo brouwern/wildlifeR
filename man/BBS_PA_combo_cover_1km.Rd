@@ -11,14 +11,13 @@
   \item{State}{State}
   \item{route_name}{Route name.  Originally RT..NAME}
   \item{route_length}{length of route.  Originally RT.LENG}
-  \item{NLCD.0}{amount of habitat in category 0 of the National Land Cover Database}
   \item{open_H2O}{NLCD.11}
   \item{developed}{NLCD.21,22,23,24}
   \item{forest}{NLCD.41,42,43}
   \item{grassland}{NLCD.71}
   \item{pasture}{NLCD.81}
   \item{crops}{NLCD.82}
-  \item{NLCD.90}{NLCD.90,95}
+  \item{wetlands}{NLCD.90,95}
   \item{cov_sum}{total landcover accross all variables, not just those in the combined class.  Orginally SUM}
  }}
 \source{

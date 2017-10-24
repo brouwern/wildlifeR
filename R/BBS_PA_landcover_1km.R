@@ -11,7 +11,7 @@
 #'   \item{BCR}{Bird conservation region}
 #'   \item{State}{State}
 #'   \item{RT..NAME}{Route name}
-#'   \item{RT.LENG}{length of route}
+#'   \item{RT..LENG.}{length of route}
 #'   \item{NLCD.0}{amount of habitat in category 0 of the National Land Cover Database}
 #'   \item{NLCD.11}{Open water}
 #'   \item{NLCD.12}{NLCD.12}
