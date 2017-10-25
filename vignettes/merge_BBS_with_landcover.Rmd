@@ -102,10 +102,14 @@ For our work, the important columns are
 see ?BBS_PA for more information on these variables
 
 #### Size of BBS_PA dataframe
+
 Thes BBS data is really really big dataset!: `r nrow(244185)`
+
 ```{r, eval= TRUE}
+
 dim(BBS_PA)
 summary(BBS_PA)
+
 ```
 
 There are so many rows b/c
@@ -129,6 +133,7 @@ Any important consequence of this is that there are only data on a species when 
 
 
 We can see using summary() that the minimum value in the StopTotal column is indeed 1; not a single zero.
+
 ```{r}
 summary(BBS_PA$StopTotal)
 ```
@@ -159,16 +164,19 @@ names(BBS_PA)
 #use select() to isolate focal columns
 ## and put into a new dataframe
 ##(Note that ths A in Aou is uppercase while the rest are lowercase)
-BBS_PA2 <- BBS_PA %>% select(Year, Aou, Route, SpeciesTotal)
+
+BBS_PA2 <- BBS_PA %>% select(Year, Aou, 
+                             Route, SpeciesTotal)
 
 
 #look at columns in new dataframe
 names(BBS_PA2)
+
 ```
 
 
 
-### Isoalte focal species using filter()
+### Isolate focal species using filter()
 
 * Each row is data on a different combination of: a species, a year, and a route
 * We want to isolate rows that just relate to our focal species; we'll use the Scarlet Tanager
@@ -221,14 +229,17 @@ BBS_PA_SCTA <- BBS_PA2 %>% filter(Aou == 6080)
 We can see how many birds were observed on all the routes each year using ggscatter() from the ggpubr() package.  
 
 ```{r}
+
 library(ggplot2)
 library(ggpubr)
+
 ggscatter(data = BBS_PA_SCTA,
           y = "SpeciesTotal",
           x = "Year")
 ```
 
 Note however that as discussed above this dataframe only contains data from routes where SCTA was observed; when SCTA wasn't observed, nothing is recored at all, hence no zeros.  We can see this with summary()
+
 ```{r}
 summary(BBS_PA_SCTA)
 ```
