@@ -1,5 +1,7 @@
 #' Woodcock call survey data from Michigan, USA
 #'
+#' There are ~150 routes in Michigan.  50 were randomly chosen for use in 2000, a different 50 for 2005, and the remainder for use for 2010.  Only routes where all 10 stops were acceptable were used.
+#'
 #'
 #' The official USGS blurb is:
 #' "The American Woodcock (Scolopax minor) Singing-Ground Survey, conducted by the U.S. Fish and Wildlife Service, exploits the conspicuous courtship display of the male woodcock. The survey consists of numerous routes in the eastern half of the U.S. and Canada, which are surveyed in the spring. Counts of singing male woodcock along the routes provide an index to woodcock abundance, and are used to estimate woodcock population trends for states, provinces, management regions, and the continent. The survey is the major source of information considered in the annual setting of woodcock hunting seasons. These data can also be used to examine the effects of weather, landscape change, and other factors on woodcock population abundance."
@@ -21,4 +23,4 @@
 #'
 #' @source \url{https://migbirdapps.fws.gov/mbdc/databases/db_selection.html}
 
-"woodcock_MI"
+"woodcock_MI_3_years"
