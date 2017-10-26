@@ -1,6 +1,10 @@
-#' Woodcock call survey data from Michigan, USA
+#' Subst of Woodcock call survey data from Michigan, USA
 #'
-#' There are ~150 routes in Michigan.  50 were randomly chosen for use in 2000, a different 50 for 2005, and the remainder for use for 2010.  Only routes where all 10 stops were acceptable were used.
+#' There are ~150 routes in Michigan from three years:
+#' 2000, 2005 and 2010.  50 were randomly chosen from
+#' 2000, a different 50 for 2005, and the remainder for
+#' use for 2010.  Only routes where all 10 stops were acceptable
+#' were used.
 #'
 #'
 #' The official USGS blurb is:
