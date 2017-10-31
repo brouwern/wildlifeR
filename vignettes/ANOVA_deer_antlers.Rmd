@@ -12,7 +12,7 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warnings = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warnings = FALSE, message = FALSE,fig.height = 3, fig.width = 5)
 ```
 
 
@@ -369,12 +369,24 @@ summary(model.alt.2)
 
 We can plot the "model diagnostics" using plot().  We will go into further details on this topic in the future.
 
+Note: the par(mfrow = c(2,2)) is a bit of cryptic R code that sets up the plotting window to have 4 panels
+
+Also note: we'll use the ggplot2 addon library ggfortify for this, which has a fabulous function autoplot()
+
 ```{r}
-plot(model.alt)
+#load the library
+library(ggfortify)
+
+#plot the residuals
+autoplot(model.alt)
 ```
 
 
 ## Part 3: Pairwise comparisons
+
+The traditional way of doing a 1-way ANOVA is to follow up a "significant" Omnibus test with seperate t-tests that compare pair of means.  This is called doing "pairwise" comparison - you go pair by pair doing t-tests. 
+
+The function pairwise.t.test() is used.  Note that p.adjust.method = "none" line, which means we are given raw p-values that have *not* been corrected fro muotipel comparisons (see below)
 
 ### 13-15) Get pairwise p-valeus
 ```{r}
@@ -385,11 +397,23 @@ pairwise.t.test(x = antlers$mass,
 
 
 
-
 ## Part 4: Pairwise comparisons, correcting for multiple comparisons, & effect sizes
+
+The more t-tests you do, the more likely you are to get a "Significant" (low) p-value just due to chance.  Rememeber - the definition of a p-value is such that it always leaves open the possiblity that the patterns you see are just due to random noise.  This is called the "problem of multiple comparisons."
+
+One way that is advocated to to deal with this issue of multiple comparisons is to increase p-values.  One way of doing this this is to use a "Bonferroni" correction.  This can be done using pairwise.t.test() and setting p.adjust.method = "bonferroni"
+
+```{r}
+pairwise.t.test(x = antlers$mass,
+                g = antlers$diet,
+                p.adjust.method = "bonferroni")
+```
 
 
 ### 17) Build model with aov() function
+
+When doing a 1-way ANOVA with three groups, a good option is to do a Tukey Test using the TukeyHSD() function.  However, to do this you need first need to jump through a hoop: you need to redo the model model using the aov() function.  (aov stands for "analysis of variance")
+
 ```{r}
 
 model.alt.aov <- aov(mass ~ diet, 
@@ -399,6 +423,8 @@ model.alt.aov <- aov(mass ~ diet,
 ```
 
 ### 18) Get p-values with Tukey's HSD 
+
+When the model is fit using aov() you can then use TukeyHSD().  This gives  you p-values for each set of pairwise comparisons and, more importantly effect sizes and their confidence intervals for each comparison.  Importantly, the p-values and CIs have been increased to deal with the fact that you are making multiple comparisons.
 
 ```{r}
 
@@ -411,7 +437,11 @@ TukeyHSD(model.alt.aov)
 
 ### 19) Plot effect sizes
 
+The wildlifeR package contains a function that makes nice plots (IMHO) of the output of the TukeyHSD function.
+
+
 ```{r}
+par(mfrow = c(1,1))
 
 tukey.out <- TukeyHSD(model.alt.aov)
 
