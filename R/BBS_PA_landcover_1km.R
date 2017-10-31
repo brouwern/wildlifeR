@@ -29,7 +29,7 @@
 #'   \item{NLCD.82}{NLCD.82}
 #'   \item{NLCD.90}{NLCD.90}
 #'   \item{NLCD.95}{NLCD.95}
-#'   \item{sum}{total landcover accross all variables}
+#'   \item{SUM}{total landcover accross all variables}
 #'  }
 #'
 #' @source \url{https://figshare.com/articles/Data_Paper_Data_Paper/3554424}

@@ -1,4 +1,4 @@
-#' Subst of Woodcock call survey data from Michigan, USA
+#' Subset of Woodcock call survey data from Michigan, USA
 #'
 #' There are ~150 routes in Michigan from three years:
 #' 2000, 2005 and 2010.  50 were randomly chosen from
@@ -21,10 +21,12 @@
 #'   \item{route.status}{Status of route as "route run" (RR) or "constant zero" (CZ).  "statuscd" in original USGS data}
 #'   \item{woodcocks}{Number of woodcocks seen on route; "accpwdck" for "acceptable woodcocks" in original USGS data}
 #'   \item{stops}{Number of acceptable stops during survey that meet quality control critera. "accpstops" in original USGS data.  Only routes with all stops being acceptable used for this dataset}
-#'   \item
 #' }
-#' @references Sauer, J. R., and J. B. Bortner. 1991. Population trends from the American Woodcock Singing-ground Survey, 1970-88. J. Wildl. Mange. 55:300-312.
 #'
 #' @source \url{https://migbirdapps.fws.gov/mbdc/databases/db_selection.html}
+#'
+#' @references Sauer, J. R., and J. B. Bortner. 1991. Population trends from the American Woodcock Singing-ground Survey, 1970-88. J. Wildl. Mange. 55:300-312.
+#'
+
 
 "woodcock_MI_3_years"

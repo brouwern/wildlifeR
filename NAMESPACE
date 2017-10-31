@@ -3,3 +3,4 @@
 export(NA_to_zero)
 export(combine_NLCD_classes)
 export(expand_BBS_routes)
+export(plotTukeysHSD)

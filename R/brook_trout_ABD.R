@@ -8,6 +8,7 @@
 #'   \item{salmon.released}{Number of PIT-tagged salmon released}
 #'   \item{salmon.surv}{Number of tagged salmon that survived and were detected downstream}
 #' }
+#'
 #' @source \url{http://rspb.royalsocietypublishing.org/content/269/1501/1663.short}
 #' @references Levin et al.  2002.  Non–indigenous brook trout and the demise of Pacific salmon:
 #' a forgotten threat?  PRSB 269.  DOI: 10.1098/rspb.2002.2063
