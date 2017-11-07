@@ -1,4 +1,4 @@
-#' Mammal milk dataset
+#' Bird eggs datatset.
 #'
 #' A dataset on the shape of eggs.  Original data extract from photographs of multiple eggs.  Values in this dataset are averages.
 #'

@@ -1,7 +1,10 @@
 #' Combine multiple landcover classes into a single combined group
 #'
+#' This function takes several landcover classes, such as all forest landcover classes
+#' and totals them up.  It is simply wrapper for apply(...sum) that
+#'
 #' @param dat dataframe of NLCD landcover values
-#' @param numeric_cover_codes numeric codes for landcover classes
+#' @param numeric_cover_codes numeric codes for landcover classes.  Do not include the "NCLE" prefix.
 #'
 #' @export
 

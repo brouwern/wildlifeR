@@ -9,8 +9,9 @@ combine_NLCD_classes(dat, numeric_cover_codes)
 \arguments{
 \item{dat}{dataframe of NLCD landcover values}
 
-\item{numeric_cover_codes}{numeric codes for landcover classes}
+\item{numeric_cover_codes}{numeric codes for landcover classes.  Do not include the "NCLE" prefix.}
 }
 \description{
-Combine multiple landcover classes into a single combined group
+This function takes several landcover classes, such as all forest landcover classes
+and totals them up.  It is simply wrapper for apply(...sum) that
 }
