@@ -2,7 +2,7 @@
 #'
 #' ....
 #'
-#' @format A data frame with 23 columns, including:
+#' @format A data frame, including:
 #' \describe{
 #'   \item{site}{Name of study site or stream}
 #'   \item{trout.PRES.ABS}{Taxonomic family}
@@ -15,4 +15,4 @@
 #'
 #' @source \url{http://science.sciencemag.org/content/356/6344/1249}
 
-"eggs"
+"trout"

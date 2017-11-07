@@ -2,7 +2,7 @@
 #'
 #' Data simulated based on summary information in Asleson et al. (1997)
 #'
-#' @format A data frame with 53940 rows and 10 variables:
+#' @format A data frame
 #' \describe{
 #'   \item{diet}{Experimental diet during both spring and summer.  Hi.Hi = High quality diet in both season.  Hi.Lo = high quality diet in spring but poor in summer.  }
 #'   \item{mass}{Antler mass in grams}
