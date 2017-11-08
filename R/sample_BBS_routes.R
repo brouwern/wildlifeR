@@ -77,13 +77,19 @@ sample_BBS_routes <- function(dat = BBS_PA,
   any(duplicated(route.df) == TRUE)
 
   # merge sampled routes with original BBS data to generate new dataframe
-  df.out2 <- merge(route.df, dat)
+  df.out2 <- merge(route.df, dat, all = TRUE)
+
+  df.out2$SpeciesTotal[is.na(df.out2$SpeciesTotal)] <- 0
+
+  df.out3 <- df.out2[which(df.out2$Year %in% years),]
+
+  df.out4 <- df.out3[-which(is.na(df.out3$cuts) == TRUE),]
 
   # cat("Original BBS dataframe was", dim(dat), "\n")
   # cat("New resampled dataframe is", dim(df.out2),"\n")
   #
 
-  return(df.out2)
+  return(df.out4)
 
 }
 
