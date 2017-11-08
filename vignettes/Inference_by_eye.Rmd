@@ -1,5 +1,5 @@
 ---
-title: "T-test example using RA Fisher's Cat Data"
+title: "Inference-by-eye using RA Fisher's Cat Data"
 author: "Nathan Brouwer  brouwern@gmail.com  @lobrowR"
 date: "`r Sys.Date()`"
 output: rmarkdown::pdf_document
