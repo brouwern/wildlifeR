@@ -15,7 +15,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE, warnings = FALSE, message = FALSE,fig.height = 3, fig.width = 5)
 ```
 
-A an example of doing "inference by eye" using R.A. Fischer's cat data.
+A an example of doing "inference by eye" using R.A. Fischer's cat data.  A good summary of this idea is Cummings et al. 2007.  Error bars in experimental biology. http://jcb.rupress.org/content/177/1/7.short
 
 
 ## Load the data
