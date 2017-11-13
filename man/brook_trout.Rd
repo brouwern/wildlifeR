@@ -23,6 +23,10 @@ Levin et al. 2002 studied the impacts of brook trout introduced for sport fishin
 on native Chinook salmon.  Whitlock & Shulter used a subset
 of these data as an example in their text Analysis of Biological Data
 }
+\examples{
+t.test(surv ~ trout.PRES.ABS, data = brook_trout)
+
+}
 \references{
 Levin et al.  2002.  Non–indigenous brook trout and the demise of Pacific salmon:
 a forgotten threat?  PRSB 269.  DOI: 10.1098/rspb.2002.2063

@@ -14,5 +14,18 @@
 #' a forgotten threat?  PRSB 269.  DOI: 10.1098/rspb.2002.2063
 #'
 #' Whitlock & Schulter.  2nd ed.  Analysis of Biological Data.
+#'
+#' @examples
+#'
+#' ## t-test on survival rate (ignores years)
+#'
+#' ### Calcualte survival
+#' brook_trout_ABD$surv <- brook_trout_ABD$salmon.surv/brook_trout_ABD$salmon.released
+#'
+#' ### t-test
+#' t.test(surv ~ brook.trout.PRES.ABS, data = brook_trout_ABD)
 
 "brook_trout_ABD"
+
+
+

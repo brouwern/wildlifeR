@@ -2,15 +2,15 @@
 #'
 #' Levin et al. 2002 studied the impacts of brook trout introduced for sport fishing
 #' on native Chinook salmon.  Whitlock & Shulter used a subset
-#' of these data as an example in their text Analysis of Biological Data
+#' of these data as an example in their textbook Analysis of Biological Data.
 #'
 #'
 #' @format A data frame, including:
 #' \describe{
 #'   \item{site}{Name of study site or stream}
-#'   \item{trout.PRES.ABS}{Taxonomic family}
+#'   \item{trout.PRES.ABS}{Are brook trout present in the stream or absent from it?}
 #'   \item{release}{Number of Chinook salmon released}
-#'   \item{recap}{Number of juvenil chinook salmon "recapatured" by detecting their PIT tag; this was not reported in original paper but was estimated using published survival rate.  The survival rate estiamted using mark-recapture methods to account for detection probabilities.}
+#'   \item{recap}{Number of juvenile chinook salmon "recaptured" by detecting their PIT tag; this was not reported in original paper but was estimated using published survival rate.  The survival rate estiamted using mark-recapture methods to account for detection probabilities.}
 #'   \item{surv}{survival rate}
 #' }
 #'
@@ -22,5 +22,9 @@
 #'
 #' Whitlock & Schulter.  2nd ed.  Analysis of Biological Data.
 #'
+#' @examples
+#'
+#' ## t-test on survival rate (ignores years)
+#' t.test(surv ~ trout.PRES.ABS, data = brook_trout)
 #'
 "brook_trout"
