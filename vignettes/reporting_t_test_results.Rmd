@@ -33,6 +33,7 @@ Levin et al.  2002.  Non–indigenous brook trout and the demise of Pacific salm
 The data are availabe in the wildlifeR package and can be loaded using data(wildlifeR).  Note that if you use the dataframe in wildlifeR you have to calculate the survival rate by hand.  I will remake the data by hand as an example of making a simple dataframe.
 
 ```{r, include=FALSE}
+
 library(wildlifeR)
 data(brook_trout_ABD)
 

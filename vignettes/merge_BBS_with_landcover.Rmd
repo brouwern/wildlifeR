@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE, warnings = FALSE, message = FALSE)
 
 ## Introduction
 
-This vignette walks through the process of taking 2 complimentary sets of data and "mergeing" them using the powerful function full_join() in the package dplyr.  We'll take data on 1) the number of birds observed along USGS Breeding Bird Survey (BBS) routes and merge that ecological data with 2) geographic information on the types of landcover along those routes.  In addition to this primary tasks of merging datasets, we'll also do several other things to clean up the data to make it easy to use.
+This vignette walks through the process of taking 2 complimentary sets of data and "merging" them using the powerful function full_join() in the package dplyr.  We'll take data on 1) the number of birds observed along USGS Breeding Bird Survey (BBS) routes and merge that ecological data with 2) geographic information on the types of landcover along those routes.  In addition to this primary tasks of merging datasets, we'll also do several other things to clean up the data to make it easy to use.
 
 
 ## References
@@ -163,7 +163,8 @@ names(BBS_PA)
 
 #use select() to isolate focal columns
 ## and put into a new dataframe
-##(Note that ths A in Aou is uppercase while the rest are lowercase)
+##(Note that ths A in Aou is uppercase 
+## while the rest of the letters are lowercase)
 
 BBS_PA2 <- BBS_PA %>% select(Year, Aou, 
                              Route, SpeciesTotal)
