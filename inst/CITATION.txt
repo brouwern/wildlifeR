@@ -1,0 +1,16 @@
+citHeader("To cite wildlifeR use:")
+
+citEntry(entry = "Article",
+  title        = "The {wildlifeR} package: datasets and tutorials for learning R",
+  author       = personList(as.person("Nathan Brouwer"),
+  journal      = "In prep.",
+  year         = "xxxx",
+  volume       = "xx",
+  number       = "x",
+  pages        = "x-x"
+
+  textVersion  =
+  paste("Nathan Brouwer (xxx).",
+        "The wildlifeR package: datasets and tutorials for learning R.",
+        "In prep, xx(x), xx-xx.")
+)
