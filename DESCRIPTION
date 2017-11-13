@@ -2,11 +2,11 @@ Package: wildlifeR
 Type: Package
 Title: Wildlife biology and animal ecology datasets and example analyses.
 Version: 0.1.0
-Author: Nathan Brouwer
-Maintainer: Nathan Brouwer <brouwern@gmail.com>
+Authors@R: person("Brouwer", "Nathan", email = "brouwern@gmail.com",
+  role = c("aut", "cre"))
 Description: Datasets from public repositories and published papers related to 
-    wildlife biology, animal ecology, and animal conservation.  Somewhat biased
-    towards birds.
+    wildlife biology, animal ecology, and animal conservation.  Includes extension of dataset that appearing Whitlock @ Shulter's textbook Analysis of biological data, 2nd. ed.
+    Biased towards migratory songbirds and white-tailed deer.
 License: CC 3.0.
 Encoding: UTF-8
 LazyData: true
