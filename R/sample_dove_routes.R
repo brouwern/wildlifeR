@@ -9,22 +9,22 @@
 #' @examples
 #'
 #' ## create data
-#' dat <- sample_dove_routes(dat = doves_PA,
-#'         years = c(2005,2007,2010))
+#' #dat <- sample_dove_routes(dat = doves_PA,
+#'  #       years = c(2005,2007,2010))
 #'
 #' ## Make year a factor
-#' dat$Year <- factor(dat$Year)
+#' #dat$Year <- factor(dat$Year)
 #'
 #' ## Plot means with 95% confidence intervals
 #'
 #' library(ggplot2)
 #' library(ggpubr)
 #'
-#' ggerrorplot(dat,
-#'   x = "Year",
-#'   y = "tot.seen",
-#'   desc_stat = "mean_ci",
-#'   add = "mean")
+#' #ggerrorplot(dat,
+#'  # x = "Year",
+#'   #y = "tot.seen",
+#'   #desc_stat = "mean_ci",
+#'   #add = "mean")
 #'
 #' @export
 

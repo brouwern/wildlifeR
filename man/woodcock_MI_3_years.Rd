@@ -6,8 +6,8 @@
 \title{Subset of Woodcock call survey data from Michigan, USA}
 \format{A data frame with 23 columns, including:
 \describe{
-  \item{year}{Year of survey; early years that don't meet current USGS standard have been removed}
-  \item{state}{State}
+  \item{year}{Year of survey: 2000, 2005 or 2010}
+  \item{state}{State.  Only MI is used.}
   \item{route}{Route number within Michigan}
   \item{county}{County within Michigan}
   \item{route.status}{Status of route as "route run" (RR) or "constant zero" (CZ).  "statuscd" in original USGS data}
@@ -32,6 +32,55 @@ The official USGS blurb is:
 "The American Woodcock (Scolopax minor) Singing-Ground Survey, conducted by the U.S. Fish and Wildlife Service, exploits the conspicuous courtship display of the male woodcock. The survey consists of numerous routes in the eastern half of the U.S. and Canada, which are surveyed in the spring. Counts of singing male woodcock along the routes provide an index to woodcock abundance, and are used to estimate woodcock population trends for states, provinces, management regions, and the continent. The survey is the major source of information considered in the annual setting of woodcock hunting seasons. These data can also be used to examine the effects of weather, landscape change, and other factors on woodcock population abundance."
 
 USGS population reports are available as of fall 2017 at http://www.ruffedgrousesociety.org/Woodcock-Facts#popu
+}
+\examples{
+
+## Make year a factor
+woodcock_MI_3_years$year <- factor(woodcock_MI_3_years$year)
+
+## Plot means with 95\% confidence intervals
+
+library(ggplot2)
+library(ggpubr)
+
+ggerrorplot(woodcock_MI_3_years,
+  x = "year",
+  y = "woodcocks",
+  desc_stat = "mean_ci",
+  add = "mean")
+
+## 1-way ANOVA
+
+## null model
+model.null <- lm(woodcocks ~ 1, data = woodcock_MI_3_years)
+
+## model of interest
+model.alt <- lm(woodcocks ~ year, data = woodcock_MI_3_years)
+
+## compare models
+anova(model.null, model.alt)
+
+## Pairwise comparisons
+### no corrections for multiple comparisons
+pairwise.t.test(x = woodcock_MI_3_years$woodcocks,
+                g = woodcock_MI_3_years$year,
+      p.adjust.method = "none")
+
+### Bonferonni correction
+pairwise.t.test(x = woodcock_MI_3_years$woodcocks,
+                g = woodcock_MI_3_years$year,
+      p.adjust.method = "bonferroni")
+
+## Tukey test
+
+### re-fit model with aov()
+model.alt.aov <- aov(woodcocks ~ year, data = woodcock_MI_3_years)
+
+### TukeyHSD() on model from aov()
+TukeyHSD(model.alt.aov)
+
+### Plot effect sizes
+plotTukeysHSD(TukeyHSD(model.alt.aov))
 }
 \references{
 Sauer, J. R., and J. B. Bortner. 1991. Population trends from the American Woodcock Singing-ground Survey, 1970-88. J. Wildl. Mange. 55:300-312.

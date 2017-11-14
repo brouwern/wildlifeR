@@ -29,11 +29,31 @@ basic plotting and 1-way ANOVA.
 }
 \examples{
 
-## Plot means with 95\% confidence intervals
+## Load packages
 
 library(ggplot2)
 library(ggpubr)
 
+## Explore data graphically
+
+### Plot boxplots
+ggboxplot(data = antlers,
+          y = "mass",
+          x = "diet",
+          fill = "diet")
+
+### Plot histograms
+gghistogram(data = antlers,
+          x = "mass",
+          title = "All data")
+
+ gghistogram(data = antlers,
+          x = "mass",
+          facet.by = "diet",
+          fill = "diet",
+          title = "Faceted by diet")
+
+## Plot means with 95\% confidence intervals
 ggerrorplot(antlers,
   x = "diet",
   y = "mass",
@@ -43,16 +63,16 @@ ggerrorplot(antlers,
 
 ## 1-way ANOVA
 
-## null model
+### null model
 model.null <- lm(mass ~ 1, data = antlers)
 
-## model of interest
+### model of interest
 model.alt <- lm(mass ~ diet, data = antlers)
 
-## compare models
+### compare models
 anova(model.null, model.alt)
 
-## Pairwise comparisons
+## Pairwise comparisons after 1-way ANOVA
 ### no corrections for multiple comparisons
 pairwise.t.test(x = antlers$mass, g = antlers$diet,
       p.adjust.method = "none")

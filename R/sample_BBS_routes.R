@@ -23,19 +23,19 @@
 #' BBS_PA_EUST <- BBS_PA %>% filter(Aou == 4940)
 #'
 #' ## select the years 1990, 2000, and 2010
-#' library(Hmisc)
-#' BBS_PA_EUST_2 <-  sample_BBS_routes(dat = BBS_PA_EUST,
-#'                                    years = c(1990,2000,2010),
-#'                                     aou.code = 4940)
+#' #library(Hmisc)
+#' #BBS_PA_EUST_2 <-  sample_BBS_routes(dat = BBS_PA_EUST,
+#' #                                    years = c(1990,2000,2010),
+#' #                                    aou.code = 4940)
 #'
 #' ## Look at data subset that has been created
-#' head(BBS_PA_EUST_2)
-#' summary(BBS_PA_EUST_2)
+#' #head(BBS_PA_EUST_2)
+#' #summary(BBS_PA_EUST_2)
 #'
 #' Plot the results with a boxplot
-#' ggboxplot(data = BBS_PA_EUST_2,
-#'     y = "SpeciesTotal",
-#'     x = "Year")
+#' #ggboxplot(data = BBS_PA_EUST_2,
+#' #     y = "SpeciesTotal",
+#'  #   x = "Year")
 #'
 #' ## Save output
 #' ### data can be saved with write.csv(), eg:
