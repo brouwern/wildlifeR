@@ -16,6 +16,7 @@
 #'   \item{StopTotal}{Total number of stops out of 50 on which the species was recorded.  This is not a count of birds, but the number of stops that had a particular bird!  The min value is 1, and the max value is 50}
 #'   \item{SpeciesTotal}{Total number of stops out of 50 on which the species was recorded.  This is what is usually used for modeling.  The min value is 1 because a given species in a given year only occurs in the data if it was observed; there are therefore no zeros.  These can be added using the expandBBS_routes() function.}
 #' }
+#'
 #' @source \url{www.pwrc.usgs.gov/BBS/RawData}
 #'
 #' @references Pardieck, K.L., D.J. Ziolkowski Jr., M. Lutmerding, K. Campbell and M.-A.R. Hudson. 2017. North American Breeding Bird Survey Dataset 1966 - 2016, version 2016.0. U.S. Geological Survey, Patuxent Wildlife Research Center. doi:10.5066/F7W0944J.

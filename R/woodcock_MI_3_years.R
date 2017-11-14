@@ -14,8 +14,8 @@
 #'
 #' @format A data frame with 23 columns, including:
 #' \describe{
-#'   \item{year}{Year of survey; early years that don't meet current USGS standard have been removed}
-#'   \item{state}{State}
+#'   \item{year}{Year of survey: 2000, 2005 or 2010}
+#'   \item{state}{State.  Only MI is used.}
 #'   \item{route}{Route number within Michigan}
 #'   \item{county}{County within Michigan}
 #'   \item{route.status}{Status of route as "route run" (RR) or "constant zero" (CZ).  "statuscd" in original USGS data}
@@ -27,6 +27,53 @@
 #'
 #' @references Sauer, J. R., and J. B. Bortner. 1991. Population trends from the American Woodcock Singing-ground Survey, 1970-88. J. Wildl. Mange. 55:300-312.
 #'
-
+#' @examples
+#'
+#' ## Make year a factor
+#' woodcock_MI_3_years$year <- factor(woodcock_MI_3_years$year)
+#'
+#' ## Plot means with 95% confidence intervals
+#'
+#' library(ggplot2)
+#' library(ggpubr)
+#'
+#' ggerrorplot(woodcock_MI_3_years,
+#'   x = "year",
+#'   y = "woodcocks",
+#'   desc_stat = "mean_ci",
+#'   add = "mean")
+#'
+#' ## 1-way ANOVA
+#'
+#' ## null model
+#' model.null <- lm(woodcocks ~ 1, data = woodcock_MI_3_years)
+#'
+#' ## model of interest
+#' model.alt <- lm(woodcocks ~ year, data = woodcock_MI_3_years)
+#'
+#' ## compare models
+#' anova(model.null, model.alt)
+#'
+#' ## Pairwise comparisons
+#' ### no corrections for multiple comparisons
+#' pairwise.t.test(x = woodcock_MI_3_years$woodcocks,
+#'                 g = woodcock_MI_3_years$year,
+#'       p.adjust.method = "none")
+#'
+#' ### Bonferonni correction
+#' pairwise.t.test(x = woodcock_MI_3_years$woodcocks,
+#'                 g = woodcock_MI_3_years$year,
+#'       p.adjust.method = "bonferroni")
+#'
+#' ## Tukey test
+#'
+#' ### re-fit model with aov()
+#' model.alt.aov <- aov(woodcocks ~ year, data = woodcock_MI_3_years)
+#'
+#' ### TukeyHSD() on model from aov()
+#' TukeyHSD(model.alt.aov)
+#'
+#' ### Plot effect sizes
+#' plotTukeysHSD(TukeyHSD(model.alt.aov))
 
 "woodcock_MI_3_years"
