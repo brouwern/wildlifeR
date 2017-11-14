@@ -1,4 +1,5 @@
 ## ---- include=FALSE------------------------------------------------------
+
 library(wildlifeR)
 data(brook_trout_ABD)
 
@@ -18,7 +19,8 @@ salmon <- data.frame(survival = c(0.83,0.87,0.82,
                                   0.72, 0.84,0.75,
                                   0.79,0.89,0.87),
                      brook.trout.PRES.ABS =
-                       c("present","present","present",                                            "present","present","present",
+                       c("present","present","present",            
+                         "present","present","present",
                           "absent","absent","absent",
                           "absent","absent","absent"))
 

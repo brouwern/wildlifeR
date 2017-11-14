@@ -19,6 +19,16 @@ brook_trout_ABD
 \description{
 A dataset ...
 }
+\examples{
+
+## t-test on survival rate (ignores years)
+
+### Calcualte survival
+brook_trout_ABD$surv <- brook_trout_ABD$salmon.surv/brook_trout_ABD$salmon.released
+
+### t-test
+t.test(surv ~ brook.trout.PRES.ABS, data = brook_trout_ABD)
+}
 \references{
 Levin et al.  2002.  Non–indigenous brook trout and the demise of Pacific salmon:
 a forgotten threat?  PRSB 269.  DOI: 10.1098/rspb.2002.2063

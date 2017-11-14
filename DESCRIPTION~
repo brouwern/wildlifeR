@@ -1,0 +1,19 @@
+Package: wildlifeR
+Type: Package
+Title: Wildlife biology and animal ecology datasets and example analyses.
+Version: 0.1.0
+Author: Nathan Brouwer
+Maintainer: Nathan Brouwer <brouwern@gmail.com>
+Description: Datasets from public repositories and published papers related to 
+    wildlife biology, animal ecology, and animal conservation.  Somewhat biased
+    towards birds.
+License: CC 3.0.
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+Imports: dplyr,
+    ggplot2,
+    ggpubr
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
