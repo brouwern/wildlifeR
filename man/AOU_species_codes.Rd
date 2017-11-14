@@ -69,16 +69,16 @@ names(BBS_PA)
 #### The column with the Aou species codes is called "Aou"
 
 #### load dplyr package
-library(dplyr)
+#library(dplyr)
 
 #### Subset just the rows of data for the European startling
 #### That is, the rows where the Aou code = 4940
-BBS_PA_EUST <- BBS_PA \%>\% filter(Aou == 4940)
+#BBS_PA_EUST <- BBS_PA \%>\% filter(Aou == 4940)
 
 #### See how the dataframe has change
-dim(BBS_PA)
-dim(BBS_PA_EUST)
-summary(BBS_PA_EUST)
+#dim(BBS_PA)
+#dim(BBS_PA_EUST)
+#summary(BBS_PA_EUST)
 
 
 ## Save output
