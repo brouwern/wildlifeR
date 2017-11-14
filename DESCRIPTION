@@ -5,15 +5,22 @@ Version: 0.1.0
 Authors@R: person("Brouwer", "Nathan", email = "brouwern@gmail.com",
   role = c("aut", "cre"))
 Description: Datasets from public repositories and published papers related to 
-    wildlife biology, animal ecology, and animal conservation.  Includes extension of dataset that appearing Whitlock @ Shulter's textbook Analysis of biological data, 2nd. ed.
-    Biased towards migratory songbirds and white-tailed deer.
+    wildlife biology, animal ecology, and animal conservation.  Several datasets are derived from USGS data available from
+    the Migratory Bird Data Center (https://migbirdapps.fws.gov/mbdc/databases/db_selection.html).  Also includes extensions of dataset that 
+    appear in Whitlock & Shulter's textbook Analysis of Biological Data, 2nd. ed.  Overall the datasets are biased towards migratory songbirds and 
+    white-tailed deer.  Example analyses include t-tests, paired t-tests, 1-way ANOVA, and regression.
 License: CC 3.0.
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 Imports: dplyr,
     ggplot2,
-    ggpubr
+    ggpubr,
+    Hmisc,
+    MASS,
+    doBy,
+    ggfortify,
+    gridExtra
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
