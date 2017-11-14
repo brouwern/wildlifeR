@@ -1,6 +1,7 @@
 #' PA Mourning doves
 #'
-#' All years od data.  See doves_PA_3_years for data that has alreadt been subset.
+#' All years of data.  See dataset "doves_PA_3_years" for data that
+#' has already been subset.
 #'
 #' @format A data frame
 #' \describe{
