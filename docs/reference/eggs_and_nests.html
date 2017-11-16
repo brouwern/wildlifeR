@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Impact of brook trout on survival of Chinook salmon in Idaho. — brook_trout_ABD â€¢ wildlifeR</title>
+<title>Egg data combined with data on nests — eggs_and_nests â€¢ wildlifeR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -96,62 +96,37 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Impact of brook trout on survival of Chinook salmon in Idaho.</h1>
+    <h1>Egg data combined with data on nests</h1>
     </div>
 
     
-    <p>A dataset ...</p>
+    <p>Egg data combined with data on nests</p>
     
 
-    <pre class="usage"><span class='no'>brook_trout_ABD</span></pre>
+    <pre class="usage"><span class='no'>eggs_and_nests</span></pre>
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A data frame with 12 rows and 3 columns</p><dl class='dl-horizontal'>
-  <dt>brook.trout.PRES.ABS</dt><dd><p>Whether brook trout are present or absent</p></dd>
-  <dt>salmon.released</dt><dd><p>Number of PIT-tagged salmon released</p></dd>
-  <dt>salmon.surv</dt><dd><p>Number of tagged salmon that survived and were detected downstream</p></dd>
-</dl>
-    
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p><a href='http://rspb.royalsocietypublishing.org/content/269/1501/1663.short'>http://rspb.royalsocietypublishing.org/content/269/1501/1663.short</a></p>
+    <p>An object of class <code>data.frame</code> with 722 rows and 9 columns.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Levin et al.  2002.  Non–indigenous brook trout and the demise of Pacific salmon:
-a forgotten threat?  PRSB 269.  DOI: 10.1098/rspb.2002.2063</p>
-<p>Whitlock &amp; Schulter.  2nd ed.  Analysis of Biological Data.</p>
+    <p>....</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'>## t-test on survival rate (ignores years)</span>
+    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>ggplot2</span>)
+<span class='fu'>library</span>(<span class='no'>ggpubr</span>)
 
-<span class='co'>### Calcualte survival</span>
-<span class='no'>brook_trout_ABD</span>$<span class='no'>surv</span> <span class='kw'>&lt;-</span> <span class='no'>brook_trout_ABD</span>$<span class='no'>salmon.surv</span>/<span class='no'>brook_trout_ABD</span>$<span class='no'>salmon.released</span>
-
-<span class='co'>### t-test</span>
-<span class='fu'>t.test</span>(<span class='no'>surv</span> ~ <span class='no'>brook.trout.PRES.ABS</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>brook_trout_ABD</span>)</div><div class='output co'>#&gt; 
-#&gt; 	Welch Two Sample t-test
-#&gt; 
-#&gt; data:  surv by brook.trout.PRES.ABS
-#&gt; t = 0.93521, df = 5.8196, p-value = 0.3868
-#&gt; alternative hypothesis: true difference in means is not equal to 0
-#&gt; 95 percent confidence interval:
-#&gt;  -0.06739746  0.14977890
-#&gt; sample estimates:
-#&gt;  mean in group absent mean in group present 
-#&gt;             0.2352653             0.1940746 
-#&gt; </div></pre>
+<span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggboxplot'>ggboxplot</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>eggs_and_nests</span>,
+<span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"ellipticity"</span>,
+<span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"nest"</span>)</div><div class='img'><img src='eggs_and_nests-1.png' alt='' width='700' height='432.632880098887' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       
       <li><a href="#format">Format</a></li>
-
-      <li><a href="#source">Source</a></li>
 
       <li><a href="#references">References</a></li>
       

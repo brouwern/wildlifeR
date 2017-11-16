@@ -100,7 +100,11 @@
     </div>
 
     
-    <p>Some records from offical list have been removed because they don't have stable names, eg., they are a defined species.</p>
+    <p>A dataframe containing the common names (eg "Scarlet Tanager"),
+AOU alphabetic code (eg "SCTA") and AOU numeric code (eg. 6080)
+The common name and alphabetic codes are eay to locate for a given species online.
+The AOU numeric code is needed because the actual BBS dataframe does not
+contain species names, just the numeric codes.</p>
     
 
     <pre class="usage"><span class='no'>AOU_species_codes</span></pre>
@@ -115,14 +119,86 @@
   <dt>order</dt><dd><p>code for taxonomic order</p></dd>
  </dl>
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>Some records from offical list have been removed because they don't have stable names, eg., they are a defined species.
+Note that the row number (aka line number) DOES NOT equal the AOU code.  When
+access these data be sure to be clear whether you are using the line number
+or using the actual code.  See below for examples.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='co'>## Example 1: Accessing basic information</span>
+
+<span class='co'>## Determine row number by species common name</span>
+<span class='co'>### The Scarlet Tanager is in row 897 and has the AOU specied</span>
+<span class='co'>### number (aka spp code) of 6080</span>
+<span class='no'>row.number.i</span> <span class='kw'>&lt;-</span> <span class='fu'>which</span>(<span class='no'>AOU_species_codes</span>$<span class='no'>name</span> <span class='kw'>==</span> <span class='st'>"Scarlet Tanager"</span>)
+
+<span class='co'>## Determine row number by Aou alphabetic code</span>
+<span class='no'>row.number.i</span> <span class='kw'>&lt;-</span> <span class='fu'>which</span>(<span class='no'>AOU_species_codes</span>$<span class='no'>alpha.code</span> <span class='kw'>==</span> <span class='st'>"SCTA"</span>)
+
+<span class='co'>## Access code by row / line number</span>
+<span class='co'>### These are equivalent:</span>
+<span class='no'>AOU_species_codes</span>[<span class='no'>row.number.i</span>,]</div><div class='output co'>#&gt;     spp.num alpha.code            name              spp order
+#&gt; 897    6080       SCTA Scarlet Tanager Piranga olivacea  1057</div><div class='input'><span class='no'>AOU_species_codes</span>[<span class='fl'>812</span>,]</div><div class='output co'>#&gt;     spp.num alpha.code            name              spp order
+#&gt; 897    6080       SCTA Scarlet Tanager Piranga olivacea  1057</div><div class='input'><span class='co'>#Load data on AOU species codes</span>
+
+<span class='co'>## Example 2: Seting up data for analysis of</span>
+<span class='co'>### the relationship between abundance and landcover</span>
+<span class='co'>### Focal species: European starling "EUST"</span>
+
+<span class='co'>### Which ROW NUMBER in the list of species codes</span>
+<span class='co'>#### does the European startling occur in?</span>
+<span class='no'>EUST.row.number</span> <span class='kw'>&lt;-</span> <span class='fu'>which</span>(<span class='no'>AOU_species_codes</span>$<span class='no'>alpha.code</span> <span class='kw'>==</span> <span class='st'>"EUST"</span>)
+
+<span class='co'>### Look at just the EUST row of the</span>
+<span class='co'>#### AOU_species_codes dataframe</span>
+<span class='no'>AOU_species_codes</span>[<span class='no'>EUST.row.number</span>,]</div><div class='output co'>#&gt;     spp.num alpha.code              name              spp order
+#&gt; 717    4930       EUST European Starling Sturnus vulgaris   864</div><div class='input'>
+<span class='co'>#### The numeric code for EUST is 494)</span>
+<span class='co'>#### save it to an object</span>
+<span class='no'>EUST.numeric.code</span> <span class='kw'>&lt;-</span> <span class='fl'>4940</span>
+
+<span class='co'>### look at names of the columns in the BBS_PA data set with</span>
+<span class='co'>### the data on bird abundance</span>
+<span class='fu'>names</span>(<span class='no'>BBS_PA</span>)</div><div class='output co'>#&gt; [1] "countrynum"   "statenum"     "Route"        "RPID"         "Year"        
+#&gt; [6] "Aou"          "StopTotal"    "SpeciesTotal"</div><div class='input'>
+#### The column with the Aou species codes is called "Aou"
+
+#### load dplyr package
+#library(dplyr)
+
+#### Subset just the rows of data for the European startling
+#### That is, the rows where the Aou code = 4940
+#BBS_PA_EUST <- BBS_PA %>% filter(Aou == 4940)
+
+#### See how the dataframe has change
+#dim(BBS_PA)
+#dim(BBS_PA_EUST)
+#summary(BBS_PA_EUST)
+
+
+## Save output
+### data can be saved with write.csv(), eg:
+### write.csv(BBS_PA_EUST, file = "starling_abundance.csv")
+
+#### If you are studying how the abundance of a species changes
+#### as landcover changes you can now merge this subset of the data
+#### with the GIS landcover data.
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       
       <li><a href="#format">Format</a></li>
-          </ul>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

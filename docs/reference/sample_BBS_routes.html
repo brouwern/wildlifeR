@@ -128,12 +128,50 @@
     </table>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+## Setting up dataframe to examine change over time
+## Focal species: European starling (Aou code = 4940)
+### Start with the raw BBS_PA dataframe
+### The function sample_BBS_routes()
+### randomly samples routes for years your specify.
+### It selects routes from the entire state.
+### Note: sample_BBS_routes() requires the Hmisc package to work
+
+## Subset European starling data
+### See help file for AOU_species_codes for further details
+### on subsetting data based on a species numeric code
+</div><span class='co'># NOT RUN {</span>
+<span class='no'>BBS_PA_EUST</span> <span class='kw'>&lt;-</span> <span class='no'>BBS_PA</span> <span class='kw'>%&gt;%</span> <span class='fu'>filter</span>(<span class='no'>Aou</span> <span class='kw'>==</span> <span class='fl'>4940</span>)
+
+<span class='co'>## select the years 1990, 2000, and 2010</span>
+<span class='fu'>library</span>(<span class='no'>Hmisc</span>)
+<span class='no'>BBS_PA_EUST_2</span> <span class='kw'>&lt;-</span>  <span class='fu'>sample_BBS_routes</span>(<span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>BBS_PA_EUST</span>,
+                                    <span class='kw'>years</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1990</span>,<span class='fl'>2000</span>,<span class='fl'>2010</span>),
+                                    <span class='kw'>aou.code</span> <span class='kw'>=</span> <span class='fl'>4940</span>)
+
+<span class='co'>## Look at data subset that has been created</span>
+<span class='fu'>head</span>(<span class='no'>BBS_PA_EUST_2</span>)
+<span class='fu'>summary</span>(<span class='no'>BBS_PA_EUST_2</span>)
+
+<span class='co'>##Plot the results with a boxplot</span>
+<span class='fu'>ggboxplot</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>BBS_PA_EUST_2</span>,
+     <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"SpeciesTotal"</span>,
+   <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"Year"</span>)
+
+<span class='co'>## Save output</span>
+<span class='co'>### data can be saved with write.csv(), eg:</span>
+<span class='fu'>write.csv</span>(<span class='no'>BBS_PA_EUST_2</span>, <span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"starling_change_over_time.csv"</span>)
+<span class='co'># }</span><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+            
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

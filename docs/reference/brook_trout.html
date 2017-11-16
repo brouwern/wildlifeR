@@ -102,7 +102,7 @@
     
     <p>Levin et al. 2002 studied the impacts of brook trout introduced for sport fishing
 on native Chinook salmon.  Whitlock &amp; Shulter used a subset
-of these data as an example in their text Analysis of Biological Data</p>
+of these data as an example in their textbook Analysis of Biological Data.</p>
     
 
     <pre class="usage"><span class='no'>brook_trout</span></pre>
@@ -111,9 +111,9 @@ of these data as an example in their text Analysis of Biological Data</p>
 
     <p>A data frame, including:</p><dl class='dl-horizontal'>
   <dt>site</dt><dd><p>Name of study site or stream</p></dd>
-  <dt>trout.PRES.ABS</dt><dd><p>Taxonomic family</p></dd>
+  <dt>trout.PRES.ABS</dt><dd><p>Are brook trout present in the stream or absent from it?</p></dd>
   <dt>release</dt><dd><p>Number of Chinook salmon released</p></dd>
-  <dt>recap</dt><dd><p>Number of juvenil chinook salmon "recapatured" by detecting their PIT tag; this was not reported in original paper but was estimated using published survival rate.  The survival rate estiamted using mark-recapture methods to account for detection probabilities.</p></dd>
+  <dt>recap</dt><dd><p>Number of juvenile chinook salmon "recaptured" by detecting their PIT tag; this was not reported in original paper but was estimated using published survival rate.  The survival rate estiamted using mark-recapture methods to account for detection probabilities.</p></dd>
   <dt>surv</dt><dd><p>survival rate</p></dd>
 </dl>
     
@@ -129,7 +129,9 @@ a forgotten threat?  PRSB 269.  DOI: 10.1098/rspb.2002.2063</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>t.test</span>(<span class='no'>surv</span> ~ <span class='no'>trout.PRES.ABS</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>brook_trout</span>)</div><div class='output co'>#&gt; 
+    <pre class="examples"><div class='input'>
+<span class='co'>## t-test on survival rate (ignores years)</span>
+<span class='fu'>t.test</span>(<span class='no'>surv</span> ~ <span class='no'>trout.PRES.ABS</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>brook_trout</span>)</div><div class='output co'>#&gt; 
 #&gt; 	Welch Two Sample t-test
 #&gt; 
 #&gt; data:  surv by trout.PRES.ABS

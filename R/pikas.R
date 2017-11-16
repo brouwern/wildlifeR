@@ -1,0 +1,41 @@
+#' Data on presence of pikas and marmots from Front Range Pika Project
+#'
+#' Original data had lat and long for most sites.  Elevations estimate
+#' using the elevatr package
+#' (https://cran.r-project.org/web/packages/elevatr/vignettes/introduction_to_elevatr.html)
+#'
+#'
+#' @format A data frame
+#' \describe{
+#'   \item{lat}{latitude of survey site}
+#'   \item{long}{longitude of survey site}
+#'   \item{pika.pres}{Are pikas present or absent from the site}
+#'   \item{marmot.pres}{Are marmots present or absent}
+#'   \item{talus.area}{Description of area of talus at site}
+#'   \item{elev.m}{Elevation of site}
+#'   \item{group}{Designates whether no focal species seen, pikas only, marmots only, or both}
+#' }
+#'
+#' @references Front Range Pika Project.  http://www.pikapartners.org/cwis438/websites/FRPP/Home.php?WebSiteID=18
+#'
+#' @examples
+#'
+#' ## Plot data by groups
+#'
+#' library(ggplot2)
+#' library(ggpubr)
+#'
+#'
+#' ## Boxplot
+#' ggboxplot(data = pikas,
+#'     x = "group",
+#'     y = "elev.m")
+#'
+#' ## Means with error bars
+#' ggerrorplot(data = pikas,
+#'    x = "group",
+#'    y = "elev.m",
+#'    desc_stat = "mean_ci")
+
+"pikas"
+

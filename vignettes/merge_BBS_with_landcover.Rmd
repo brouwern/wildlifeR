@@ -1,0 +1,496 @@
+---
+title: "Merging data with dplyr: combining BBS bird counts and landcover data"
+author: "Nathan Brouwer  brouwern@gmail.com  @lobrowR"
+date: "`r Sys.Date()`"
+output: rmarkdown::pdf_document
+vignette: >
+  %\VignetteIndexEntry{Merging w/ dplyr}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warnings = FALSE, message = FALSE)
+```
+
+## Introduction
+
+This vignette walks through the process of taking 2 complimentary sets of data and "merging" them using the powerful function full_join() in the package dplyr.  We'll take data on 1) the number of birds observed along USGS Breeding Bird Survey (BBS) routes and merge that ecological data with 2) geographic information on the types of landcover along those routes.  In addition to this primary tasks of merging datasets, we'll also do several other things to clean up the data to make it easy to use.
+
+
+## References
+
+### Books
+A good introduction to using dplyr is:
+
+Beckerman et al's book "Getting start with R: An introduction for biologists" 2nd ed.
+
+### Websites
+
+"Selecting columns and renaming are so easy with dplyr" https://blog.exploratory.io/selecting-columns-809bdd1ef615
+
+
+## Learning objectives
+
+* Practice using the package dplyr
+    + use dplyr pipes: %>%
+* General dataframe cleaning with dplyr
+    + Select focal columns using select()
+    + Select focal rows using filter()
+    + Change columns names with rename()
+* Merge 2 dataframes using full_join()
+* Plotting data using the ggpubr extension of ggplot2
+
+## Packages
+
+* dplry
+* ggplot2
+* ggpubr
+* wildlifeR
+
+## R code
+
+### Load Libraries
+
+BBS and landcover data for Pennsylvania are in the wildlifeR package, and we'll use the dplyr package to "reshape" into the proper format for analysis.  
+
+```{r, eval = TRUE}
+library(dplyr)
+library(wildlifeR)
+```
+
+
+### Data
+
+We'll use 2 datasets: 
+
+1.  Bird counts from the BBS data for PA, and 
+2.  USGS landcover classifications (eg urban, deciduous forest, etc) for a "buffer" 1 km around each BBS route in PA.  
+
+You can learn more about these data sets using the help command ?BBS_PA and "BBS_PA_landcover_1km".
+
+Load both sets of data
+```{r, eval = TRUE}
+## BBS data for PA
+data(BBS_PA)
+
+##Landcover data for BBS routes in PA
+data(BBS_PA_landcover_1km)
+```
+
+
+### Look at the BBS_PA dataframes
+
+
+#### Definitions of 
+
+```{r}
+head(BBS_PA)
+```
+
+For our work, the important columns are 
+
+* Route: a categorical variables that defines the unique ID of each route in the State of PA
+* Year: a numeric varibles that defines the year the data were collected.  The minmum is 1966.  This is a potential focal predictor variable for examining change over time.
+* Aou: a code that designates each species, as defined by the American Ornithological Union (AOU).  (Note that ths A is uppercase while the rest is lowercase)
+* SpeciesTotal: the total number of individuals of a given species that were observed on a given route.  This will be our focal response variable.
+
+(NOTE: We will **not** be using the "StopTotal" column.  A BBS routes is composed of 50 point counts, called "stops."  StopTotal is the total number of stops out of 50 on which a given species in a given year was observed.  Its max value is 50, or 100% of the 50 stops on the route)
+
+see ?BBS_PA for more information on these variables
+
+#### Size of BBS_PA dataframe
+
+Thes BBS data is really really big dataset!: `r nrow(244185)`
+
+```{r, eval= TRUE}
+
+dim(BBS_PA)
+summary(BBS_PA)
+
+```
+
+There are so many rows b/c
+
+* There are `r max(BBS_PA$Year) - min(BBS_PA$Year)` years of data.
+* There are `r length(unique(BBS_PA$Aou))` species of birds observed during the BBS in Pennsylvania
+* There are `r length(unique(BBS_PA$Route))` routes in Pennsylvania
+
+Note, however, that if you multiply years*species*routes you get an even **bigger** number.
+
+```{r}
+50*202*137
+```
+
+This is because 
+
+* The number of routes has changed over time
+* Data are only given for a species if it was obseved on a route
+
+Any important consequence of this is that there are only data on a species when it is actually obseved.  So if a bird is see on route 99 in 2015 but not 2016, there is a row of data for it in 2015 but not 2016.  Therefore, there are **no zeros** in the StopTotal column, which gives the number of of each species seen on a route in a given year.
+
+
+We can see using summary() that the minimum value in the StopTotal column is indeed 1; not a single zero.
+
+```{r}
+summary(BBS_PA$StopTotal)
+```
+
+
+
+## Isolate focal columns
+
+* For our analyses we don't need every column in the dataset
+* Let's look at the Year, Aou species code, Route number, and SpeciesTotal columns
+    + All the data are from the state of Pennsyvlvania in the USA, so we don't need these columns.
+* We can use the select() function from the dplyr package to isolate the columns we want.
+* We tell dplyr the dataframe we want to work on, BBS_PA, add a "pipe"
+%>%, and then use the select() command to tell it the columns within the dataframe we want.
+* We'll save them into a new object called BBS_PA2
+* Note that the "A" in "Aou"" is uppercase while the rest are lowercase)
+* See page 60-61 in Beckerman et al's book "Getting start with R: An introduction for biologists" for more info on select()
+
+
+```{r, eval = TRUE}
+#load dplyr if you haven't already
+library(dplyr)
+
+#look at the names of the full dataframe
+names(BBS_PA)
+
+
+#use select() to isolate focal columns
+## and put into a new dataframe
+##(Note that ths A in Aou is uppercase 
+## while the rest of the letters are lowercase)
+
+BBS_PA2 <- BBS_PA %>% select(Year, Aou, 
+                             Route, SpeciesTotal)
+
+
+#look at columns in new dataframe
+names(BBS_PA2)
+
+```
+
+
+
+### Isolate focal species using filter()
+
+* Each row is data on a different combination of: a species, a year, and a route
+* We want to isolate rows that just relate to our focal species; we'll use the Scarlet Tanager
+* The AOU (American ornithological Union) code for the Scarlet Tanager (SCTA) is 6080.  
+* We can tell R to just give us data on SCTA using the fliter() command in the dplyr package.
+* See page 62-65 in Beckerman et al's book "Getting start with R: An introduction for biologists" for more info on filter()
+
+#### An example BBS dataframe
+
+* The following dataframe is a mock up of the general structure of the BBS data.
+* In the "Aou" column are listed several numbers: 5980, 6080, 5950, 6110, and several others
+    + Each one of these numbers represents a different species
+    + We want to isolate just teh codes 6080, which represent the scarlet tanager
+    + We want to discard the rest
+
+```{r, echo=FALSE}
+
+i.6080 <- which(BBS_PA2$Aou == 6080)[35:37]
+
+temp <- BBS_PA2[c(i.6080-1,i.6080[1],i.6080-2,i.6080[2],i.6080+1,i.6080[3],i.6080+2),]
+
+temp$" " <- ifelse(temp$Aou == 6080, "we want this row","")
+
+print(temp)
+```
+
+
+That is, we want this
+```{r, echo = FALSE}
+temp %>% filter(Aou == 6080)
+```
+
+
+### Select just focal rows with dplyr::filter()
+
+#### Focal bird rows: 6080, the scarlet tanager
+
+* Again, the "%>%" is called a pipe that connects the dataframe BBS_PA2 with the filter() command
+* "==" in the filter() commands means "exactly equals"
+
+```{r, eval = TRUE}
+library(dplyr)
+
+BBS_PA_SCTA <- BBS_PA2 %>% filter(Aou == 6080)
+
+```
+
+#### Plot filtered BBS data
+
+We can see how many birds were observed on all the routes each year using ggscatter() from the ggpubr() package.  
+
+```{r}
+
+library(ggplot2)
+library(ggpubr)
+
+ggscatter(data = BBS_PA_SCTA,
+          y = "SpeciesTotal",
+          x = "Year")
+```
+
+Note however that as discussed above this dataframe only contains data from routes where SCTA was observed; when SCTA wasn't observed, nothing is recored at all, hence no zeros.  We can see this with summary()
+
+```{r}
+summary(BBS_PA_SCTA)
+```
+
+
+Or by looking at a histogram
+```{r, warning=FALSE}
+gghistogram(BBS_PA_SCTA,
+            x = "SpeciesTotal")
+```
+
+
+#### Focal year rows
+
+For this exercise we are only going to consider data from 2006, since that is the year that the landcover data we'll be merging with comes from.  (notes that "Year" has a capital "Y" while the rest is lowercase).
+
+```{r}
+BBS_PA_SCTA_2 <- BBS_PA_SCTA %>% filter(Year == 2006)
+```
+
+
+We can see that we've greatly reduced the size of the original dataframe
+```{r}
+dim(BBS_PA)
+dim(BBS_PA_SCTA)
+dim(BBS_PA_SCTA_2)
+```
+
+
+#### Plot filtered SCTA data
+
+```{r, warnings =FALSE}
+gghistogram(data = BBS_PA_SCTA_2,
+          x = "SpeciesTotal")
+```
+
+
+### Clean Landcover data
+
+* We'll step back from the bird data now and switch to the data on the type of landcover surrounding the BBS routes.
+* There are a large number of columns of data in the landcover dataframe
+* Note that a couple of the columns names aren't very good: "RT..NAME" and "RT..LENG." 
+* Columns that start with "NLCD" have data on the number of pixels of a certain land cover class surrounding a rounte.  There are about 15 or so of these, for everything from open water to tundra.
+* See ?BBS_PA_landcover_1km for infromation on each of these
+```{r}
+names(BBS_PA_landcover_1km)
+```
+
+
+
+#### Isoalte focal columns:forest cover
+
+Let's focus on the columns that pertain to forest cover, which are contained in columns NLCD41, NLCD42, NLCD43.  These represent three different types of forest, eg deciduous, coniferous, mixed. You find out information on them from the help file for the dataset using ?BBS_PA_landcover_1km.
+
+We can subset these columns as we did for the BBS bird count data using using select().  Note that there is a period between "NLCD" and the number, and that "SUM" is in all caps.
+
+```{r}
+BBS_PA_landcover_1km_2 <- BBS_PA_landcover_1km %>%
+  select(Route, NLCD.41, NLCD.42, NLCD.43, SUM)
+```
+
+
+#### Add up total forest cover
+
+Let's add up the NLCD.41, NLCD.42, and NLCD.43 columns
+
+```{r}
+forest.total <- rowSums(BBS_PA_landcover_1km_2[c("NLCD.41",
+                                 "NLCD.42",
+                                  "NLCD.43")])
+```
+
+
+We can add this new column to the dataframe like this
+
+```{r}
+BBS_PA_landcover_1km_2$forest.total <- forest.total
+```
+
+And see that it's there using head()
+
+```{r}
+head(BBS_PA_landcover_1km_2)
+```
+
+
+The "SUM" column tells us the total number of GIS pixels were actually used to determine all of the landcover in the BBS_PA_landcover_1km_2 dataframe.  This varies a bit so we will actually want to use the percentage of forest cover, not the raw total.  We can calcautle the percentage like this
+
+```{r}
+forest.percent <- BBS_PA_landcover_1km_2$forest.total / BBS_PA_landcover_1km_2$SUM
+```
+
+And add it to the dataframe like this
+```{r}
+BBS_PA_landcover_1km_2$forest.percent <- forest.percent
+```
+
+
+Note that we can actually do the math and add the new data to the dataframe in one step like this:
+```{r}
+BBS_PA_landcover_1km_2$forest.percent <- BBS_PA_landcover_1km_2$forest.total / BBS_PA_landcover_1km_2$SUM
+```
+
+
+We don't need the individual columns for each of the three cover classes anymore (NCLD.41, 42, 43) so we can use select() to focus just on our new forest.percent and forest.total columns
+
+We'll call this new dataframe BBS_PA_landcover_1km_3
+
+```{r}
+BBS_PA_landcover_1km_3 <- BBS_PA_landcover_1km_2 %>% 
+  select(Route, forest.total, SUM, forest.percent,
+         NLCD.41,NLCD.42,NLCD.43)
+```
+
+
+
+
+### Merge BBS data and landcover data
+
+We have reduced the size and made changes two dataframe: BBS_PA, with counts of birds, and BBS_PA_landcover_1km, which has information on the habitats around BBS routes in PA.
+
+Now we'll make a new dataframe that *combines* these two sperate data sets.  This is one of the most powerful features of R - taking big sets of data and with a few lines of codes merging them into a new data set.
+
+We'll do this using thhe full_join() command from the dplyr package.  All we need to do is 1) tell full_joing the names of the two data sets and 2) tell the function what column is shared between the data setst.
+
+The fact that the "Route" column occurs in both data sets allows them to be matached up. 
+
+```{r, eval = TRUE}
+BBS_PA_SCTA_3 <- full_join(BBS_PA_SCTA_2 ,
+                       BBS_PA_landcover_1km_3, 
+                       by = "Route")
+```
+
+Look at the dataframe
+```{r}
+head(BBS_PA_SCTA_3)
+```
+
+
+Compare the size of this dataframe and the original landcover dataframe.
+```{r}
+#the BBS data that were merged
+dim(BBS_PA_SCTA_2)
+
+#the landcover data that were merged
+dim(BBS_PA_landcover_1km_3)
+
+#the final merged dataframe
+dim(BBS_PA_SCTA_3)
+```
+
+
+
+### Dealing with NAs
+
+If we look at our new dataframe we see that some of our rows now contains NAs
+```{r}
+summary(BBS_PA_SCTA_3)
+```
+
+
+This occured b/c the original BBS data only contains data when a species is observed - if it isn't seen, nothing is entered.  So each "NA" in the new dataframe we made represents a route for which, in 2006, the SCTA wasn't observed.  
+
+Its easy to fix the Year and Aou columns because the all have the same values.  All of the years = 2006, and all of the Aou columns = 6080, for Scarlet tanager.  The following code will fill in any of the missing values
+```{r} 
+BBS_PA_SCTA_3$Year <- 2006
+BBS_PA_SCTA_3$Aou <- 6080
+```
+
+
+Actualy, since the code "6080" isn't very meaningful, let's add the letters "SCTA" to a column to make it easy to remembe what we are looking at.  Let's make a new column called "name" and put "SCTA" in it.
+
+```{r}
+BBS_PA_SCTA_3$name <- "SCTA"
+```
+
+We'll make this a factor variable
+```{r}
+BBS_PA_SCTA_3$name <- factor(BBS_PA_SCTA_3$name)
+```
+
+Summary will show us what we'ver done: now there are no NAs in Year or Aou and there's a new column calld name
+```{r}
+summary(BBS_PA_SCTA_3)
+```
+
+
+To fill in the NAs for the SpeciesTotal column (the counts of the number of birds) requires a new function: is.na().  is.na() determiens if a row in a column has NA or it doesn't. is.na() returns "TRUE" whenever there is an NA
+
+```{r}
+is.na(BBS_PA_SCTA_3$SpeciesTotal)
+```
+
+
+We can use is.na with a function from dplyr called mutate() to change these NAs to 0s.
+
+**This code is pretty complex, actually, so don't worry if you don't get it the 1st try**  Actually, since its pretty trick for beginers, I've made a new function that does it more simply (see next chunk of code)
+```{r}
+BBS_PA_SCTA_4 <-  BBS_PA_SCTA_3 %>% mutate(SpeciesTotal = ifelse(is.na(SpeciesTotal),0,SpeciesTotal))
+```
+
+
+Since the above code is rather long, the following function from the wildlifeR package will do the same thing
+
+
+```{r}
+BBS_PA_SCTA_3 <- NA_to_zero(dat = BBS_PA_SCTA_3,
+           column = "SpeciesTotal")
+```
+
+
+### PLot relationship between SCTA and forest cover
+
+We can now finally check out the relationship between the Scarlet tanger and forest cover
+
+```{r}
+ggscatter(data = BBS_PA_SCTA_3,
+          y = "SpeciesTotal",
+          x = "forest.percent")
+```
+
+
+
+### Re-orgainzing rows
+
+* Dataframes typically put the information columns to the left and the data columns to the right
+* We can reorder our columns in BBS_PA_SCTA_3 using select()
+* We can also rename columns using the selection function using the format "new.name = old.name"
+* Its generally good to use a consistent format for all of your column names
+* I also think its good to avoid uppercase letters
+* Using using standard abbreviations is also good b/c shorter names are easier to type; here I'll use "spp" instead of "speices" , "for" instead of forest, and "tot" instead of "total"
+
+
+```{r}
+BBS_PA_SCTA_4 <- BBS_PA_SCTA_3 %>% select(year = Year, 
+                              aou = Aou, 
+                              route = Route, 
+                              name = name,
+                              spp.tot = SpeciesTotal,
+                              for.tot = forest.total,
+                              NLCD.sum = SUM,
+                              for.percent = forest.percent)
+```
+
+
+### Saving to .csv
+
+When we have a dataset prepared its a good idea to save it to a spreadsheet as a .csv file for safe keeping.  This is done with the write.csv() function
+
+```{r, eval = FALSE}
+write.csv(BBS_PA_SCTA_4, file = "SCTA_vs_forest_cover.csv")
+```
+

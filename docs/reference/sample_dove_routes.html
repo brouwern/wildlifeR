@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Impact of brook trout on survival of Chinook salmon in Idaho. — brook_trout_ABD â€¢ wildlifeR</title>
+<title>Select random subset of Breeding Bird Survey (BBS) routes — sample_dove_routes â€¢ wildlifeR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -96,65 +96,59 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Impact of brook trout on survival of Chinook salmon in Idaho.</h1>
+    <h1>Select random subset of Breeding Bird Survey (BBS) routes</h1>
     </div>
 
     
-    <p>A dataset ...</p>
+    <p>This function randomly samples routes from within a stage.</p>
     
 
-    <pre class="usage"><span class='no'>brook_trout_ABD</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>A data frame with 12 rows and 3 columns</p><dl class='dl-horizontal'>
-  <dt>brook.trout.PRES.ABS</dt><dd><p>Whether brook trout are present or absent</p></dd>
-  <dt>salmon.released</dt><dd><p>Number of PIT-tagged salmon released</p></dd>
-  <dt>salmon.surv</dt><dd><p>Number of tagged salmon that survived and were detected downstream</p></dd>
-</dl>
+    <pre class="usage"><span class='fu'>sample_dove_routes</span>(<span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>doves_PA</span>, <span class='kw'>years</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1990</span>, <span class='fl'>2000</span>, <span class='fl'>2005</span>),
+  <span class='kw'>max.sample</span> <span class='kw'>=</span> <span class='fl'>50</span>)</pre>
     
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p><a href='http://rspb.royalsocietypublishing.org/content/269/1501/1663.short'>http://rspb.royalsocietypublishing.org/content/269/1501/1663.short</a></p>
-    
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Levin et al.  2002.  Non–indigenous brook trout and the demise of Pacific salmon:
-a forgotten threat?  PRSB 269.  DOI: 10.1098/rspb.2002.2063</p>
-<p>Whitlock &amp; Schulter.  2nd ed.  Analysis of Biological Data.</p>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>dat</th>
+      <td><p>Dataframe containing BBS data.  Must contain columns for Year, Aou species code and Route</p></td>
+    </tr>
+    <tr>
+      <th>years</th>
+      <td><p>Years for for which you want to generate data for</p></td>
+    </tr>
+    <tr>
+      <th>max.sample</th>
+      <td><p>Maximum number routes per year.</p></td>
+    </tr>
+    </table>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'>## t-test on survival rate (ignores years)</span>
+<span class='co'>## create data</span>
+<span class='co'>#dat &lt;- sample_dove_routes(dat = doves_PA,</span>
+ <span class='co'>#       years = c(2005,2007,2010))</span>
 
-<span class='co'>### Calcualte survival</span>
-<span class='no'>brook_trout_ABD</span>$<span class='no'>surv</span> <span class='kw'>&lt;-</span> <span class='no'>brook_trout_ABD</span>$<span class='no'>salmon.surv</span>/<span class='no'>brook_trout_ABD</span>$<span class='no'>salmon.released</span>
+<span class='co'>## Make year a factor</span>
+<span class='co'>#dat$Year &lt;- factor(dat$Year)</span>
 
-<span class='co'>### t-test</span>
-<span class='fu'>t.test</span>(<span class='no'>surv</span> ~ <span class='no'>brook.trout.PRES.ABS</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>brook_trout_ABD</span>)</div><div class='output co'>#&gt; 
-#&gt; 	Welch Two Sample t-test
-#&gt; 
-#&gt; data:  surv by brook.trout.PRES.ABS
-#&gt; t = 0.93521, df = 5.8196, p-value = 0.3868
-#&gt; alternative hypothesis: true difference in means is not equal to 0
-#&gt; 95 percent confidence interval:
-#&gt;  -0.06739746  0.14977890
-#&gt; sample estimates:
-#&gt;  mean in group absent mean in group present 
-#&gt;             0.2352653             0.1940746 
-#&gt; </div></pre>
+<span class='co'>## Plot means with 95% confidence intervals</span>
+
+<span class='fu'>library</span>(<span class='no'>ggplot2</span>)
+<span class='fu'>library</span>(<span class='no'>ggpubr</span>)
+
+<span class='co'>#ggerrorplot(dat,</span>
+ <span class='co'># x = "Year",</span>
+  <span class='co'>#y = "tot.seen",</span>
+  <span class='co'>#desc_stat = "mean_ci",</span>
+  <span class='co'>#add = "mean")</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      
-      <li><a href="#format">Format</a></li>
-
-      <li><a href="#source">Source</a></li>
-
-      <li><a href="#references">References</a></li>
-      
+      <li><a href="#arguments">Arguments</a></li>
+            
       <li><a href="#examples">Examples</a></li>
     </ul>
 

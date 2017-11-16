@@ -112,8 +112,8 @@ were used.</p>
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
     <p>A data frame with 23 columns, including:</p><dl class='dl-horizontal'>
-  <dt>year</dt><dd><p>Year of survey; early years that don't meet current USGS standard have been removed</p></dd>
-  <dt>state</dt><dd><p>State</p></dd>
+  <dt>year</dt><dd><p>Year of survey: 2000, 2005 or 2010</p></dd>
+  <dt>state</dt><dd><p>State.  Only MI is used.</p></dd>
   <dt>route</dt><dd><p>Route number within Michigan</p></dd>
   <dt>county</dt><dd><p>County within Michigan</p></dd>
   <dt>route.status</dt><dd><p>Status of route as "route run" (RR) or "constant zero" (CZ).  "statuscd" in original USGS data</p></dd>
@@ -136,6 +136,85 @@ were used.</p>
     <p>Sauer, J. R., and J. B. Bortner. 1991. Population trends from the American Woodcock Singing-ground Survey, 1970-88. J. Wildl. Mange. 55:300-312.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='co'>## Make year a factor</span>
+<span class='no'>woodcock_MI_3_years</span>$<span class='no'>year</span> <span class='kw'>&lt;-</span> <span class='fu'>factor</span>(<span class='no'>woodcock_MI_3_years</span>$<span class='no'>year</span>)
+
+<span class='co'>## Plot means with 95% confidence intervals</span>
+
+<span class='fu'>library</span>(<span class='no'>ggplot2</span>)
+<span class='fu'>library</span>(<span class='no'>ggpubr</span>)
+
+<span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggerrorplot'>ggerrorplot</a></span>(<span class='no'>woodcock_MI_3_years</span>,
+  <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"year"</span>,
+  <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"woodcocks"</span>,
+  <span class='kw'>desc_stat</span> <span class='kw'>=</span> <span class='st'>"mean_ci"</span>,
+  <span class='kw'>add</span> <span class='kw'>=</span> <span class='st'>"mean"</span>)</div><div class='img'><img src='woodcock_MI_3_years-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='co'>## 1-way ANOVA</span>
+
+<span class='co'>## null model</span>
+<span class='no'>model.null</span> <span class='kw'>&lt;-</span> <span class='fu'>lm</span>(<span class='no'>woodcocks</span> ~ <span class='fl'>1</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>woodcock_MI_3_years</span>)
+
+<span class='co'>## model of interest</span>
+<span class='no'>model.alt</span> <span class='kw'>&lt;-</span> <span class='fu'>lm</span>(<span class='no'>woodcocks</span> ~ <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>woodcock_MI_3_years</span>)
+
+<span class='co'>## compare models</span>
+<span class='fu'>anova</span>(<span class='no'>model.null</span>, <span class='no'>model.alt</span>)</div><div class='output co'>#&gt; Analysis of Variance Table
+#&gt; 
+#&gt; Model 1: woodcocks ~ 1
+#&gt; Model 2: woodcocks ~ year
+#&gt;   Res.Df    RSS Df Sum of Sq      F  Pr(&gt;F)  
+#&gt; 1     93 2019.7                              
+#&gt; 2     91 1899.4  2    120.33 2.8825 0.06112 .
+#&gt; ---
+#&gt; Signif. codes:  0 <U+0091>***<U+0092> 0.001 <U+0091>**<U+0092> 0.01 <U+0091>*<U+0092> 0.05 <U+0091>.<U+0092> 0.1 <U+0091> <U+0092> 1</div><div class='input'>
+<span class='co'>## Pairwise comparisons</span>
+<span class='co'>### no corrections for multiple comparisons</span>
+<span class='fu'>pairwise.t.test</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>woodcock_MI_3_years</span>$<span class='no'>woodcocks</span>,
+                <span class='kw'>g</span> <span class='kw'>=</span> <span class='no'>woodcock_MI_3_years</span>$<span class='no'>year</span>,
+      <span class='kw'>p.adjust.method</span> <span class='kw'>=</span> <span class='st'>"none"</span>)</div><div class='output co'>#&gt; 
+#&gt; 	Pairwise comparisons using t tests with pooled SD 
+#&gt; 
+#&gt; data:  woodcock_MI_3_years$woodcocks and woodcock_MI_3_years$year 
+#&gt; 
+#&gt;      2000  2005 
+#&gt; 2005 0.097 -    
+#&gt; 2010 0.020 0.495
+#&gt; 
+#&gt; P value adjustment method: none </div><div class='input'>
+<span class='co'>### Bonferonni correction</span>
+<span class='fu'>pairwise.t.test</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>woodcock_MI_3_years</span>$<span class='no'>woodcocks</span>,
+                <span class='kw'>g</span> <span class='kw'>=</span> <span class='no'>woodcock_MI_3_years</span>$<span class='no'>year</span>,
+      <span class='kw'>p.adjust.method</span> <span class='kw'>=</span> <span class='st'>"bonferroni"</span>)</div><div class='output co'>#&gt; 
+#&gt; 	Pairwise comparisons using t tests with pooled SD 
+#&gt; 
+#&gt; data:  woodcock_MI_3_years$woodcocks and woodcock_MI_3_years$year 
+#&gt; 
+#&gt;      2000 2005
+#&gt; 2005 0.29 -   
+#&gt; 2010 0.06 1.00
+#&gt; 
+#&gt; P value adjustment method: bonferroni </div><div class='input'>
+<span class='co'>## Tukey test</span>
+
+<span class='co'>### re-fit model with aov()</span>
+<span class='no'>model.alt.aov</span> <span class='kw'>&lt;-</span> <span class='fu'>aov</span>(<span class='no'>woodcocks</span> ~ <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>woodcock_MI_3_years</span>)
+
+<span class='co'>### TukeyHSD() on model from aov()</span>
+<span class='fu'>TukeyHSD</span>(<span class='no'>model.alt.aov</span>)</div><div class='output co'>#&gt;   Tukey multiple comparisons of means
+#&gt;     95% family-wise confidence level
+#&gt; 
+#&gt; Fit: aov(formula = woodcocks ~ year, data = woodcock_MI_3_years)
+#&gt; 
+#&gt; $year
+#&gt;                diff         lwr      upr     p adj
+#&gt; 2005-2000 2.0216346 -0.85244785 4.895717 0.2199474
+#&gt; 2010-2000 2.7820513 -0.01954022 5.583643 0.0520378
+#&gt; 2010-2005 0.7604167 -1.88427537 3.405109 0.7727774
+#&gt; </div><div class='input'>
+<span class='co'>### Plot effect sizes</span>
+<span class='fu'><a href='plotTukeysHSD.html'>plotTukeysHSD</a></span>(<span class='fu'>TukeyHSD</span>(<span class='no'>model.alt.aov</span>))</div><div class='img'><img src='woodcock_MI_3_years-2.png' alt='' width='700' height='432.632880098887' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -148,7 +227,9 @@ were used.</p>
       <li><a href="#details">Details</a></li>
 
       <li><a href="#references">References</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
