@@ -166,8 +166,8 @@ names(BBS_PA)
 ##(Note that ths A in Aou is uppercase 
 ## while the rest of the letters are lowercase)
 
-BBS_PA2 <- BBS_PA %>% select(Year, Aou, 
-                             Route, SpeciesTotal)
+BBS_PA2 <-  select(.data = BBS_PA,
+                   Year, Aou, Route, SpeciesTotal)
 
 
 #look at columns in new dataframe

@@ -3,13 +3,13 @@
 #'
 #' @format A data frame
 #' \describe{
-#'   \item{family}{...}
-#'   \item{order}{....}
-#'   \item{spp}{...}
-#'   \item{asymmetry}{...}
-#'   \item{ellipticity}{...
-#'   \item{ave.length.com}{...}
-#'   \item{nest}{nest type}
+#'   \item{family}{Taxonomic family}
+#'   \item{order}{Taxonomic order}
+#'   \item{spp}{Genus and species}
+#'   \item{asymmetry}{Index of how asymmetric an egg is}
+#'   \item{ellipticity}{Index of how elliptical an egg is}
+#'   \item{ave.length.com}{Mean length of egg}
+#'   \item{nest}{nest type of species}
 #'   \item{source}{author}
 #'   \item{bird.mass}{mass of bird in grams}
 #' }
