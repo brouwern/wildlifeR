@@ -155,7 +155,7 @@ summary(BBS_PA$StopTotal)
 
 ```{r, eval = TRUE}
 #load dplyr if you haven't already
-library(dplyr)
+#library(dplyr)
 
 #look at the names of the full dataframe
 names(BBS_PA)
@@ -166,9 +166,13 @@ names(BBS_PA)
 ##(Note that ths A in Aou is uppercase 
 ## while the rest of the letters are lowercase)
 
-BBS_PA2 <-  select(.data = BBS_PA,
-                   Year, Aou, Route, SpeciesTotal)
+#BBS_PA2 <-  select(.data = BBS_PA,
+#                   Year, Aou, Route, SpeciesTotal)
 
+#dplyr was not working for me so I did this another way of doing
+#this
+
+BBS_PA2 <- BBS_PA[,c("Year", "Aou", "Route", "SpeciesTotal")]
 
 #look at columns in new dataframe
 names(BBS_PA2)
@@ -257,8 +261,13 @@ gghistogram(BBS_PA_SCTA,
 
 For this exercise we are only going to consider data from 2006, since that is the year that the landcover data we'll be merging with comes from.  (notes that "Year" has a capital "Y" while the rest is lowercase).
 
-```{r}
+```{r eval=FALSE}
 BBS_PA_SCTA_2 <- BBS_PA_SCTA %>% filter(Year == 2006)
+```
+
+
+```{r nclude=FALSE}
+BBS_PA_SCTA_2 <- BBS_PA_SCTA %>% dplyr::filter(Year == 2006)
 ```
 
 
@@ -297,9 +306,15 @@ Let's focus on the columns that pertain to forest cover, which are contained in 
 
 We can subset these columns as we did for the BBS bird count data using using select().  Note that there is a period between "NLCD" and the number, and that "SUM" is in all caps.
 
-```{r}
+```{r eval=FALSE}
 BBS_PA_landcover_1km_2 <- BBS_PA_landcover_1km %>%
   select(Route, NLCD.41, NLCD.42, NLCD.43, SUM)
+```
+
+
+```{r include=FALSE}
+BBS_PA_landcover_1km_2 <- BBS_PA_landcover_1km %>%
+  dplyr::select(Route, NLCD.41, NLCD.42, NLCD.43, SUM)
 ```
 
 
@@ -348,10 +363,18 @@ BBS_PA_landcover_1km_2$forest.percent <- BBS_PA_landcover_1km_2$forest.total / B
 We don't need the individual columns for each of the three cover classes anymore (NCLD.41, 42, 43) so we can use select() to focus just on our new forest.percent and forest.total columns
 
 We'll call this new dataframe BBS_PA_landcover_1km_3
-
-```{r}
+```{r eval=FALSE}
 BBS_PA_landcover_1km_3 <- BBS_PA_landcover_1km_2 %>% 
   select(Route, forest.total, SUM, forest.percent,
+         NLCD.41,NLCD.42,NLCD.43)
+```
+
+
+
+
+```{r include=FALSE}
+BBS_PA_landcover_1km_3 <- BBS_PA_landcover_1km_2 %>% 
+  dplyr::select(Route, forest.total, SUM, forest.percent,
          NLCD.41,NLCD.42,NLCD.43)
 ```
 
@@ -474,8 +497,20 @@ ggscatter(data = BBS_PA_SCTA_3,
 * Using using standard abbreviations is also good b/c shorter names are easier to type; here I'll use "spp" instead of "speices" , "for" instead of forest, and "tot" instead of "total"
 
 
-```{r}
+```{r eval = F}
 BBS_PA_SCTA_4 <- BBS_PA_SCTA_3 %>% select(year = Year, 
+                              aou = Aou, 
+                              route = Route, 
+                              name = name,
+                              spp.tot = SpeciesTotal,
+                              for.tot = forest.total,
+                              NLCD.sum = SUM,
+                              for.percent = forest.percent)
+```
+
+
+```{r eval = T}
+BBS_PA_SCTA_4 <- BBS_PA_SCTA_3 %>% dplyr::select(year = Year, 
                               aou = Aou, 
                               route = Route, 
                               name = name,
