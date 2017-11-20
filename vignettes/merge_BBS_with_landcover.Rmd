@@ -1,6 +1,7 @@
 ---
-title: "Merging data with dplyr: combining BBS bird counts and landcover data"
-author: "Nathan Brouwer  brouwern@gmail.com  @lobrowR"
+title: "Data cleaning: Merging 2 large data sets with dplyr" 
+subtitle: "Combining BBS bird counts & landcover data"
+author: "Nathan Brouwer    brouwern@gmail.com    @lobrowR"
 date: "`r Sys.Date()`"
 output: rmarkdown::pdf_document
 vignette: >
