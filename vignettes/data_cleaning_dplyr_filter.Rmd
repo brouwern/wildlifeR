@@ -1,0 +1,319 @@
+---
+title: "Data Cleaning: Filtering focal rows with dplyr" 
+subtitle: "Reducing the size of a dataframe to isoalte focal rows"
+author: "Nathan Brouwer    brouwern@gmail.com    @lobrowR"
+date: "`r Sys.Date()`"
+output: rmarkdown::pdf_document
+vignette: >
+  %\VignetteIndexEntry{Merging w/ dplyr}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warnings = FALSE, message = FALSE)
+```
+
+## Introduction
+
+This vignette walks through the process of isolating a subset of a dataframe using the dplyr command filter().  In particular we'll use filter() to isolate rows of data that correspond to partiular species of birds from a very large dataset.  To do this, we'll have to learn a bit about row the row indices that identify which row data occur in within a dataframe.
+
+
+## Learning objectives
+
+* Determine row indices using which()
+* Practice using the package dplyr
+    + use dplyr filter
+    
+
+## Packages
+
+* dplyr
+* wildlifeR
+
+
+## R code
+
+### Load Libraries
+
+The codes used by the American Ornithological Union (AOU) and BBS data for Pennsylvania are in the wildlifeR package.  We'll use the dplyr package to "reshape" into the proper format for analysis.  
+
+```{r, eval = TRUE}
+library(wildlifeR)
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+```
+
+
+### Data
+
+We'll use 2 datasets: 
+
+1.  AOU codes for each species of bird in North American
+2.  Bird counts from the BBS data for PA, and 
+
+You can learn more about these data sets using the help command ?BBS_PA and ?AOU_species_codes
+
+Load both sets of data
+```{r, eval = TRUE}
+## AOU species codes
+data(AOU_species_codes)
+
+## BBS data for PA
+data(BBS_PA)
+```
+
+## BBS bird count data
+
+Look at the BBS_PA data.
+
+```{r}
+head(BBS_PA)
+
+```
+
+
+This contains information on every bird species on every BBS route in Pennsylvania since the 1960s.  
+
+Using the dim() command we can see that this is a VERY big file
+```{r}
+dim(BBS_PA)
+```
+
+Almost 1/4 million rows!  This would be a very very big spreadsheet.  When data files get this big we often do things to save space both in terms of file size and also on the screen when viewing it.  Note that even though this datafile is about birds, there are no bird names (nor names of countries or states).  Everything is coded using numbers.  
+
+To identify birds in the BBS dataset the USGS uses codes designated by the Aou (American Ornithological Union).  These are typically 4 number codes unique to each species.
+
+
+
+## AOU Species code dataframe
+
+The dataset we loaded above with the command data(AOU_species_codes) loaded dataset with all of the Aou numeric codes and the corresponding common and latin nmaes of the speices.
+
+
+Using dim() we can see that there are >1000 different species identified in this dataset
+```{r}
+dim(AOU_species_codes)
+```
+
+
+Look at the data themselves
+```{r}
+head(AOU_species_codes)
+```
+
+This dataframe tells us the following thigns
+
+* spp.num: a numeric code for each species
+* alapha.code: a 4-letter alphabetic code for each species
+* name: the common name for each species
+* spp: scientific name
+* order: taxonomic order
+
+We want to use the alphabetic code and/or the common name to indentify the numeric species code.  We can then use this numeric code to isoalted data from the BBS dataset.
+
+
+### Determine the code for the European starling
+
+If we know the 4-letter alphabetic code we can use the which() command to locate the numeric code.
+
+For example, the code for the European starling is "EUST".  The follwoing code determine which ROW NUMBER  the European startling occur in within the AOU_species_codes dataframe (and saves it to an object "EUST.row.number")
+
+```{r}
+EUST.row.number <- which(AOU_species_codes$alpha.code == "EUST")
+```
+
+If you google "AOU species codes" you can usually locate a PDF or website with the codes.
+
+What we have retrived with which() is a number that is the ROW that has "EUST" in it is
+
+```{r}
+EUST.row.number
+```
+
+
+
+
+The number happens to be 'r EUST.row.number'
+
+We can look at what is in row 'r EUST.row.number' like this, but giving R the dataframe and using square brackets [ ].  Note the comma after "EUST.row.number".
+
+```{r}
+AOU_species_codes[EUST.row.number, ]
+```
+
+Or like this.  Again , note the comma after "643".
+
+```{r}
+AOU_species_codes[643, ]
+```
+
+This tells us that the in row 643 there is data on the European starling, Sturnus vulgaris.  In particular, it has a species number of 4930. This number is what we need to extract European starling data from the BBS_PA dataframe.
+
+```{r}
+EUST.numeric.code <- 4940
+```
+
+
+## dplyr and filter()
+
+which() is the classic way of doing this in R.  You can do the exact same thing with the dplyr function filter().  Note the use of the "pipe" "%>%" which connects the dataset AOU_species_codes with the filter command.
+
+
+```{r}
+AOU_species_codes %>% filter(alpha.code == "EUST")
+```
+
+More on dplyr and filter() below.
+
+
+### OPTIONAL/ADVANCED: Advanced searching using grep
+
+The above approach requires that you know the alphabetic species code, which we fed to the which().  R has a flexible search tool called grep() that allows you to search for text, parts of words, and parts of sentences.  grep() allows us to search using words like this within the "$name" column.
+
+We can get the same result as above like this
+```{r}
+grep("European starling", 
+     AOU_species_codes$name,
+     ignore.case = TRUE)
+```
+
+
+If we use just the word starling, though, we can more than one number.  Each of these is a row number where the word "starling" occurs.
+
+```{r}
+grep("starling", 
+     AOU_species_codes$name,
+     ignore.case = TRUE)
+```
+
+
+We can save thse numbers to an R object then see what they pull up in the AOU names dataframe
+
+
+Store the row numbers
+
+```{r}
+i.starling <- grep("starling", 
+     AOU_species_codes$name,
+     ignore.case = TRUE)
+```
+
+See what they correspond to
+```{r}
+AOU_species_codes[i.starling, ]
+```
+
+
+There are 4 species of starling in the AOU_species_codes dataframe.  
+
+We could also use "European" with grep.  There are 4 birds with this word in thei common name
+```{r}
+#store the row numbers
+i.European <- grep("European", 
+     AOU_species_codes$name,
+     ignore.case = TRUE)
+
+#see what they match
+AOU_species_codes[i.European, ]
+```
+
+grep() is very flexible and can take parts of works.  Let's try just "Euor"
+
+```{r}
+#store the row numbers
+i.Euro <- grep("Euro", 
+     AOU_species_codes$name,
+     ignore.case = TRUE)
+
+#see what they match
+AOU_species_codes[i.Euro, ]
+```
+
+It would work also wiht "pean", "star", or any other set of letters.
+
+
+
+## Isolate rows from a large dataframe using dplyr's filter function
+
+Above we used the which() and dplyr::filter() functiosn to figure out the Aou code for our focal bird.  Now we'll use that infromation to create a more manageable subset of BBS data.
+
+First, load dplyr if you haven't.  THen use the big BBS_PA dataset in conjuction with a pipe and filter() to subset just the European starling data.  Note that use the "<-" operation to send all the output to a new dataframe
+
+```{r}
+#load dplyr
+ #library(dplyr)
+
+#filter just the Euro starling
+BBS_PA_EUST <- BBS_PA %>% filter(Aou == 4940)
+
+```
+
+Here I gave filter the Aou code 4940.  I could also have given it the ojbect I made above that stored the number
+
+```{r}
+#object with the code
+EUST.numeric.code
+
+```
+
+Use the object instead of the number 4940
+```{r}
+BBS_PA_EUST <- BBS_PA %>% filter(Aou == EUST.numeric.code)
+
+```
+
+The BBS_PA_EUST contains just rows from BBS_PA that contain the numeric code 4940 in the Aou column.
+
+
+Let's look at what we've done.  Call dim() on the original BBS_PA data and the subset BBS_PA_EUST and see how the See how the dataframe has change.
+```{r}
+dim(BBS_PA)
+dim(BBS_PA_EUST)
+
+```
+
+
+We've gone froma 1/4 million row dataframe BBS_PA to a 1600 row dataframe BBS_PA_EUST.  
+```{r}
+summary(BBS_PA_EUST)
+
+```
+
+
+
+### What next?
+
+This vignette shows how to take a really big dataframe and isolate just the subset of data that is required.  In the wildlifeR two analayzes with these data are outlined: analysis of change over time, and analysis of abundance versus landcover.
+
+1.  If you want to examine change in a spcies over time, see the vignette ... which uses the wildlifeR function sample_BBS_routes() to create a simple dataframe for looking at change over time.
+2.  If you want to examine change in abundance versus a landcover variable see "Data Cleaning: Merging 2 large data sets with dplyr", which  is an extended vignette which reviews what we've done here and extends it to access and merge-in landcover data.
+
+
+
+## References
+
+### Books
+A good introduction to using dplyr is:
+
+Beckerman et al's book "Getting start with R: An introduction for biologists" 2nd ed.
+
+### Websites
+
+"Selecting columns and renaming are so easy with dplyr" https://blog.exploratory.io/selecting-columns-809bdd1ef615
+
+
+
+## References
+
+### Books
+A good introduction to using dplyr is:
+
+Beckerman et al's book "Getting start with R: An introduction for biologists" 2nd ed.
+
+### Websites
+
+"Selecting columns and renaming are so easy with dplyr" https://blog.exploratory.io/selecting-columns-809bdd1ef615
