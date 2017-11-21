@@ -381,21 +381,164 @@ m.decid  <- lm(SpeciesTotal ~ decid.percent, BBS_PA_PIWO_4)
 m.mixed  <- lm(SpeciesTotal ~ mixed.forest.percent, BBS_PA_PIWO_4)
 ```
 
+
+### Present results
+
+
+#### Tidy results
+Look at "tidy" output using the tidy() function from the broom package.  This is brief but doesn't contain everything.
 ```{r}
 library(broom)
+
 tidy(m.null)
+
 tidy(m.decid)
+
 tidy(m.mixed)
+
 ```
 
+
+
+### Full results
+
+Look at full output using summary()
+
+
+#### Full results null model
+
+The null model has only an interecept.  Its summary() output is not particularly interesting.
+
+```{r}
+
+summary(m.null)
+
+```
+
+
+
+
+
+#### Full results deciduous forest model
+
+The deciduous forest moel has two parameters, the intercept and the slope.  Note that R doesn't provide names that are necessarily easy to understand.  It also provides things printed out to lots of decimal places, which can be distracting.
+
+```{r}
+
+summary(m.decid)
+
+```
+
+
+
+#### Full results mixed forest model
+
+The mixed forest model has the same basic format, though the values are different.
+
+```{r}
+
+summary(m.mixed)
+
+```
+
+
+
+### Hypothesis testing
+
+P-values from the summary() command are not to be used for final analyses.  To compare to models and get a p-value use the anova() command.
+
+
+#### Deciduous versus null
 
 ```{r}
 anova(m.null, m.decid)
 ```
 
 
+#### Mixed versus null
+
+```{r}
+anova(m.null, m.mixed)
+```
+
+#### Model comparison
+
+Compare models w/AIC
+```{r}
+library(bbmle)
+AICtab(m.null,
+       m.decid,
+       m.mixed)
+```
+
+
+
+
 ### Modeling variation over time
 
+Make sure Year is a factor, NOT a numeri  variable
+```{r}
+PIWO_00_05_10$Year <- factor(PIWO_00_05_10$Year)
+```
+
+
+Model variation over time
+```{r}
+m.time.null <- lm(SpeciesTotal ~ 1 , data = PIWO_00_05_10)
+m.time.year <- lm(SpeciesTotal ~ Year , data = PIWO_00_05_10)
+
+```
+
+#### Regression summary of ANOVA
+```{r}
+library(broom)
+tidy(m.time.null)
+tidy(m.time.year)
+```
+
+
+#### Model comparison
+```{r}
+library(bbmle)
+AICtab(m.time.null,
+       m.time.year)
+```
+
+
+#### Multiple comparisons
+
+Refit model w/aov()
+
+```{r}
+
+m.time.year.aov <- aov(SpeciesTotal ~ Year , data = PIWO_00_05_10)
+
+```
+
+
+Carry out multiple comparsions
+
+```{r}
+
+TukeyHSD(m.time.year.aov)
+
+```
+
+
+Plot Tukey output
+
+First, save output
+```{r}
+
+tukey.out <- TukeyHSD(m.time.year.aov)
+
+```
+
+
+
+```{r}
+plotTukeysHSD(tukey.out)
+```
 
 
 ## Acknowledgements
