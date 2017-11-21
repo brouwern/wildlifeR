@@ -125,6 +125,9 @@ sample_BBS_routes <- function(dat = BBS_PA,
   # cat("New resampled dataframe is", dim(df.out2),"\n")
   #
 
+  df.out4 <- df.out4[,c("Aou","Route","Year","countrynum","statenum",
+                        "SpeciesTotal")]
+
   return(df.out4)
 
 }
