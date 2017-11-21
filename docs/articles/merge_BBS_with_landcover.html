@@ -62,6 +62,9 @@
     <li>
       <a href="../articles/reporting_t_test_results.html">Reporting statistical result from a 2-sample t-test</a>
     </li>
+    <li>
+      <a href="../articles/the_wildlifeR_package.html">Analyzing BBS data from the wildlifeR package</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -289,7 +292,7 @@ BBS_PA2 &lt;-<span class="st"> </span>BBS_PA[,<span class="kw">c</span>(<span cl
 <li>In the “Aou” column are listed several numbers: 5980, 6080, 5950, 6110, and several others
 <ul>
 <li>Each one of these numbers represents a different species</li>
-<li>We want to isolate just teh codes 6080, which represent the scarlet tanager</li>
+<li>We want to isolate just the codes 6080, which represent the scarlet tanager</li>
 <li>We want to discard the rest</li>
 </ul>
 </li>
@@ -552,7 +555,16 @@ BBS_PA_SCTA_<span class="dv">3</span><span class="op">$</span>Aou &lt;-<span cla
 ## [133]  TRUE  TRUE  TRUE  TRUE  TRUE</code></pre>
 <p>We can use is.na with a function from dplyr called mutate() to change these NAs to 0s.</p>
 <p><strong>This code is pretty complex, actually, so don’t worry if you don’t get it the 1st try</strong> Actually, since its pretty trick for beginers, I’ve made a new function that does it more simply (see next chunk of code)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_SCTA_<span class="dv">4</span> &lt;-<span class="st">  </span>BBS_PA_SCTA_<span class="dv">3</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">SpeciesTotal =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(SpeciesTotal),<span class="dv">0</span>,SpeciesTotal))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_SCTA_<span class="dv">4</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/NA_to_zero.html">NA_to_zero</a></span>(<span class="dt">dat =</span> BBS_PA_SCTA_<span class="dv">3</span>,<span class="dt">column =</span> <span class="st">"SpeciesTotal"</span>)</code></pre></div>
+<p>If you compare the dataset BBS_PA_SCTA_3 to BBS_PA_SCTA_4 that was made with NA_to_zero() you can see that the NAs were removed</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#with NAs</span>
+<span class="kw">summary</span>(BBS_PA_SCTA_<span class="dv">3</span><span class="op">$</span>SpeciesTotal)</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##   1.000   3.000   6.000   8.341  10.000  42.000      55</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#with NAs removed by NA_to_zero()</span>
+<span class="kw">summary</span>(BBS_PA_SCTA_<span class="dv">4</span><span class="op">$</span>SpeciesTotal)</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   0.000   2.000   4.993   7.000  42.000</code></pre>
 <p>Since the above code is rather long, the following function from the wildlifeR package will do the same thing</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_SCTA_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/NA_to_zero.html">NA_to_zero</a></span>(<span class="dt">dat =</span> BBS_PA_SCTA_<span class="dv">3</span>,
            <span class="dt">column =</span> <span class="st">"SpeciesTotal"</span>)</code></pre></div>
@@ -564,7 +576,7 @@ BBS_PA_SCTA_<span class="dv">3</span><span class="op">$</span>Aou &lt;-<span cla
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggscatter</span>(<span class="dt">data =</span> BBS_PA_SCTA_<span class="dv">3</span>,
           <span class="dt">y =</span> <span class="st">"SpeciesTotal"</span>,
           <span class="dt">x =</span> <span class="st">"forest.percent"</span>)</code></pre></div>
-<p><img src="merge_BBS_with_landcover_files/figure-html/unnamed-chunk-40-1.png" width="672"></p>
+<p><img src="merge_BBS_with_landcover_files/figure-html/unnamed-chunk-41-1.png" width="672"></p>
 </div>
 <div id="re-orgainzing-rows" class="section level3">
 <h3 class="hasAnchor">

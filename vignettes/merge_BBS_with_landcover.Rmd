@@ -464,15 +464,15 @@ We can use is.na with a function from dplyr called mutate() to change these NAs 
 **This code is pretty complex, actually, so don't worry if you don't get it the 1st try**  Actually, since its pretty trick for beginers, I've made a new function that does it more simply (see next chunk of code)
 
 ```{r}
-BBS_PA_SCTA_4 <- set_NA_SpeciesTotal_to_zero(dat = BBS_PA_SCTA_3)
+BBS_PA_SCTA_4 <- NA_to_zero(dat = BBS_PA_SCTA_3,column = "SpeciesTotal")
 ```
 
-If you compare the dataset BBS_PA_SCTA_3 to BBS_PA_SCTA_4 that was made with set_NA_SpeciesTotal_to_zero() you can see that the NAs were removed
+If you compare the dataset BBS_PA_SCTA_3 to BBS_PA_SCTA_4 that was made with NA_to_zero() you can see that the NAs were removed
 ```{r}
 #with NAs
 summary(BBS_PA_SCTA_3$SpeciesTotal)
 
-#with NAs removed by set_NA_SpeciesTotal_to_zero()
+#with NAs removed by NA_to_zero()
 summary(BBS_PA_SCTA_4$SpeciesTotal)
 ```
 
