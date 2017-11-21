@@ -2,8 +2,7 @@
 knitr::opts_chunk$set(echo = TRUE, warnings = FALSE, message = FALSE,fig.height = 3, fig.width = 5)
 
 ## ------------------------------------------------------------------------
-library(MASS)
-data("cats")
+MASS::data("cats")
 
 ## ------------------------------------------------------------------------
 dim(cats)

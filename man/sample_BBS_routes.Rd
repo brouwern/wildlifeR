@@ -36,7 +36,6 @@ This function randomly samples routes from within a stage.
 BBS_PA_EUST <- BBS_PA \%>\% filter(Aou == 4940)
 
 ## select the years 1990, 2000, and 2010
-library(Hmisc)
 BBS_PA_EUST_2 <-  sample_BBS_routes(dat = BBS_PA_EUST,
                                     years = c(1990,2000,2010),
                                     aou.code = 4940)

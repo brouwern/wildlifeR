@@ -6,9 +6,9 @@
 \title{American Ornithological Union (AOU) species codes for North-American birds}
 \format{A data frame...
 \describe{
-  \item{spp.num}{AOU species codes}
-  \item{alpha.code}{Bird Conservation Region}
-  \item{name}{Common name of species.}
+  \item{spp.num}{Numeric AOU species codes. Typically 4 numbers}
+  \item{alpha.code}{4-letter AOCUspecies code}
+  \item{name}{Common name of species}
   \item{spp}{Latin binomial genus and species}
   \item{order}{code for taxonomic order}
  }}

@@ -24,7 +24,6 @@
 #' BBS_PA_EUST <- BBS_PA %>% filter(Aou == 4940)
 #'
 #' ## select the years 1990, 2000, and 2010
-#' library(Hmisc)
 #' BBS_PA_EUST_2 <-  sample_BBS_routes(dat = BBS_PA_EUST,
 #'                                     years = c(1990,2000,2010),
 #'                                     aou.code = 4940)
@@ -100,7 +99,7 @@ sample_BBS_routes <- function(dat = BBS_PA,
   requireNamespace("Hmisc")
 
   #use cut2() to divide route index number into even number of groups
-  route.df$cuts <- cut2(route.df$route.index,
+  route.df$cuts <- Hmisc::cut2(route.df$route.index,
                         m = n.routes.per.year)
 
   #set as factor

@@ -19,14 +19,14 @@ A an example of doing "inference by eye" using R.A. Fischer's cat data.  A good 
 
 
 ## Load the data
-```{r}
+```{r eval = FALSE}
 library(MASS)
-data("cats")
+data(cats)
 ```
 
 
 ## Look at the data
-```{r}
+```{r eval = FALSE}
 dim(cats)
 summary(cats)
 ```
@@ -35,7 +35,7 @@ summary(cats)
 ## Summarize the body weight (Bwt) data old-school using summaryBy()
 
 A more modern way would be to use dplyr()
-```{r}
+```{r eval = FALSE}
 library(doBy)
 
 #get the mean and SD
@@ -55,7 +55,7 @@ cat.df3$SE <- cat.df3$Bwt.sd/sqrt(cat.df3$Bwt.length)
 
 
 Look at the results
-```{r}
+```{r eval = FALSE}
 
 cat.df3
 
@@ -66,7 +66,7 @@ cat.df3
 
 ### Visualize the raw data
 
-```{r}
+```{r eval = FALSE}
 par(mfrow = c(1,1),mar = c(3,3.5,1,1))
 
 boxplot(Bwt ~ Sex, data = cats)
@@ -81,7 +81,7 @@ This uses the errbar() function.  A modern contemporary way would use ggplot2 an
 
 This is the actual data.  The 95% confidence intervals do not overlap, which indicates that the p-value for the t-test will be less than 0.05.
 
-```{r}
+```{r eval = FALSE}
 library(Hmisc)
 par(mfrow = c(1,2),mar = c(3,3.5,1,1))
 
@@ -120,14 +120,14 @@ mtext("Mass (g)", side = 2, line = 2.1, cex = 1.3)
 
 Make an alternative version of the data where there isn't a difference between the male and female cats
 
-```{r}
+```{r eval = FALSE}
 cat.df3.mod <- cat.df3
 cat.df3.mod$Bwt.mean[1] <- cat.df3$Bwt.mean[2]-cat.df3$Bwt.mean[2]*0.0425
 ```
 
 
 The overlap of the error bars here is greater than 1/2 the length of the bar; therefore the p-value for a t-test will be > 0.05.
-```{r}
+```{r eval = FALSE}
 y.lim <- c(2.6975,3)
 par(mar = c(3,3.5,1,1))
 errbar(1:2,
@@ -166,7 +166,7 @@ mtext("Mass (g)", side = 2, line = 2.1, cex = 1.3)
 
 A t-test for the differenec between female and male cats.
 
-```{r}
+```{r eval = FALSE}
 
 t.test(Bwt ~ Sex, data = cats)
 
@@ -176,7 +176,7 @@ t.test(Bwt ~ Sex, data = cats)
 
 
 
-```{r}
+```{r eval = FALSE}
 
 summary(lm(Bwt ~ -1+Sex, data = cats))
 

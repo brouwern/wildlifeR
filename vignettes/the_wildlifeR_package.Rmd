@@ -209,10 +209,8 @@ In order to allow this type of analysis to be done with fairly simple stats, the
 
 To begin, select several years over which to investigate change in bird abundance.  Recent years such as 2000, 2005 and 2010 work well.  
 
-Note that sample_BBS_routes() requires the package Hmisc to work.
+Note that sample_BBS_routes() requires the package Hmisc to be downloaded to work.
 ```{r}
-library(Hmisc)
-
 PIWO_00_05_10 <- sample_BBS_routes(dat = BBS_PA_PIWO,
                   years = c(2000,2005,2010),
                   aou.code = 4050)
