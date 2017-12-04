@@ -22,25 +22,69 @@ cover of each species within the sampling plot.
 Data collected by Gerry Koza (koz7133@calu.edu) in the summer 2017.
 }
 \examples{
-data(wetlands)
+## Load packages
 
 library(ggplot2)
 library(ggpubr)
 
-## Species richness versus water depth
-ggscatter(data = wetlands,
-         y = "spp.richness",
-         x = "water.depth")
+## Set wetland as a factor
+wetlands$wetland <- factor(wetlands$wetland)
 
-## Species richness by wetland
-### Note that dataframe is "wetlands" with an "s"
-### and the column name is "wetland", no "s"
+## Explore data graphically
 
+### Plot boxplots
+ggboxplot(data = wetlands,
+          y = "spp.richness",
+          x = "wetland",
+          fill = "wetland")
+
+### Plot histograms
+gghistogram(data = wetlands,
+          x = "spp.richness",
+          title = "All data")
+
+g ghistogram(data = wetlands,
+          x = "spp.richness",
+          facet.by = "wetland",
+          fill = "wetland",
+          title = "Faceted by wetland")
+
+## Plot means with 95\% confidence intervals
 ggerrorplot(wetlands,
-y = "spp.richness",
-x = "wetland",
-desc_stat = "mean_ci",
-error.plot = "errorbar",
-add = "mean")
+  x = "wetland",
+  y = "spp.richness",
+  desc_stat = "mean_ci",
+  add = "mean")
+
+## 1-way ANOVA
+
+### null model
+model.null <- lm(spp.richness ~ 1, data = wetlands)
+
+### model of interest
+model.alt <- lm(spp.richness ~ wetland, data = wetlands)
+
+### compare models
+anova(model.null, model.alt)
+
+## Pairwise comparisons after 1-way ANOVA
+### no corrections for multiple comparisons
+pairwise.t.test(x = wetlands$spp.richness, g = wetlands$wetland,
+      p.adjust.method = "none")
+
+### Bonferonni correction
+pairwise.t.test(x = wetlands$spp.richness, g = wetlands$wetland,
+      p.adjust.method = "bonferroni")
+
+## Tukey test
+
+### re-fit model with aov()
+model.alt.aov <- aov(spp.richness ~ wetland, data = wetlands)
+
+### TukeyHSD() on model from aov()
+TukeyHSD(model.alt.aov)
+
+### Plot effect sizes
+plotTukeysHSD(TukeyHSD(model.alt.aov))
 }
 \keyword{datasets}

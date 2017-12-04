@@ -30,7 +30,7 @@ t.test(surv ~ trout.PRES.ABS, data = brook_trout)
 
 }
 \references{
-Levin et al.  2002.  Non–indigenous brook trout and the demise of Pacific salmon:
+Levin et al.  2002.  Non-indigenous brook trout and the demise of Pacific salmon:
 a forgotten threat?  PRSB 269.  DOI: 10.1098/rspb.2002.2063
 
 Whitlock & Schulter.  2nd ed.  Analysis of Biological Data.

@@ -23,6 +23,16 @@ eggs
 \description{
 A dataset on the shape of eggs.  Original data extract from photographs of multiple eggs.  Values in this dataset are averages.
 }
+\examples{
+
+## Load packages
+
+library(ggpubr)
+
+ggscatter(data = eggs,
+          y = "asymmetry",
+          x = "ellipticity")
+}
 \references{
 Stoddard et al.  2017.  Avian egg shape: Form, function, and evolution.
 Science.  xxxx:xxx-xxx.

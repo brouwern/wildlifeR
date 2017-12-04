@@ -132,11 +132,15 @@ The habitat data are found in the dataframe BBS_PA_landcover_1km.  For each BBS 
 data(BBS_PA_landcover_1km)
 ```
 
-For cover classes are numbers 41 (deciduous), 42 (evergreen) and 43 (mixed).  The select() function in  dplyr can be used to isolate these focal columns.  We'll isolate just them and the Route number in a new dataframe called BBS_PA_landcover_1km_2.
+For cover classes are numbers 41 (deciduous), 42 (evergreen) and 43 (mixed).  The select() function in  dplyr can be used to isolate these focal columns.  We'll isolate just them and the Route number in a new dataframe called BBS_PA_landcover_1km_2.  (So see what each landover is see the help file via ?BBS_PA_landcover_1km)
 
 ```{r}
 BBS_PA_landcover_1km_2 <- BBS_PA_landcover_1km %>%
-  select(Route, NLCD.41, NLCD.42, NLCD.43, SUM)
+  select(Route, 
+         NLCD.41, # Deciduous Forest
+         NLCD.42, # Evergreen
+         NLCD.43, # Mixed
+         SUM)
 ```
 
 
