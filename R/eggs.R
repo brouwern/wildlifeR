@@ -16,5 +16,15 @@
 #' Science.  xxxx:xxx-xxx.
 #'
 #' @source \url{http://science.sciencemag.org/content/356/6344/1249}
+#'
+#' @examples
+#'
+#' ## Load packages
+#'
+#' library(ggpubr)
+#'
+#' ggscatter(data = eggs,
+#'           y = "asymmetry",
+#'           x = "ellipticity")
 
 "eggs"

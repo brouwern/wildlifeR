@@ -29,6 +29,9 @@
 #'
 #' @examples
 #'
+#' # Note: see help files for other datasets, egg ?pikas for examples of exploring
+#' ##      data with boxplots and histograms.
+#'
 #' ## Make year a factor
 #' woodcock_MI_3_years$year <- factor(woodcock_MI_3_years$year)
 #'
