@@ -63,6 +63,9 @@
       <a href="../articles/reporting_t_test_results.html">Reporting statistical result from a 2-sample t-test</a>
     </li>
     <li>
+      <a href="../articles/selecting_different_spp_and_landcovers.html">Selecting different species and landovers from the wildlifeR package</a>
+    </li>
+    <li>
       <a href="../articles/the_wildlifeR_package.html">Analyzing BBS data from the wildlifeR package</a>
     </li>
   </ul>
@@ -84,7 +87,7 @@
                         <h4 class="author">Nathan Brouwer <a href="mailto:brouwern@gmail.com">brouwern@gmail.com</a> <span class="citation">@lobrowR</span>
 </h4>
             
-            <h4 class="date">2017-11-20</h4>
+            <h4 class="date">2017-12-04</h4>
           </div>
 
     
@@ -173,9 +176,13 @@
 <a href="#preparing-habitat-data" class="anchor"></a>Preparing habitat data</h4>
 <p>The habitat data are found in the dataframe BBS_PA_landcover_1km. For each BBS route the number of pixels of different habitat was determined using a GIS. These data are from the National Land Cover Dataset (NCLD) and each column is a different type of cover.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(BBS_PA_landcover_1km)</code></pre></div>
-<p>For cover classes are numbers 41 (deciduous), 42 (evergreen) and 43 (mixed). The select() function in dplyr can be used to isolate these focal columns. We’ll isolate just them and the Route number in a new dataframe called BBS_PA_landcover_1km_2.</p>
+<p>For cover classes are numbers 41 (deciduous), 42 (evergreen) and 43 (mixed). The select() function in dplyr can be used to isolate these focal columns. We’ll isolate just them and the Route number in a new dataframe called BBS_PA_landcover_1km_2. (So see what each landover is see the help file via ?BBS_PA_landcover_1km)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_landcover_1km_<span class="dv">2</span> &lt;-<span class="st"> </span>BBS_PA_landcover_1km <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(Route, NLCD.<span class="dv">41</span>, NLCD.<span class="dv">42</span>, NLCD.<span class="dv">43</span>, SUM)</code></pre></div>
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(Route, 
+         NLCD.<span class="dv">41</span>, <span class="co"># Deciduous Forest</span>
+         NLCD.<span class="dv">42</span>, <span class="co"># Evergreen</span>
+         NLCD.<span class="dv">43</span>, <span class="co"># Mixed</span>
+         SUM)</code></pre></div>
 </div>
 <div id="calculating-percentages-of-habitat" class="section level4">
 <h4 class="hasAnchor">
@@ -221,10 +228,8 @@ BBS_PA_PIWO_<span class="dv">3</span><span class="op">$</span>name &lt;-<span cl
 <p>There are numerous ways to analyze change over time. However, the most typical ways require fairly advanced stats. This is because when something is monitored repeatedly over time it violates assumptions about random sampling that are central to standard statistical methods.</p>
 <p>In order to allow this type of analysis to be done with fairly simple stats, the wildlifeR has a function sample_BBS_routes() which randomly allocates each available BBS route to a different year. Each route is only used once and therefore each datapoint is independent of all the others. (Though this does not solve the issue that BBS routes are themselves not randomly selected from the landscape).</p>
 <p>To begin, select several years over which to investigate change in bird abundance. Recent years such as 2000, 2005 and 2010 work well.</p>
-<p>Note that sample_BBS_routes() requires the package Hmisc to work.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(Hmisc)
-
-PIWO_00_05_<span class="dv">10</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/sample_BBS_routes.html">sample_BBS_routes</a></span>(<span class="dt">dat =</span> BBS_PA_PIWO,
+<p>Note that sample_BBS_routes() requires the package Hmisc to be downloaded to work.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PIWO_00_05_<span class="dv">10</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/sample_BBS_routes.html">sample_BBS_routes</a></span>(<span class="dt">dat =</span> BBS_PA_PIWO,
                   <span class="dt">years =</span> <span class="kw">c</span>(<span class="dv">2000</span>,<span class="dv">2005</span>,<span class="dv">2010</span>),
                   <span class="dt">aou.code =</span> <span class="dv">4050</span>)</code></pre></div>
 <pre><code>## 40 40 40</code></pre>
@@ -383,7 +388,16 @@ plot.mixed.percent &lt;-<span class="st"> </span><span class="kw">gghistogram</s
 m.decid  &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span>decid.percent, BBS_PA_PIWO_<span class="dv">4</span>)
 
 m.mixed  &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span>mixed.forest.percent, BBS_PA_PIWO_<span class="dv">4</span>)</code></pre></div>
+</div>
+<div id="present-results" class="section level3">
+<h3 class="hasAnchor">
+<a href="#present-results" class="anchor"></a>Present results</h3>
+<div id="tidy-results" class="section level4">
+<h4 class="hasAnchor">
+<a href="#tidy-results" class="anchor"></a>Tidy results</h4>
+<p>Look at “tidy” output using the tidy() function from the broom package. This is brief but doesn’t contain everything.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(broom)
+
 <span class="kw">tidy</span>(m.null)</code></pre></div>
 <pre><code>##          term  estimate  std.error statistic      p.value
 ## 1 (Intercept) 0.6934307 0.09527369  7.278302 2.444334e-11</code></pre>
@@ -395,6 +409,89 @@ m.mixed  &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <
 <pre><code>##                   term   estimate std.error statistic      p.value
 ## 1          (Intercept)  0.1468455 0.1165419  1.260024 2.098346e-01
 ## 2 mixed.forest.percent 16.1218293 2.4154827  6.674372 5.888172e-10</code></pre>
+</div>
+</div>
+<div id="full-results" class="section level3">
+<h3 class="hasAnchor">
+<a href="#full-results" class="anchor"></a>Full results</h3>
+<p>Look at full output using summary()</p>
+<div id="full-results-null-model" class="section level4">
+<h4 class="hasAnchor">
+<a href="#full-results-null-model" class="anchor"></a>Full results null model</h4>
+<p>The null model has only an interecept. Its summary() output is not particularly interesting.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(m.null)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = SpeciesTotal ~ 1, data = BBS_PA_PIWO_4)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.6934 -0.6934 -0.6934  0.3066  3.3066 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  0.69343    0.09527   7.278 2.44e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.115 on 136 degrees of freedom</code></pre>
+</div>
+<div id="full-results-deciduous-forest-model" class="section level4">
+<h4 class="hasAnchor">
+<a href="#full-results-deciduous-forest-model" class="anchor"></a>Full results deciduous forest model</h4>
+<p>The deciduous forest moel has two parameters, the intercept and the slope. Note that R doesn’t provide names that are necessarily easy to understand. It also provides things printed out to lots of decimal places, which can be distracting.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(m.decid)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = SpeciesTotal ~ decid.percent, data = BBS_PA_PIWO_4)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.2780 -0.6978 -0.3291  0.2940  3.7454 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)   -0.02993    0.24043  -0.124  0.90113   
+## decid.percent  1.58374    0.48626   3.257  0.00142 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.078 on 135 degrees of freedom
+## Multiple R-squared:  0.07285,    Adjusted R-squared:  0.06598 
+## F-statistic: 10.61 on 1 and 135 DF,  p-value: 0.001424</code></pre>
+</div>
+<div id="full-results-mixed-forest-model" class="section level4">
+<h4 class="hasAnchor">
+<a href="#full-results-mixed-forest-model" class="anchor"></a>Full results mixed forest model</h4>
+<p>The mixed forest model has the same basic format, though the values are different.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(m.mixed)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = SpeciesTotal ~ mixed.forest.percent, data = BBS_PA_PIWO_4)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.7070 -0.4602 -0.2193  0.2407  3.4551 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)            0.1468     0.1165   1.260     0.21    
+## mixed.forest.percent  16.1218     2.4155   6.674 5.89e-10 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.9705 on 135 degrees of freedom
+## Multiple R-squared:  0.2481, Adjusted R-squared:  0.2425 
+## F-statistic: 44.55 on 1 and 135 DF,  p-value: 5.888e-10</code></pre>
+</div>
+</div>
+<div id="hypothesis-testing" class="section level3">
+<h3 class="hasAnchor">
+<a href="#hypothesis-testing" class="anchor"></a>Hypothesis testing</h3>
+<p>P-values from the summary() command are not to be used for final analyses. To compare to models and get a p-value use the anova() command.</p>
+<div id="deciduous-versus-null" class="section level4">
+<h4 class="hasAnchor">
+<a href="#deciduous-versus-null" class="anchor"></a>Deciduous versus null</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(m.null, m.decid)</code></pre></div>
 <pre><code>## Analysis of Variance Table
 ## 
@@ -406,9 +503,88 @@ m.mixed  &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
+<div id="mixed-versus-null" class="section level4">
+<h4 class="hasAnchor">
+<a href="#mixed-versus-null" class="anchor"></a>Mixed versus null</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(m.null, m.mixed)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: SpeciesTotal ~ 1
+## Model 2: SpeciesTotal ~ mixed.forest.percent
+##   Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1    136 169.12                                  
+## 2    135 127.16  1    41.961 44.547 5.888e-10 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="model-comparison" class="section level4">
+<h4 class="hasAnchor">
+<a href="#model-comparison" class="anchor"></a>Model comparison</h4>
+<p>Compare models w/AIC</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(bbmle)
+<span class="kw">AICtab</span>(m.null,
+       m.decid,
+       m.mixed)</code></pre></div>
+<pre><code>##         dAIC df
+## m.mixed  0.0 3 
+## m.decid 28.7 3 
+## m.null  37.1 2</code></pre>
+</div>
+</div>
 <div id="modeling-variation-over-time" class="section level3">
 <h3 class="hasAnchor">
 <a href="#modeling-variation-over-time" class="anchor"></a>Modeling variation over time</h3>
+<p>Make sure Year is a factor, NOT a numeri variable</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PIWO_00_05_<span class="dv">10</span><span class="op">$</span>Year &lt;-<span class="st"> </span><span class="kw">factor</span>(PIWO_00_05_<span class="dv">10</span><span class="op">$</span>Year)</code></pre></div>
+<p>Model variation over time</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.time.null &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span><span class="dv">1</span> , <span class="dt">data =</span> PIWO_00_05_<span class="dv">10</span>)
+m.time.year &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span>Year , <span class="dt">data =</span> PIWO_00_05_<span class="dv">10</span>)</code></pre></div>
+<div id="regression-summary-of-anova" class="section level4">
+<h4 class="hasAnchor">
+<a href="#regression-summary-of-anova" class="anchor"></a>Regression summary of ANOVA</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(broom)
+<span class="kw">tidy</span>(m.time.null)</code></pre></div>
+<pre><code>##          term  estimate std.error statistic     p.value
+## 1 (Intercept) 0.9666667 0.1369605  7.057998 1.21373e-10</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tidy</span>(m.time.year)</code></pre></div>
+<pre><code>##          term estimate std.error statistic     p.value
+## 1 (Intercept)    0.725 0.2356343 3.0768022 0.002605998
+## 2    Year2005    0.600 0.3332372 1.8005195 0.074354999
+## 3    Year2010    0.125 0.3332372 0.3751082 0.708259103</code></pre>
+</div>
+<div id="model-comparison-1" class="section level4">
+<h4 class="hasAnchor">
+<a href="#model-comparison-1" class="anchor"></a>Model comparison</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(bbmle)
+<span class="kw">AICtab</span>(m.time.null,
+       m.time.year)</code></pre></div>
+<pre><code>##             dAIC df
+## m.time.null 0.0  2 
+## m.time.year 0.4  4</code></pre>
+</div>
+<div id="multiple-comparisons" class="section level4">
+<h4 class="hasAnchor">
+<a href="#multiple-comparisons" class="anchor"></a>Multiple comparisons</h4>
+<p>Refit model w/aov()</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.time.year.aov &lt;-<span class="st"> </span><span class="kw">aov</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span>Year , <span class="dt">data =</span> PIWO_00_05_<span class="dv">10</span>)</code></pre></div>
+<p>Carry out multiple comparsions</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">TukeyHSD</span>(m.time.year.aov)</code></pre></div>
+<pre><code>##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = SpeciesTotal ~ Year, data = PIWO_00_05_10)
+## 
+## $Year
+##             diff        lwr       upr     p adj
+## 2005-2000  0.600 -0.1910755 1.3910755 0.1738906
+## 2010-2000  0.125 -0.6660755 0.9160755 0.9254264
+## 2010-2005 -0.475 -1.2660755 0.3160755 0.3312076</code></pre>
+<p>Plot Tukey output</p>
+<p>First, save output</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tukey.out &lt;-<span class="st"> </span><span class="kw">TukeyHSD</span>(m.time.year.aov)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotTukeysHSD.html">plotTukeysHSD</a></span>(tukey.out)</code></pre></div>
+<p><img src="the_wildlifeR_package_files/figure-html/unnamed-chunk-43-1.png" width="672"></p>
+</div>
 </div>
 </div>
 <div id="acknowledgements" class="section level2">
