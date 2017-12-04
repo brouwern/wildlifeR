@@ -63,6 +63,9 @@
       <a href="../articles/reporting_t_test_results.html">Reporting statistical result from a 2-sample t-test</a>
     </li>
     <li>
+      <a href="../articles/selecting_different_spp_and_landcovers.html">Selecting different species and landovers from the wildlifeR package</a>
+    </li>
+    <li>
       <a href="../articles/the_wildlifeR_package.html">Analyzing BBS data from the wildlifeR package</a>
     </li>
   </ul>
@@ -84,7 +87,7 @@
                         <h4 class="author">Nathan Brouwer <a href="mailto:brouwern@gmail.com">brouwern@gmail.com</a> <span class="citation">@lobrowR</span>
 </h4>
             
-            <h4 class="date">2017-11-20</h4>
+            <h4 class="date">2017-12-04</h4>
           </div>
 
     
@@ -95,21 +98,13 @@
 <h2 class="hasAnchor">
 <a href="#load-the-data" class="anchor"></a>Load the data</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(MASS)
-<span class="kw">data</span>(<span class="st">"cats"</span>)</code></pre></div>
+<span class="kw">data</span>(cats)</code></pre></div>
 </div>
 <div id="look-at-the-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#look-at-the-data" class="anchor"></a>Look at the data</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(cats)</code></pre></div>
-<pre><code>## [1] 144   3</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(cats)</code></pre></div>
-<pre><code>##  Sex         Bwt             Hwt       
-##  F:47   Min.   :2.000   Min.   : 6.30  
-##  M:97   1st Qu.:2.300   1st Qu.: 8.95  
-##         Median :2.700   Median :10.10  
-##         Mean   :2.724   Mean   :10.63  
-##         3rd Qu.:3.025   3rd Qu.:12.12  
-##         Max.   :3.900   Max.   :20.50</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(cats)
+<span class="kw">summary</span>(cats)</code></pre></div>
 </div>
 <div id="summarize-the-body-weight-bwt-data-old-school-using-summaryby" class="section level2">
 <h2 class="hasAnchor">
@@ -131,9 +126,6 @@ cat.df3 &lt;-<span class="st"> </span><span class="kw">merge</span>(cat.df1,cat.
 cat.df3<span class="op">$</span>SE &lt;-<span class="st"> </span>cat.df3<span class="op">$</span>Bwt.sd<span class="op">/</span><span class="kw">sqrt</span>(cat.df3<span class="op">$</span>Bwt.length)</code></pre></div>
 <p>Look at the results</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cat.df3</code></pre></div>
-<pre><code>##   Sex Bwt.mean    Bwt.sd Bwt.length         SE
-## 1   F 2.359574 0.2739879         47 0.03996525
-## 2   M 2.900000 0.4674844         97 0.04746585</code></pre>
 </div>
 <div id="plot-the-data" class="section level2">
 <h2 class="hasAnchor">
@@ -144,7 +136,6 @@ cat.df3<span class="op">$</span>SE &lt;-<span class="st"> </span>cat.df3<span cl
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>),<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">3</span>,<span class="fl">3.5</span>,<span class="dv">1</span>,<span class="dv">1</span>))
 
 <span class="kw">boxplot</span>(Bwt <span class="op">~</span><span class="st"> </span>Sex, <span class="dt">data =</span> cats)</code></pre></div>
-<p><img src="Inference_by_eye_files/figure-html/unnamed-chunk-5-1.png" width="480"></p>
 </div>
 <div id="plot-the-means-with-error-bars" class="section level3">
 <h3 class="hasAnchor">
@@ -183,7 +174,6 @@ y.lim &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">2
 <span class="kw">axis</span>(<span class="dt">side=</span><span class="dv">1</span>,<span class="dt">at=</span><span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,<span class="dt">labels=</span>cat.df3<span class="op">$</span>Sex)
 <span class="kw">mtext</span>(<span class="st">"Sex"</span>, <span class="dt">side =</span> <span class="dv">1</span>, <span class="dt">line =</span> <span class="dv">2</span>, <span class="dt">cex =</span> <span class="dv">2</span>)
 <span class="kw">mtext</span>(<span class="st">"Mass (g)"</span>, <span class="dt">side =</span> <span class="dv">2</span>, <span class="dt">line =</span> <span class="fl">2.1</span>, <span class="dt">cex =</span> <span class="fl">1.3</span>)</code></pre></div>
-<p><img src="Inference_by_eye_files/figure-html/unnamed-chunk-6-1.png" width="480"></p>
 </div>
 <div id="modified-data-with-a-non-significant-different" class="section level4">
 <h4 class="hasAnchor">
@@ -205,9 +195,9 @@ cat.df3.mod<span class="op">$</span>Bwt.mean[<span class="dv">1</span>] &lt;-<sp
        <span class="dt">xaxt=</span><span class="st">"n"</span>,<span class="dt">cex =</span><span class="dv">1</span>)
 <span class="kw">axis</span>(<span class="dt">side=</span><span class="dv">1</span>,<span class="dt">at=</span><span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,<span class="dt">labels=</span>cat.df3.mod<span class="op">$</span>Sex)
 <span class="kw">mtext</span>(<span class="st">"Sex"</span>, <span class="dt">side =</span> <span class="dv">1</span>, <span class="dt">line =</span> <span class="dv">2</span>, <span class="dt">cex =</span> <span class="dv">2</span>)
-<span class="kw">mtext</span>(<span class="st">"Mass (g)"</span>, <span class="dt">side =</span> <span class="dv">2</span>, <span class="dt">line =</span> <span class="fl">2.1</span>, <span class="dt">cex =</span> <span class="fl">1.3</span>)</code></pre></div>
-<p><img src="Inference_by_eye_files/figure-html/unnamed-chunk-8-1.png" width="480"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">errbar</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,
+<span class="kw">mtext</span>(<span class="st">"Mass (g)"</span>, <span class="dt">side =</span> <span class="dv">2</span>, <span class="dt">line =</span> <span class="fl">2.1</span>, <span class="dt">cex =</span> <span class="fl">1.3</span>)
+
+<span class="kw">errbar</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,
        <span class="dt">y =</span> cat.df3.mod<span class="op">$</span>Bwt.mean,
        <span class="dt">yplus =</span>cat.df3.mod<span class="op">$</span>Bwt.mean <span class="op">+</span><span class="st"> </span><span class="fl">1.96</span><span class="op">*</span>cat.df3.mod<span class="op">$</span>SE,
        <span class="dt">yminus =</span> cat.df3.mod<span class="op">$</span>Bwt.mean<span class="op">-</span><span class="fl">1.96</span><span class="op">*</span>cat.df3.mod<span class="op">$</span>SE,
@@ -219,7 +209,6 @@ cat.df3.mod<span class="op">$</span>Bwt.mean[<span class="dv">1</span>] &lt;-<sp
 <span class="kw">axis</span>(<span class="dt">side=</span><span class="dv">1</span>,<span class="dt">at=</span><span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,<span class="dt">labels=</span>cat.df3.mod<span class="op">$</span>Sex)
 <span class="kw">mtext</span>(<span class="st">"Sex"</span>, <span class="dt">side =</span> <span class="dv">1</span>, <span class="dt">line =</span> <span class="dv">2</span>, <span class="dt">cex =</span> <span class="dv">2</span>)
 <span class="kw">mtext</span>(<span class="st">"Mass (g)"</span>, <span class="dt">side =</span> <span class="dv">2</span>, <span class="dt">line =</span> <span class="fl">2.1</span>, <span class="dt">cex =</span> <span class="fl">1.3</span>)</code></pre></div>
-<p><img src="Inference_by_eye_files/figure-html/unnamed-chunk-8-2.png" width="480"></p>
 </div>
 </div>
 </div>
@@ -228,36 +217,7 @@ cat.df3.mod<span class="op">$</span>Bwt.mean[<span class="dv">1</span>] &lt;-<sp
 <a href="#t-test" class="anchor"></a>T-test</h2>
 <p>A t-test for the differenec between female and male cats.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(Bwt <span class="op">~</span><span class="st"> </span>Sex, <span class="dt">data =</span> cats)</code></pre></div>
-<pre><code>## 
-##  Welch Two Sample t-test
-## 
-## data:  Bwt by Sex
-## t = -8.7095, df = 136.84, p-value = 8.831e-15
-## alternative hypothesis: true difference in means is not equal to 0
-## 95 percent confidence interval:
-##  -0.6631268 -0.4177242
-## sample estimates:
-## mean in group F mean in group M 
-##        2.359574        2.900000</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">lm</span>(Bwt <span class="op">~</span><span class="st"> </span><span class="op">-</span><span class="dv">1</span><span class="op">+</span>Sex, <span class="dt">data =</span> cats))</code></pre></div>
-<pre><code>## 
-## Call:
-## lm(formula = Bwt ~ -1 + Sex, data = cats)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.90000 -0.25957 -0.05957  0.30000  1.00000 
-## 
-## Coefficients:
-##      Estimate Std. Error t value Pr(&gt;|t|)    
-## SexF  2.35957    0.06051   39.00   &lt;2e-16 ***
-## SexM  2.90000    0.04212   68.86   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 0.4148 on 142 degrees of freedom
-## Multiple R-squared:  0.9778, Adjusted R-squared:  0.9775 
-## F-statistic:  3131 on 2 and 142 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
   </div>
