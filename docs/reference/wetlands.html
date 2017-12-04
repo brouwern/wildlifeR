@@ -86,6 +86,9 @@
       <a href="../articles/reporting_t_test_results.html">Reporting statistical result from a 2-sample t-test</a>
     </li>
     <li>
+      <a href="../articles/selecting_different_spp_and_landcovers.html">Selecting different species and landovers from the wildlifeR package</a>
+    </li>
+    <li>
       <a href="../articles/the_wildlifeR_package.html">Analyzing BBS data from the wildlifeR package</a>
     </li>
   </ul>
@@ -129,25 +132,74 @@ Data collected by Gerry Koza (koz7133@calu.edu) in the summer 2017.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>wetlands</span>)
+    <pre class="examples"><div class='input'>## Load packages
 
-<span class='fu'>library</span>(<span class='no'>ggplot2</span>)
-<span class='fu'>library</span>(<span class='no'>ggpubr</span>)
+library(ggplot2)
+library(ggpubr)
 
-<span class='co'>## Species richness versus water depth</span>
-<span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggscatter'>ggscatter</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>wetlands</span>,
-         <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"spp.richness"</span>,
-         <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"water.depth"</span>)</div><div class='img'><img src='wetlands-5.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
-<span class='co'>## Species richness by wetland</span>
-<span class='co'>### Note that dataframe is "wetlands" with an "s"</span>
-<span class='co'>### and the column name is "wetland", no "s"</span>
+## Set wetland as a factor
+wetlands$wetland <- factor(wetlands$wetland)
 
-<span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggerrorplot'>ggerrorplot</a></span>(<span class='no'>wetlands</span>,
-<span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"spp.richness"</span>,
-<span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"wetland"</span>,
-<span class='kw'>desc_stat</span> <span class='kw'>=</span> <span class='st'>"mean_ci"</span>,
-<span class='kw'>error.plot</span> <span class='kw'>=</span> <span class='st'>"errorbar"</span>,
-<span class='kw'>add</span> <span class='kw'>=</span> <span class='st'>"mean"</span>)</div><div class='img'><img src='wetlands-6.png' alt='' width='700' height='432.632880098887' /></div></pre>
+## Explore data graphically
+
+### Plot boxplots
+ggboxplot(data = wetlands,
+          y = "spp.richness",
+          x = "wetland",
+          fill = "wetland")
+
+### Plot histograms
+gghistogram(data = wetlands,
+          x = "spp.richness",
+          title = "All data")
+
+g ghistogram(data = wetlands,
+          x = "spp.richness",
+          facet.by = "wetland",
+          fill = "wetland",
+          title = "Faceted by wetland")
+
+## Plot means with 95% confidence intervals
+ggerrorplot(wetlands,
+  x = "wetland",
+  y = "spp.richness",
+  desc_stat = "mean_ci",
+  add = "mean")
+
+## 1-way ANOVA
+
+### null model
+model.null <- lm(spp.richness ~ 1, data = wetlands)
+
+### model of interest
+model.alt <- lm(spp.richness ~ wetland, data = wetlands)
+
+### compare models
+anova(model.null, model.alt)
+
+## Pairwise comparisons after 1-way ANOVA
+### no corrections for multiple comparisons
+pairwise.t.test(x = wetlands$spp.richness, g = wetlands$wetland,
+      p.adjust.method = "none")
+
+### Bonferonni correction
+pairwise.t.test(x = wetlands$spp.richness, g = wetlands$wetland,
+      p.adjust.method = "bonferroni")
+
+## Tukey test
+
+### re-fit model with aov()
+model.alt.aov <- aov(spp.richness ~ wetland, data = wetlands)
+
+### TukeyHSD() on model from aov()
+TukeyHSD(model.alt.aov)
+
+### Plot effect sizes
+plotTukeysHSD(TukeyHSD(model.alt.aov))
+</div><div class='output co'>#&gt; <span class='error'>Error: &lt;text&gt;:22:3: unexpected symbol</span>
+#&gt; <span class='error'>21: </span>
+#&gt; <span class='error'>22: g ghistogram</span>
+#&gt; <span class='error'>      ^</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -86,6 +86,9 @@
       <a href="../articles/reporting_t_test_results.html">Reporting statistical result from a 2-sample t-test</a>
     </li>
     <li>
+      <a href="../articles/selecting_different_spp_and_landcovers.html">Selecting different species and landovers from the wildlifeR package</a>
+    </li>
+    <li>
       <a href="../articles/the_wildlifeR_package.html">Analyzing BBS data from the wildlifeR package</a>
     </li>
   </ul>
@@ -147,6 +150,8 @@ were used.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
+<span class='co'># Note: see help files for other datasets, egg ?pikas for examples of exploring data with boxplots and histograms.</span>
+
 <span class='co'>## Make year a factor</span>
 <span class='no'>woodcock_MI_3_years</span>$<span class='no'>year</span> <span class='kw'>&lt;-</span> <span class='fu'>factor</span>(<span class='no'>woodcock_MI_3_years</span>$<span class='no'>year</span>)
 
@@ -159,7 +164,7 @@ were used.</p>
   <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"year"</span>,
   <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"woodcocks"</span>,
   <span class='kw'>desc_stat</span> <span class='kw'>=</span> <span class='st'>"mean_ci"</span>,
-  <span class='kw'>add</span> <span class='kw'>=</span> <span class='st'>"mean"</span>)</div><div class='img'><img src='woodcock_MI_3_years-5.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+  <span class='kw'>add</span> <span class='kw'>=</span> <span class='st'>"mean"</span>)</div><div class='img'><img src='woodcock_MI_3_years-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
 <span class='co'>## 1-way ANOVA</span>
 
 <span class='co'>## null model</span>
@@ -173,9 +178,9 @@ were used.</p>
 #&gt; 
 #&gt; Model 1: woodcocks ~ 1
 #&gt; Model 2: woodcocks ~ year
-#&gt;   Res.Df    RSS Df Sum of Sq      F  Pr(&gt;F)  
-#&gt; 1     93 2019.7                              
-#&gt; 2     91 1899.4  2    120.33 2.8825 0.06112 .
+#&gt;   Res.Df  RSS Df Sum of Sq    F Pr(&gt;F)  
+#&gt; 1     93 2020                           
+#&gt; 2     91 1899  2       120 2.88  0.061 .
 #&gt; ---
 #&gt; Signif. codes:  0 <U+0091>***<U+0092> 0.001 <U+0091>**<U+0092> 0.01 <U+0091>*<U+0092> 0.05 <U+0091>.<U+0092> 0.1 <U+0091> <U+0092> 1</div><div class='input'>
 <span class='co'>## Pairwise comparisons</span>
@@ -187,9 +192,9 @@ were used.</p>
 #&gt; 
 #&gt; data:  woodcock_MI_3_years$woodcocks and woodcock_MI_3_years$year 
 #&gt; 
-#&gt;      2000  2005 
-#&gt; 2005 0.097 -    
-#&gt; 2010 0.020 0.495
+#&gt;      2000 2005
+#&gt; 2005 0.10 -   
+#&gt; 2010 0.02 0.50
 #&gt; 
 #&gt; P value adjustment method: none </div><div class='input'>
 <span class='co'>### Bonferonni correction</span>
@@ -217,13 +222,13 @@ were used.</p>
 #&gt; Fit: aov(formula = woodcocks ~ year, data = woodcock_MI_3_years)
 #&gt; 
 #&gt; $year
-#&gt;                diff         lwr      upr     p adj
-#&gt; 2005-2000 2.0216346 -0.85244785 4.895717 0.2199474
-#&gt; 2010-2000 2.7820513 -0.01954022 5.583643 0.0520378
-#&gt; 2010-2005 0.7604167 -1.88427537 3.405109 0.7727774
+#&gt;           diff     lwr  upr p adj
+#&gt; 2005-2000 2.02 -0.8524 4.90 0.220
+#&gt; 2010-2000 2.78 -0.0195 5.58 0.052
+#&gt; 2010-2005 0.76 -1.8843 3.41 0.773
 #&gt; </div><div class='input'>
 <span class='co'>### Plot effect sizes</span>
-<span class='fu'><a href='plotTukeysHSD.html'>plotTukeysHSD</a></span>(<span class='fu'>TukeyHSD</span>(<span class='no'>model.alt.aov</span>))</div><div class='img'><img src='woodcock_MI_3_years-6.png' alt='' width='700' height='432.632880098887' /></div></pre>
+<span class='fu'><a href='plotTukeysHSD.html'>plotTukeysHSD</a></span>(<span class='fu'>TukeyHSD</span>(<span class='no'>model.alt.aov</span>))</div><div class='img'><img src='woodcock_MI_3_years-2.png' alt='' width='700' height='432.632880098887' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
