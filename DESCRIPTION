@@ -19,7 +19,8 @@ Imports: ggplot2,
     doBy,
     ggfortify,
     gridExtra,
-    dplyr
+    dplyr,
+    bbmle
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
