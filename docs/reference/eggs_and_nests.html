@@ -86,6 +86,9 @@
       <a href="../articles/reporting_t_test_results.html">Reporting statistical result from a 2-sample t-test</a>
     </li>
     <li>
+      <a href="../articles/selecting_different_spp_and_landcovers.html">Selecting different species and landovers from the wildlifeR package</a>
+    </li>
+    <li>
       <a href="../articles/the_wildlifeR_package.html">Analyzing BBS data from the wildlifeR package</a>
     </li>
   </ul>
@@ -116,7 +119,17 @@
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>An object of class <code>data.frame</code> with 722 rows and 9 columns.</p>
+    <p>A data frame</p><dl class='dl-horizontal'>
+  <dt>family</dt><dd><p>Taxonomic family</p></dd>
+  <dt>order</dt><dd><p>Taxonomic order</p></dd>
+  <dt>spp</dt><dd><p>Genus and species</p></dd>
+  <dt>asymmetry</dt><dd><p>Index of how asymmetric an egg is</p></dd>
+  <dt>ellipticity</dt><dd><p>Index of how elliptical an egg is</p></dd>
+  <dt>ave.length.com</dt><dd><p>Mean length of egg</p></dd>
+  <dt>nest</dt><dd><p>nest type of species</p></dd>
+  <dt>source</dt><dd><p>author</p></dd>
+  <dt>bird.ellipticity</dt><dd><p>ellipticity of bird in grams</p></dd>
+</dl>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -127,9 +140,108 @@
     <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>ggplot2</span>)
 <span class='fu'>library</span>(<span class='no'>ggpubr</span>)
 
+<span class='co'>## Explore data graphically</span>
+
+<span class='co'>### Plot boxplots</span>
 <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggboxplot'>ggboxplot</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>eggs_and_nests</span>,
-<span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"ellipticity"</span>,
-<span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"nest"</span>)</div><div class='img'><img src='eggs_and_nests-3.png' alt='' width='700' height='432.632880098887' /></div></pre>
+          <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"ellipticity"</span>,
+          <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"nest"</span>,
+          <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"nest"</span>)</div><div class='img'><img src='eggs_and_nests-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='co'>### Plot histograms</span>
+<span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/gghistogram'>gghistogram</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>eggs_and_nests</span>,
+          <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"ellipticity"</span>,
+          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"All data"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='img'><img src='eggs_and_nests-2.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/gghistogram'>gghistogram</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>eggs_and_nests</span>,
+          <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"ellipticity"</span>,
+          <span class='kw'>facet.by</span> <span class='kw'>=</span> <span class='st'>"nest"</span>,
+          <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"nest"</span>,
+          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Faceted by nest"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='img'><img src='eggs_and_nests-3.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='co'>## Plot means with 95% confidence intervals</span>
+<span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggerrorplot'>ggerrorplot</a></span>(<span class='no'>eggs_and_nests</span>,
+  <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"nest"</span>,
+  <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"ellipticity"</span>,
+  <span class='kw'>desc_stat</span> <span class='kw'>=</span> <span class='st'>"mean_ci"</span>,
+  <span class='kw'>add</span> <span class='kw'>=</span> <span class='st'>"mean"</span>)</div><div class='img'><img src='eggs_and_nests-4.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='co'>## 1-way ANOVA</span>
+
+<span class='co'>### null model</span>
+<span class='no'>model.null</span> <span class='kw'>&lt;-</span> <span class='fu'>lm</span>(<span class='no'>ellipticity</span> ~ <span class='fl'>1</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>eggs_and_nests</span>)
+
+<span class='co'>### model of interest</span>
+<span class='no'>model.alt</span> <span class='kw'>&lt;-</span> <span class='fu'>lm</span>(<span class='no'>ellipticity</span> ~ <span class='no'>nest</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>eggs_and_nests</span>)
+
+<span class='co'>### compare models</span>
+<span class='fu'>anova</span>(<span class='no'>model.null</span>, <span class='no'>model.alt</span>)</div><div class='output co'>#&gt; Analysis of Variance Table
+#&gt; 
+#&gt; Model 1: ellipticity ~ 1
+#&gt; Model 2: ellipticity ~ nest
+#&gt;   Res.Df  RSS Df Sum of Sq    F  Pr(&gt;F)    
+#&gt; 1    721 3.56                              
+#&gt; 2    716 3.25  5     0.301 13.3 2.2e-12 ***
+#&gt; ---
+#&gt; Signif. codes:  0 <U+0091>***<U+0092> 0.001 <U+0091>**<U+0092> 0.01 <U+0091>*<U+0092> 0.05 <U+0091>.<U+0092> 0.1 <U+0091> <U+0092> 1</div><div class='input'>
+<span class='co'>## Pairwise comparisons after 1-way ANOVA</span>
+<span class='co'>### no corrections for multiple comparisons</span>
+<span class='fu'>pairwise.t.test</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>eggs_and_nests</span>$<span class='no'>ellipticity</span>, <span class='kw'>g</span> <span class='kw'>=</span> <span class='no'>eggs_and_nests</span>$<span class='no'>nest</span>,
+      <span class='kw'>p.adjust.method</span> <span class='kw'>=</span> <span class='st'>"none"</span>)</div><div class='output co'>#&gt; 
+#&gt; 	Pairwise comparisons using t tests with pooled SD 
+#&gt; 
+#&gt; data:  eggs_and_nests$ellipticity and eggs_and_nests$nest 
+#&gt; 
+#&gt;                    branches burrows Cup   Dome  ground surface
+#&gt; burrows            0.977    -       -     -     -             
+#&gt; Cup                0.022    2e-08   -     -     -             
+#&gt; Dome               0.055    4e-06   0.003 -     -             
+#&gt; ground surface     0.460    0.137   1e-06 4e-04 -             
+#&gt; holes and crevices 0.317    0.107   0.048 0.186 0.559         
+#&gt; 
+#&gt; P value adjustment method: none </div><div class='input'>
+<span class='co'>### Bonferonni correction</span>
+<span class='fu'>pairwise.t.test</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>eggs_and_nests</span>$<span class='no'>ellipticity</span>, <span class='kw'>g</span> <span class='kw'>=</span> <span class='no'>eggs_and_nests</span>$<span class='no'>nest</span>,
+      <span class='kw'>p.adjust.method</span> <span class='kw'>=</span> <span class='st'>"bonferroni"</span>)</div><div class='output co'>#&gt; 
+#&gt; 	Pairwise comparisons using t tests with pooled SD 
+#&gt; 
+#&gt; data:  eggs_and_nests$ellipticity and eggs_and_nests$nest 
+#&gt; 
+#&gt;                    branches burrows Cup   Dome  ground surface
+#&gt; burrows            1.000    -       -     -     -             
+#&gt; Cup                0.326    2e-07   -     -     -             
+#&gt; Dome               0.824    5e-05   0.049 -     -             
+#&gt; ground surface     1.000    1.000   2e-05 0.006 -             
+#&gt; holes and crevices 1.000    1.000   0.725 1.000 1.000         
+#&gt; 
+#&gt; P value adjustment method: bonferroni </div><div class='input'>
+<span class='co'>## Tukey test</span>
+
+<span class='co'>### re-fit model with aov()</span>
+<span class='no'>model.alt.aov</span> <span class='kw'>&lt;-</span> <span class='fu'>aov</span>(<span class='no'>ellipticity</span> ~ <span class='no'>nest</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>eggs_and_nests</span>)
+
+<span class='co'>### TukeyHSD() on model from aov()</span>
+<span class='fu'>TukeyHSD</span>(<span class='no'>model.alt.aov</span>)</div><div class='output co'>#&gt;   Tukey multiple comparisons of means
+#&gt;     95% family-wise confidence level
+#&gt; 
+#&gt; Fit: aov(formula = ellipticity ~ nest, data = eggs_and_nests)
+#&gt; 
+#&gt; $nest
+#&gt;                                       diff       lwr     upr p adj
+#&gt; burrows-branches                  -0.00149 -0.147818  0.1448 1.000
+#&gt; Cup-branches                      -0.10989 -0.246374  0.0266 0.195
+#&gt; Dome-branches                     -0.09221 -0.229235  0.0448 0.389
+#&gt; ground surface-branches           -0.03687 -0.179432  0.1057 0.977
+#&gt; holes and crevices-branches       -0.05513 -0.212428  0.1022 0.917
+#&gt; Cup-burrows                       -0.10839 -0.162499 -0.0543 0.000
+#&gt; Dome-burrows                      -0.09071 -0.146172 -0.0353 0.000
+#&gt; ground surface-burrows            -0.03538 -0.103365  0.0326 0.673
+#&gt; holes and crevices-burrows        -0.05364 -0.148721  0.0414 0.591
+#&gt; Dome-Cup                           0.01768  0.000553  0.0348 0.038
+#&gt; ground surface-Cup                 0.07302  0.030123  0.1159 0.000
+#&gt; holes and crevices-Cup             0.05475 -0.024354  0.1339 0.356
+#&gt; ground surface-Dome                0.05533  0.010745  0.0999 0.006
+#&gt; holes and crevices-Dome            0.03707 -0.042968  0.1171 0.772
+#&gt; holes and crevices-ground surface -0.01826 -0.107440  0.0709 0.992
+#&gt; </div><div class='input'>
+<span class='co'>### Plot effect sizes</span>
+<span class='fu'><a href='plotTukeysHSD.html'>plotTukeysHSD</a></span>(<span class='fu'>TukeyHSD</span>(<span class='no'>model.alt.aov</span>))</div><div class='output co'>#&gt; <span class='error'>Error in plotTukeysHSD(TukeyHSD(model.alt.aov)): object 'x.values' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -86,6 +86,9 @@
       <a href="../articles/reporting_t_test_results.html">Reporting statistical result from a 2-sample t-test</a>
     </li>
     <li>
+      <a href="../articles/selecting_different_spp_and_landcovers.html">Selecting different species and landovers from the wildlifeR package</a>
+    </li>
+    <li>
       <a href="../articles/the_wildlifeR_package.html">Analyzing BBS data from the wildlifeR package</a>
     </li>
   </ul>
@@ -135,21 +138,98 @@ using the elevatr package
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'>## Plot data by groups</span>
+<span class='co'>## Load packages</span>
 
 <span class='fu'>library</span>(<span class='no'>ggplot2</span>)
 <span class='fu'>library</span>(<span class='no'>ggpubr</span>)
 
+<span class='co'>## Explore data graphically</span>
 
-<span class='co'>## Boxplot</span>
+<span class='co'>### Plot boxplots</span>
 <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggboxplot'>ggboxplot</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pikas</span>,
-    <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"group"</span>,
-    <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"elev.m"</span>)</div><div class='img'><img src='pikas-5.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
-<span class='co'>## Means with error bars</span>
-<span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggerrorplot'>ggerrorplot</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pikas</span>,
-   <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"group"</span>,
-   <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"elev.m"</span>,
-   <span class='kw'>desc_stat</span> <span class='kw'>=</span> <span class='st'>"mean_ci"</span>)</div><div class='img'><img src='pikas-6.png' alt='' width='700' height='432.632880098887' /></div></pre>
+          <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"elev.m"</span>,
+          <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"group"</span>,
+          <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"group"</span>)</div><div class='img'><img src='pikas-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='co'>### Plot histograms</span>
+<span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/gghistogram'>gghistogram</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pikas</span>,
+          <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"elev.m"</span>,
+          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"All data"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='img'><img src='pikas-2.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+ <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/gghistogram'>gghistogram</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pikas</span>,
+          <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"elev.m"</span>,
+          <span class='kw'>facet.by</span> <span class='kw'>=</span> <span class='st'>"group"</span>,
+          <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"group"</span>,
+          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Faceted by group"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='img'><img src='pikas-3.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='co'>## Plot means with 95% confidence intervals</span>
+<span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggerrorplot'>ggerrorplot</a></span>(<span class='no'>pikas</span>,
+  <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"group"</span>,
+  <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"elev.m"</span>,
+  <span class='kw'>desc_stat</span> <span class='kw'>=</span> <span class='st'>"mean_ci"</span>,
+  <span class='kw'>add</span> <span class='kw'>=</span> <span class='st'>"mean"</span>)</div><div class='img'><img src='pikas-4.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='co'>## 1-way ANOVA</span>
+
+<span class='co'>### null model</span>
+<span class='no'>model.null</span> <span class='kw'>&lt;-</span> <span class='fu'>lm</span>(<span class='no'>elev.m</span> ~ <span class='fl'>1</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pikas</span>)
+
+<span class='co'>### model of interest</span>
+<span class='no'>model.alt</span> <span class='kw'>&lt;-</span> <span class='fu'>lm</span>(<span class='no'>elev.m</span> ~ <span class='no'>group</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pikas</span>)
+
+<span class='co'>### compare models</span>
+<span class='fu'>anova</span>(<span class='no'>model.null</span>, <span class='no'>model.alt</span>)</div><div class='output co'>#&gt; Analysis of Variance Table
+#&gt; 
+#&gt; Model 1: elev.m ~ 1
+#&gt; Model 2: elev.m ~ group
+#&gt;   Res.Df      RSS Df Sum of Sq    F  Pr(&gt;F)    
+#&gt; 1    358 46652447                              
+#&gt; 2    355 42172546  3   4479901 12.6 7.9e-08 ***
+#&gt; ---
+#&gt; Signif. codes:  0 <U+0091>***<U+0092> 0.001 <U+0091>**<U+0092> 0.01 <U+0091>*<U+0092> 0.05 <U+0091>.<U+0092> 0.1 <U+0091> <U+0092> 1</div><div class='input'>
+<span class='co'>## Pairwise comparisons after 1-way ANOVA</span>
+<span class='co'>### no corrections for multiple comparisons</span>
+<span class='fu'>pairwise.t.test</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>pikas</span>$<span class='no'>elev.m</span>, <span class='kw'>g</span> <span class='kw'>=</span> <span class='no'>pikas</span>$<span class='no'>group</span>,
+      <span class='kw'>p.adjust.method</span> <span class='kw'>=</span> <span class='st'>"none"</span>)</div><div class='output co'>#&gt; 
+#&gt; 	Pairwise comparisons using t tests with pooled SD 
+#&gt; 
+#&gt; data:  pikas$elev.m and pikas$group 
+#&gt; 
+#&gt;                  both.spp.absent both.spp.present marmots.only
+#&gt; both.spp.present 1e-08           -                -           
+#&gt; marmots.only     0.947           0.005            -           
+#&gt; pikas.only       2e-05           0.008            0.062       
+#&gt; 
+#&gt; P value adjustment method: none </div><div class='input'>
+<span class='co'>### Bonferonni correction</span>
+<span class='fu'>pairwise.t.test</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>pikas</span>$<span class='no'>elev.m</span>, <span class='kw'>g</span> <span class='kw'>=</span> <span class='no'>pikas</span>$<span class='no'>group</span>,
+      <span class='kw'>p.adjust.method</span> <span class='kw'>=</span> <span class='st'>"bonferroni"</span>)</div><div class='output co'>#&gt; 
+#&gt; 	Pairwise comparisons using t tests with pooled SD 
+#&gt; 
+#&gt; data:  pikas$elev.m and pikas$group 
+#&gt; 
+#&gt;                  both.spp.absent both.spp.present marmots.only
+#&gt; both.spp.present 7e-08           -                -           
+#&gt; marmots.only     1.00            0.03             -           
+#&gt; pikas.only       1e-04           0.05             0.37        
+#&gt; 
+#&gt; P value adjustment method: bonferroni </div><div class='input'>
+<span class='co'>## Tukey test</span>
+
+<span class='co'>### re-fit model with aov()</span>
+<span class='no'>model.alt.aov</span> <span class='kw'>&lt;-</span> <span class='fu'>aov</span>(<span class='no'>elev.m</span> ~ <span class='no'>group</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pikas</span>)
+
+<span class='co'>### TukeyHSD() on model from aov()</span>
+<span class='fu'>TukeyHSD</span>(<span class='no'>model.alt.aov</span>)</div><div class='output co'>#&gt;   Tukey multiple comparisons of means
+#&gt;     95% family-wise confidence level
+#&gt; 
+#&gt; Fit: aov(formula = elev.m ~ group, data = pikas)
+#&gt; 
+#&gt; $group
+#&gt;                                     diff    lwr    upr p adj
+#&gt; both.spp.present-both.spp.absent  336.63  187.6 485.68 0.000
+#&gt; marmots.only-both.spp.absent        7.82 -295.0 310.66 1.000
+#&gt; pikas.only-both.spp.absent        217.14   88.9 345.37 0.000
+#&gt; marmots.only-both.spp.present    -328.81 -626.8 -30.81 0.024
+#&gt; pikas.only-both.spp.present      -119.49 -235.8  -3.16 0.042
+#&gt; pikas.only-marmots.only           209.32  -78.8 497.47 0.241
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

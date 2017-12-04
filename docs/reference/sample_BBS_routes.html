@@ -86,6 +86,9 @@
       <a href="../articles/reporting_t_test_results.html">Reporting statistical result from a 2-sample t-test</a>
     </li>
     <li>
+      <a href="../articles/selecting_different_spp_and_landcovers.html">Selecting different species and landovers from the wildlifeR package</a>
+    </li>
+    <li>
       <a href="../articles/the_wildlifeR_package.html">Analyzing BBS data from the wildlifeR package</a>
     </li>
   </ul>
@@ -154,7 +157,6 @@
 <span class='no'>BBS_PA_EUST</span> <span class='kw'>&lt;-</span> <span class='no'>BBS_PA</span> <span class='kw'>%&gt;%</span> <span class='fu'>filter</span>(<span class='no'>Aou</span> <span class='kw'>==</span> <span class='fl'>4940</span>)
 
 <span class='co'>## select the years 1990, 2000, and 2010</span>
-<span class='fu'>library</span>(<span class='no'>Hmisc</span>)
 <span class='no'>BBS_PA_EUST_2</span> <span class='kw'>&lt;-</span>  <span class='fu'>sample_BBS_routes</span>(<span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>BBS_PA_EUST</span>,
                                     <span class='kw'>years</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1990</span>,<span class='fl'>2000</span>,<span class='fl'>2010</span>),
                                     <span class='kw'>aou.code</span> <span class='kw'>=</span> <span class='fl'>4940</span>)
