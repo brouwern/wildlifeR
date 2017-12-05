@@ -35,7 +35,8 @@ USGS population reports are available as of fall 2017 at http://www.ruffedgrouse
 }
 \examples{
 
-# Note: see help files for other datasets, egg ?pikas for examples of exploring data with boxplots and histograms.
+# Note: see help files for other datasets, egg ?pikas for examples of exploring
+##      data with boxplots and histograms.
 
 ## Make year a factor
 woodcock_MI_3_years$year <- factor(woodcock_MI_3_years$year)

@@ -1,0 +1,70 @@
+---
+title: "ENS 495 Fall 2017 Independent Data Analysis: Example Outline"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r echo = FALSE}
+##source analysis script
+source('/1_R/git/wildlifeR_home/wildlifeR/inst/extdata/term_paper_materials/term_paper_example_submissions/term_paper_regression_example/Brouwer_NL_analysis_script_PIWO_vs_forest_cover.R')
+```
+
+## TITLE: [ Insert title here]
+
+## ABSTRACT
+
+[summarize your results in a 2-3 sentences that emphasizes i) whether there is relationship between the variables your studied and ii) whether the association is positive/negative, strong/weak, etc]
+
+## INTRODUCTION
+[your paper does not need an introduction]
+
+## METHODS
+
+[your paper does not need to have any field methods]
+
+### STATISTICAL METHODS 
+[summarize your statistical methods in 2-3 sentences]
+
+## RESULTS
+
+[give a complete reporting of your results, including references to figures and tables.  This can probably be accomplished in 4-6 sentences.]
+
+## DISCUSSION
+[your paper does not need a discussion]
+
+## AKNOWLEDGEMENT
+[skip]
+
+
+## FIGURES
+
+### Figure 1
+[Figure 1: Main data figure: Your paper should include 1 central figure that summarizes the analysis.]
+
+### Figure 1 caption
+[You should include a caption of 2-3 sentences that describes the main figure]
+
+
+## APPENDICES
+
+### Appendix 1: Data dictionary
+[Paste your data dictionary as a table into your paper]
+
+### Appendix 2: Exploratory graphs
+[paste 1 histogram or density graph and 1 boxplot into your paper.  Each plot should have a short caption describing what it is.]
+
+## SUPLEMENTAL FILES
+
+### Supplemental File 1: Raw data file: 
+
+[submit a .csv file that contains the raw data used in your analysis.  Name the file lastname_firstinitial_2017.csv.  The file should only contain columns and data involved in your analysis.]
+
+
+### Supplemental file 2: Data analysis script
+submit a .R file that contains the code necessary to reproduce your analysis and make the necessary figures.  The file should read in your data using read.csv() NOT from wildlifeR.  The script file should be annotated to explain exactly what is being done and why.]
+
+

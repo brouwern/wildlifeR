@@ -1,0 +1,212 @@
+## Example script
+
+### Analysis of change in Pileated woodpecker abundance versus forest habitat
+
+### Script written 11/21/2017
+### by Nathan L Brouwer
+### brouwern@gmail.com
+### ENS 495 CalU
+
+
+## Load PIWO data
+BBS_PA_PIWO_4 <- read.csv(file ="Brouwer_NL_PIWO_vs_forest_cover.csv" )
+
+## Data Exploration
+
+### Load libraries
+library(ggplot2)
+library(ggpubr)
+library(cowplot)
+
+
+### Exploring abundance-habitat data
+
+#### Boxplots
+
+## number of birds seen
+### saved as object; displayed laterwith plot_grid
+plot1.spp.total <- ggboxplot(data = BBS_PA_PIWO_4,
+    y = "SpeciesTotal",
+    xlab = "")
+
+## Deciduous landcover
+plot2.decid.percent <- ggboxplot(data = BBS_PA_PIWO_4,
+    y = "decid.percent",
+    xlab = "")
+
+## Coniferous landcover
+plot3.confir.percent <- ggboxplot(data = BBS_PA_PIWO_4,
+    y = "conifer.percent",
+    xlab = "")
+
+## Mixed forest landcover
+plot4.mixed.percent <- ggboxplot(data = BBS_PA_PIWO_4,
+    y = "mixed.forest.percent",
+    xlab = "")
+
+
+### Plot as grid
+library(cowplot)
+
+### This plot shows the distribution of the y variable (SpeciesTOtal) and 3 different predictor
+### variables that represent different amounts of forest dover.
+plot_grid(plot1.spp.total,
+          plot2.decid.percent,
+          plot3.confir.percent,
+          plot4.mixed.percent,
+          labels = c("A", "B",
+                      "C","D"))
+
+
+
+#### Histograms
+
+# Make each plot with gghistogram() and save to an R object
+
+## number of birds seen
+plot1.spp.total <- gghistogram(data = BBS_PA_PIWO_4,
+                              x = "SpeciesTotal",
+                              xlab = "")
+
+## Deciduous landcover
+plot2.decid.percent <- gghistogram(data = BBS_PA_PIWO_4,
+                                  x = "decid.percent",
+                                  xlab = "")
+
+## Coniferous landcover
+plot3.confir.percent <- gghistogram(data = BBS_PA_PIWO_4,
+                                   x = "conifer.percent",
+                                   xlab = "")
+
+## Mixed forest landcover
+plot4.mixed.percent <- gghistogram(data = BBS_PA_PIWO_4,
+                                  x = "mixed.forest.percent",
+                                  xlab = "")
+
+## Layout the four plots in a grid.
+
+### This plot shows the distribution of the y variable (SpeciesTOtal) and 3 different predictor
+### variables that represent different amounts of forest dover.
+
+plot_grid(plot1.spp.total,
+          plot2.decid.percent,
+          plot3.confir.percent,
+          plot4.mixed.percent,
+          labels = c("A", "B",
+                     "C","D"))
+
+
+
+
+## Data modeling
+
+### Modeling habitat
+
+### Null model representing not change in number of PIWO observed as habitat changes
+m.null   <- lm(SpeciesTotal ~ 1, BBS_PA_PIWO_4)
+
+
+### Alternative model of how PIWO counts change as deciduous forest cover increases
+m.decid  <- lm(SpeciesTotal ~ decid.percent, BBS_PA_PIWO_4)
+
+
+### Alternative model of how PIWO counts change as mixed forest cover increases
+m.mixed  <- lm(SpeciesTotal ~ mixed.forest.percent, BBS_PA_PIWO_4)
+
+
+
+### Results
+
+## Compare two alt model against null model
+
+#### Significance test with anova()
+
+#### null vs. deciduous forest model
+##### p value is "sig" (0.001424)
+##### reject the null, slope is sig diff than zero
+
+anova(m.null, m.decid)
+
+  # Analysis of Variance Table
+  #
+  # Model 1: SpeciesTotal ~ 1
+  # Model 2: SpeciesTotal ~ decid.percent
+  # Res.Df    RSS Df Sum of Sq      F   Pr(>F)
+  # 1    136 169.12
+  # 2    135 156.80  1    12.321 10.608 0.001424 **
+  #   ---
+  #   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+
+#### null vs. mixed forest model
+##### p value is sig
+anova(m.null, m.mixed)
+
+
+  # Analysis of Variance Table
+  #
+  # Model 1: SpeciesTotal ~ 1
+  # Model 2: SpeciesTotal ~ mixed.forest.percent
+  # Res.Df    RSS Df Sum of Sq      F    Pr(>F)
+  # 1    136 169.12
+  # 2    135 127.16  1    41.961 44.547 5.888e-10 ***
+  #   ---
+  #   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+
+#### Model comparison
+
+### anova() only allows you to compare 1 model at a time
+### AIC allows you to compare multiple models at the
+### same time
+library(bbmle)
+
+AICtab(m.null,
+       m.decid,
+       m.mixed)
+
+
+### BOth mixed and decid slopes "sig" but
+#### m.mixed fits the data much better (delta AIC much more then 2)
+
+  #         dAIC df
+  # m.mixed  0.0 3
+  # m.decid 28.7 3
+  # m.null  37.1 2
+
+
+
+
+### SUmmary of "best" model
+
+#### Use summary() comamnd to get slopes, SEs, R^2 etc
+summary(m.mixed)
+
+
+## Key output pasted below
+      #
+      # Coefficients:
+      #   Estimate Std. Error t value Pr(>|t|)
+      # (Intercept)            0.1468     0.1165   1.260     0.21
+      # mixed.forest.percent  16.1218     2.4155   6.674 5.89e-10 ***
+      #   ---
+      #   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+      #
+      # Residual standard error: 0.9705 on 135 degrees of freedom
+      # Multiple R-squared:  0.2481,	Adjusted R-squared:  0.2425
+      # F-statistic: 44.55 on 1 and 135 DF,  p-value: 5.888e-10
+
+
+### Create focal figure
+
+#### Scatterplot with regression line for best model
+##### Error band is 95% confidence interval
+ggscatter(data = BBS_PA_PIWO_4,
+          y = "SpeciesTotal",
+          x = "mixed.forest.percent",
+          add = "reg.line",
+          conf.int = TRUE,
+          xlab = "Percent mixed forest landcover",
+          ylab = "Number of PIWO observed on BBS route")

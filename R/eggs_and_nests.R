@@ -39,6 +39,8 @@
 #'           fill = "nest",
 #'           title = "Faceted by nest")
 #'
+#'
+#'
 #' ## Plot means with 95% confidence intervals
 #' ggerrorplot(eggs_and_nests,
 #'   x = "nest",
