@@ -1,6 +1,6 @@
 #' Eagles in Ohio dataset
 #'
-#' A dataset containing the number of nesting pairs of eagles found in Ohio, USA, from 1980 through 2015.  Data is not available for all years and is given as NA.
+#' A dataset containing the number of nesting pairs of eagles found in Ohio, USA, from 1980 through 2007  Data is not available for all years and is given as NA.
 #'
 #' @format A data frame with 2 columns:
 #' \describe{
