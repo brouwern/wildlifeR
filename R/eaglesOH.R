@@ -14,7 +14,7 @@
 #' @examples
 #'
 #' ## Plot number of eagles over time
-#' plot(eagles ~ year, data = eaglesPA)
+#' plot(eagles ~ year, data = eaglesPA, col = 2)
 #'
 
 "eaglesOH"
