@@ -2,7 +2,7 @@
 title: "Inference-by-eye using RA Fisher's Cat Data"
 author: "Nathan Brouwer  brouwern@gmail.com  @lobrowR"
 date: "`r Sys.Date()`"
-output: rmarkdown::pdf_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Merging w/ dplyr}
   %\VignetteEncoding{UTF-8}

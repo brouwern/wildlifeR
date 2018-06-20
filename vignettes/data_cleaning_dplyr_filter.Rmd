@@ -1,9 +1,9 @@
 ---
 title: "Data Cleaning: Filtering focal rows with dplyr" 
-subtitle: "Reducing the size of a dataframe to isoalte focal rows"
+subtitle: "Reducing the size of a dataframe to isolate focal rows"
 author: "Nathan Brouwer    brouwern@gmail.com    @lobrowR"
 date: "`r Sys.Date()`"
-output: rmarkdown::pdf_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Merging w/ dplyr}
   %\VignetteEncoding{UTF-8}

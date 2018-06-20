@@ -2,7 +2,7 @@
 title: "Reporting statistical result from a 2-sample t-test"
 author: "Nathan Brouwer  brouwern@gmail.com  @lobrowR"
 date: "`r Sys.Date()`"
-output: rmarkdown::pdf_document
+output: rmarkdown::html_vignette
 html_document: default
 vignette: >
   %\VignetteIndexEntry{Reporting t.test}

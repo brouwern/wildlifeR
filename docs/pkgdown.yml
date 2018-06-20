@@ -1,0 +1,13 @@
+pandoc: 1.19.2.1
+pkgdown: 1.1.0
+pkgdown_sha: ~
+articles:
+  ANOVA_deer_antlers: ANOVA_deer_antlers.html
+  data_cleaning_dplyr_filter: data_cleaning_dplyr_filter.html
+  Inference_by_eye: Inference_by_eye.html
+  merge_BBS_with_landcover: merge_BBS_with_landcover.html
+  reporting_paired_t_test_results: reporting_paired_t_test_results.html
+  reporting_t_test_results: reporting_t_test_results.html
+  selecting_different_spp_and_landcovers: selecting_different_spp_and_landcovers.html
+  the_wildlifeR_package: the_wildlifeR_package.html
+

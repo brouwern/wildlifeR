@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Data on the size of Trillium from several sites in Crawford County, PA � trillium • wildlifeR</title>
+<title>Data on the size of Trillium from several sites in Crawford County, PA — trillium • wildlifeR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,26 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Data on the size of Trillium from several sites in Crawford County, PA — trillium" />
+
+<meta property="og:description" content="The size of Trillium has been hypothesized to be correlated with
+the intensity of deer browse occuring on thee population." />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +60,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">wildlifeR</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">wildlifeR</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -98,6 +115,7 @@
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -105,16 +123,20 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Data on the size of Trillium from several sites in Crawford County, PA</h1>
+    
+    <div class="hidden name"><code>trillium.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>The size of Trillium has been hypothesized to be correlated with
 the intensity of deer browse occuring on thee population.</p>
     
+    </div>
 
     <pre class="usage"><span class='no'>trillium</span></pre>
         
@@ -143,22 +165,22 @@ the intensity of deer browse occuring on thee population.</p>
 <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggboxplot'>ggboxplot</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>trillium</span>,
           <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"length.stem.cm"</span>,
           <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"site"</span>,
-          <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"site"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 45 rows containing non-finite values (stat_boxplot).</span></div><div class='img'><img src='trillium-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+          <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"site"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 45 rows containing non-finite values (stat_boxplot).</span></div><div class='img'><img src='trillium-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>### Plot histograms</span>
 <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/gghistogram'>gghistogram</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>trillium</span>,
           <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"length.stem.cm"</span>,
-          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"All data"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 45 rows containing non-finite values (stat_bin).</span></div><div class='img'><img src='trillium-2.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"All data"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 45 rows containing non-finite values (stat_bin).</span></div><div class='img'><img src='trillium-2.png' alt='' width='700' height='433' /></div><div class='input'>
  <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/gghistogram'>gghistogram</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>trillium</span>,
           <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"length.stem.cm"</span>,
           <span class='kw'>facet.by</span> <span class='kw'>=</span> <span class='st'>"site"</span>,
           <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"site"</span>,
-          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Faceted by site"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 45 rows containing non-finite values (stat_bin).</span></div><div class='img'><img src='trillium-3.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Faceted by site"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 45 rows containing non-finite values (stat_bin).</span></div><div class='img'><img src='trillium-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Plot means with 95% confidence intervals</span>
 <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggerrorplot'>ggerrorplot</a></span>(<span class='no'>trillium</span>,
   <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"site"</span>,
   <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"length.stem.cm"</span>,
   <span class='kw'>desc_stat</span> <span class='kw'>=</span> <span class='st'>"mean_ci"</span>,
-  <span class='kw'>add</span> <span class='kw'>=</span> <span class='st'>"mean"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 45 rows containing non-finite values (stat_summary).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 45 rows containing non-finite values (stat_summary).</span></div><div class='img'><img src='trillium-4.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+  <span class='kw'>add</span> <span class='kw'>=</span> <span class='st'>"mean"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 45 rows containing non-finite values (stat_summary).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 45 rows containing non-finite values (stat_summary).</span></div><div class='img'><img src='trillium-4.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## 1-way ANOVA to compare sites</span>
 
 <span class='co'>### null model</span>
@@ -172,11 +194,11 @@ the intensity of deer browse occuring on thee population.</p>
 #&gt; 
 #&gt; Model 1: length.stem.cm ~ 1
 #&gt; Model 2: length.stem.cm ~ site
-#&gt;   Res.Df   RSS Df Sum of Sq    F Pr(&gt;F)    
-#&gt; 1    550 12639                             
-#&gt; 2    547 10012  3      2627 47.8 &lt;2e-16 ***
+#&gt;   Res.Df   RSS Df Sum of Sq      F    Pr(&gt;F)    
+#&gt; 1    550 12639                                  
+#&gt; 2    547 10012  3    2626.9 47.839 &lt; 2.2e-16 ***
 #&gt; ---
-#&gt; Signif. codes:  0 <U+0091>***<U+0092> 0.001 <U+0091>**<U+0092> 0.01 <U+0091>*<U+0092> 0.05 <U+0091>.<U+0092> 0.1 <U+0091> <U+0092> 1</div><div class='input'>
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</div><div class='input'>
 <span class='co'>## Pairwise comparisons after 1-way ANOVA</span>
 <span class='co'>### no corrections for multiple comparisons</span>
 <span class='fu'>pairwise.t.test</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>trillium</span>$<span class='no'>length.stem.cm</span>, <span class='kw'>g</span> <span class='kw'>=</span> <span class='no'>trillium</span>$<span class='no'>site</span>,
@@ -185,10 +207,10 @@ the intensity of deer browse occuring on thee population.</p>
 #&gt; 
 #&gt; data:  trillium$length.stem.cm and trillium$site 
 #&gt; 
-#&gt;    CN    ER    TW    
-#&gt; ER 0.004 -     -     
-#&gt; TW 0.005 0.411 -     
-#&gt; WC 2e-16 4e-08 &lt;2e-16
+#&gt;    CN      ER      TW     
+#&gt; ER 0.0036  -       -      
+#&gt; TW 0.0046  0.4113  -      
+#&gt; WC 2.4e-16 4.0e-08 &lt; 2e-16
 #&gt; 
 #&gt; P value adjustment method: none </div><div class='input'>
 <span class='co'>### Bonferonni correction</span>
@@ -198,10 +220,10 @@ the intensity of deer browse occuring on thee population.</p>
 #&gt; 
 #&gt; data:  trillium$length.stem.cm and trillium$site 
 #&gt; 
-#&gt;    CN    ER    TW    
-#&gt; ER 0.02  -     -     
-#&gt; TW 0.03  1.00  -     
-#&gt; WC 1e-15 2e-07 &lt;2e-16
+#&gt;    CN      ER      TW     
+#&gt; ER 0.022   -       -      
+#&gt; TW 0.028   1.000   -      
+#&gt; WC 1.5e-15 2.4e-07 &lt; 2e-16
 #&gt; 
 #&gt; P value adjustment method: bonferroni </div><div class='input'>
 <span class='co'>## Tukey test</span>
@@ -216,13 +238,13 @@ the intensity of deer browse occuring on thee population.</p>
 #&gt; Fit: aov(formula = length.stem.cm ~ site, data = trillium)
 #&gt; 
 #&gt; $site
-#&gt;        diff    lwr  upr p adj
-#&gt; ER-CN  2.61  0.306 4.91 0.019
-#&gt; TW-CN  2.08  0.194 3.96 0.024
-#&gt; WC-CN  6.23  4.334 8.13 0.000
-#&gt; TW-ER -0.53 -2.189 1.13 0.844
-#&gt; WC-ER  3.63  1.948 5.30 0.000
-#&gt; WC-TW  4.16  3.122 5.19 0.000
+#&gt;             diff        lwr      upr     p adj
+#&gt; ER-CN  2.6061111  0.3061946 4.906028 0.0190462
+#&gt; TW-CN  2.0765353  0.1942317 3.958839 0.0239234
+#&gt; WC-CN  6.2315741  4.3338279 8.129320 0.0000000
+#&gt; TW-ER -0.5295758 -2.1894709 1.130319 0.8439879
+#&gt; WC-ER  3.6254630  1.9480765 5.302849 0.0000002
+#&gt; WC-TW  4.1550388  3.1220450 5.188033 0.0000000
 #&gt; </div><div class='input'>
 <span class='co'>### Plot effect sizes</span>
 <span class='fu'><a href='plotTukeysHSD.html'>plotTukeysHSD</a></span>(<span class='fu'>TukeyHSD</span>(<span class='no'>model.alt.aov</span>))</div><div class='output co'>#&gt; <span class='error'>Error in plotTukeysHSD(TukeyHSD(model.alt.aov)): object 'x.values' not found</span></div></pre>
@@ -247,11 +269,14 @@ the intensity of deer browse occuring on thee population.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

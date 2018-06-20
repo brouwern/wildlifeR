@@ -1,8 +1,8 @@
 ---
-title: "Analyzing BBS data from the wildlifeR package" 
+title: "Analyzing USGS BBS data from the wildlifeR package" 
 author: "Nathan Brouwer    brouwern@gmail.com    @lobrowR"
 date: "`r Sys.Date()`"
-output: rmarkdown::pdf_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Merging w/ dplyr}
   %\VignetteEncoding{UTF-8}

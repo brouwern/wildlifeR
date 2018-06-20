@@ -2,7 +2,7 @@
 title: "Intro to 1-way ANOVA: impacts of diet on deer antlers"
 author: "Nathan Brouwer  brouwern@gmail.com  @lobrowR"
 date: "`r Sys.Date()`"
-output: rmarkdown::pdf_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Merging w/ dplyr}
   %\VignetteEncoding{UTF-8}

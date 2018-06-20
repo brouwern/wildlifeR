@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Simulated data on the effects of diet on deer antlers. � antlers • wildlifeR</title>
+<title>Simulated data on the effects of diet on deer antlers — antlers • wildlifeR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,28 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Simulated data on the effects of diet on deer antlers — antlers" />
+
+<meta property="og:description" content="Data simulated based on summary information in Asleson et al.
+(1997).  Deer were fed three different diets that varied in the
+timeing of high protein.  Data are suitable for analysis
+with 1-way ANOVA." />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +62,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">wildlifeR</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">wildlifeR</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -98,6 +117,7 @@
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -105,18 +125,22 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Simulated data on the effects of diet on deer antlers.</h1>
+    <h1>Simulated data on the effects of diet on deer antlers</h1>
+    
+    <div class="hidden name"><code>antlers.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Data simulated based on summary information in Asleson et al.
 (1997).  Deer were fed three different diets that varied in the
 timeing of high protein.  Data are suitable for analysis
 with 1-way ANOVA.</p>
     
+    </div>
 
     <pre class="usage"><span class='no'>antlers</span></pre>
         
@@ -147,31 +171,30 @@ basic plotting and 1-way ANOVA.</p>
 <span class='co'>## Load packages</span>
 
 <span class='fu'>library</span>(<span class='no'>ggplot2</span>)
-<span class='fu'>library</span>(<span class='no'>ggpubr</span>)
-
+<span class='fu'>library</span>(<span class='no'>ggpubr</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: magrittr</span></div><div class='input'>
 <span class='co'>## Explore data graphically</span>
 
 <span class='co'>### Plot boxplots</span>
 <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggboxplot'>ggboxplot</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>antlers</span>,
           <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"mass"</span>,
           <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"diet"</span>,
-          <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"diet"</span>)</div><div class='img'><img src='antlers-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+          <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"diet"</span>)</div><div class='img'><img src='antlers-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>### Plot histograms</span>
 <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/gghistogram'>gghistogram</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>antlers</span>,
           <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"mass"</span>,
-          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"All data"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='img'><img src='antlers-2.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"All data"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='img'><img src='antlers-2.png' alt='' width='700' height='433' /></div><div class='input'>
  <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/gghistogram'>gghistogram</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>antlers</span>,
           <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"mass"</span>,
           <span class='kw'>facet.by</span> <span class='kw'>=</span> <span class='st'>"diet"</span>,
           <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"diet"</span>,
-          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Faceted by diet"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='img'><img src='antlers-3.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Faceted by diet"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='img'><img src='antlers-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Plot means with 95% confidence intervals</span>
 <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggerrorplot'>ggerrorplot</a></span>(<span class='no'>antlers</span>,
   <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"diet"</span>,
   <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"mass"</span>,
   <span class='kw'>desc_stat</span> <span class='kw'>=</span> <span class='st'>"mean_ci"</span>,
   <span class='kw'>add</span> <span class='kw'>=</span> <span class='st'>"mean"</span>,
-  <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>400</span>,<span class='fl'>900</span>))</div><div class='img'><img src='antlers-4.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+  <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>400</span>,<span class='fl'>900</span>))</div><div class='img'><img src='antlers-4.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## 1-way ANOVA</span>
 
 <span class='co'>### null model</span>
@@ -185,11 +208,11 @@ basic plotting and 1-way ANOVA.</p>
 #&gt; 
 #&gt; Model 1: mass ~ 1
 #&gt; Model 2: mass ~ diet
-#&gt;   Res.Df    RSS Df Sum of Sq    F Pr(&gt;F)  
-#&gt; 1     29 747262                           
-#&gt; 2     27 575719  2    171543 4.02   0.03 *
+#&gt;   Res.Df    RSS Df Sum of Sq      F  Pr(&gt;F)  
+#&gt; 1     29 747262                              
+#&gt; 2     27 575719  2    171543 4.0225 0.02958 *
 #&gt; ---
-#&gt; Signif. codes:  0 <U+0091>***<U+0092> 0.001 <U+0091>**<U+0092> 0.01 <U+0091>*<U+0092> 0.05 <U+0091>.<U+0092> 0.1 <U+0091> <U+0092> 1</div><div class='input'>
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</div><div class='input'>
 <span class='co'>## Pairwise comparisons after 1-way ANOVA</span>
 <span class='co'>### no corrections for multiple comparisons</span>
 <span class='fu'>pairwise.t.test</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>antlers</span>$<span class='no'>mass</span>, <span class='kw'>g</span> <span class='kw'>=</span> <span class='no'>antlers</span>$<span class='no'>diet</span>,
@@ -199,8 +222,8 @@ basic plotting and 1-way ANOVA.</p>
 #&gt; data:  antlers$mass and antlers$diet 
 #&gt; 
 #&gt;       Hi.Hi Hi.Lo
-#&gt; Hi.Lo 0.51  -    
-#&gt; Lo.Hi 0.05  0.01 
+#&gt; Hi.Lo 0.506 -    
+#&gt; Lo.Hi 0.050 0.011
 #&gt; 
 #&gt; P value adjustment method: none </div><div class='input'>
 <span class='co'>### Bonferonni correction</span>
@@ -211,8 +234,8 @@ basic plotting and 1-way ANOVA.</p>
 #&gt; data:  antlers$mass and antlers$diet 
 #&gt; 
 #&gt;       Hi.Hi Hi.Lo
-#&gt; Hi.Lo 1.00  -    
-#&gt; Lo.Hi 0.15  0.03 
+#&gt; Hi.Lo 1.000 -    
+#&gt; Lo.Hi 0.151 0.034
 #&gt; 
 #&gt; P value adjustment method: bonferroni </div><div class='input'>
 <span class='co'>## Tukey test</span>
@@ -227,13 +250,13 @@ basic plotting and 1-way ANOVA.</p>
 #&gt; Fit: aov(formula = mass ~ diet, data = antlers)
 #&gt; 
 #&gt; $diet
-#&gt;             diff    lwr upr p adj
-#&gt; Hi.Lo-Hi.Hi  -44 -205.9 118 0.781
-#&gt; Lo.Hi-Hi.Hi  134  -28.1 296 0.120
-#&gt; Lo.Hi-Hi.Lo  178   15.9 340 0.029
+#&gt;                  diff        lwr      upr     p adj
+#&gt; Hi.Lo-Hi.Hi -43.97973 -205.89517 117.9357 0.7807326
+#&gt; Lo.Hi-Hi.Hi 133.83308  -28.08236 295.7485 0.1198088
+#&gt; Lo.Hi-Hi.Lo 177.81281   15.89737 339.7282 0.0292046
 #&gt; </div><div class='input'>
 <span class='co'>### Plot effect sizes</span>
-<span class='fu'><a href='plotTukeysHSD.html'>plotTukeysHSD</a></span>(<span class='fu'>TukeyHSD</span>(<span class='no'>model.alt.aov</span>))</div><div class='img'><img src='antlers-5.png' alt='' width='700' height='432.632880098887' /></div></pre>
+<span class='fu'><a href='plotTukeysHSD.html'>plotTukeysHSD</a></span>(<span class='fu'>TukeyHSD</span>(<span class='no'>model.alt.aov</span>))</div><div class='img'><img src='antlers-5.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -257,11 +280,14 @@ basic plotting and 1-way ANOVA.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

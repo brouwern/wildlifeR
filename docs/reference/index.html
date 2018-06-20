@@ -18,13 +18,22 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Function reference" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +56,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">wildlifeR</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">wildlifeR</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -98,6 +111,7 @@
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -105,166 +119,174 @@
       
       </header>
 
-      <div class="row">
-  <div class="col-md-9">
+<div class="row">
+  <div class="contents col-md-9">
     <div class="page-header">
-      <h1>
-        Reference
-        <small>version&nbsp;0.1.0</small>
-      </h1>
+      <h1>Reference</h1>
     </div>
 
-    <div class="contents">
-      <table class="ref-index">
+    <table class="ref-index">
 
-      <colgroup>
-        <col class="alias" />
-        <col class="title" />
-      </colgroup>
+    <colgroup>
+      
+      <col class="alias" />
+      <col class="title" />
+    </colgroup>
 
-      <tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="antlers.html">antlers</a></code> </p>
-          </td>
-          <td><p>Simulated data on the effects of diet on deer antlers.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="AOU_species_codes.html">AOU_species_codes</a></code> </p>
-          </td>
-          <td><p>American Ornithological Union (AOU) species codes for North-American birds</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BBS_PA.html">BBS_PA</a></code> </p>
-          </td>
-          <td><p>Pennsylvania Breeding Survey Data (BBS) from the USGS.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BBS_PA_combo_cover_1km.html">BBS_PA_combo_cover_1km</a></code> </p>
-          </td>
-          <td><p>Combinations of NLCD land cover classes into more general groups for Pennsylvania, USA.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BBS_PA_landcover_1km.html">BBS_PA_landcover_1km</a></code> </p>
-          </td>
-          <td><p>Land cover buffers from the 1 km surrounding Breeding Bird Survey Routes (BBS) in Pennsylvania</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BBS_PA_SCTA.html">BBS_PA_SCTA</a></code> </p>
-          </td>
-          <td><p>Number of Scarlet tanagers (SCTA) observed on Pennsylvania BBS routes in 2006 and total forested landcover in 1km buffers around routes</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="brook_trout.html">brook_trout</a></code> </p>
-          </td>
-          <td><p>Brook trout impacts on Chinook salmon survival - original data</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="brook_trout_ABD.html">brook_trout_ABD</a></code> </p>
-          </td>
-          <td><p>Impact of brook trout on survival of Chinook salmon in Idaho.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="combine_NLCD_classes.html">combine_NLCD_classes</a></code> </p>
-          </td>
-          <td><p>Combine multiple landcover classes into a single combined group</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="doves_PA.html">doves_PA</a></code> </p>
-          </td>
-          <td><p>PA Mourning doves</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="eggs.html">eggs</a></code> </p>
-          </td>
-          <td><p>Bird eggs datatset.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="eggs_and_nests.html">eggs_and_nests</a></code> </p>
-          </td>
-          <td><p>Egg data combined with data on nests</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="expand_BBS_routes.html">expand_BBS_routes</a></code> </p>
-          </td>
-          <td><p>Expand BBS data to include zeros when a species was not seen.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="milk.html">milk</a></code> </p>
-          </td>
-          <td><p>Mammal milk dataset</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="NA_to_zero.html">NA_to_zero</a></code> </p>
-          </td>
-          <td><p>Change all NA values (missing vlaues) in a column to zero</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="pikas.html">pikas</a></code> </p>
-          </td>
-          <td><p>Data on presence of pikas and marmots from Front Range Pika Project</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="plotTukeysHSD.html">plotTukeysHSD</a></code> </p>
-          </td>
-          <td><p>Plot output of TukeyHSD() function when there are 3 groups</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="sample_BBS_routes.html">sample_BBS_routes</a></code> </p>
-          </td>
-          <td><p>Select random subset of Breeding Bird Survey (BBS) routes</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="sample_dove_routes.html">sample_dove_routes</a></code> </p>
-          </td>
-          <td><p>Select random subset of Breeding Bird Survey (BBS) routes</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="trillium.html">trillium</a></code> </p>
-          </td>
-          <td><p>Data on the size of Trillium from several sites in Crawford County, PA</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="wetlands.html">wetlands</a></code> </p>
-          </td>
-          <td><p>Data on species richness in constructed wetlands at Pennsylvania Game Lands 297 in south western PA.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="woodcock_MI_3_years.html">woodcock_MI_3_years</a></code> </p>
-          </td>
-          <td><p>Subset of Woodcock call survey data from Michigan, USA</p></td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
+    <tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="antlers.html">antlers</a></code> </p>
+        </td>
+        <td><p>Simulated data on the effects of diet on deer antlers</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="AOU_species_codes.html">AOU_species_codes</a></code> </p>
+        </td>
+        <td><p>American Ornithological Union (AOU) species codes for North-American birds</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="BBS_PA.html">BBS_PA</a></code> </p>
+        </td>
+        <td><p>Pennsylvania Breeding Survey Data (BBS) from the USGS.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="BBS_PA_combo_cover_1km.html">BBS_PA_combo_cover_1km</a></code> </p>
+        </td>
+        <td><p>Combinations of NLCD land cover classes into more general groups for Pennsylvania, USA.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="BBS_PA_landcover_1km.html">BBS_PA_landcover_1km</a></code> </p>
+        </td>
+        <td><p>Land cover buffers from the 1 km surrounding Breeding Bird Survey Routes (BBS) in Pennsylvania</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="BBS_PA_SCTA.html">BBS_PA_SCTA</a></code> </p>
+        </td>
+        <td><p>Number of Scarlet tanagers (SCTA) observed on Pennsylvania BBS routes in 2006 and total forested landcover in 1km buffers around routes</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="brook_trout.html">brook_trout</a></code> </p>
+        </td>
+        <td><p>Brook trout impacts on Chinook salmon survival - original data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="brook_trout_ABD.html">brook_trout_ABD</a></code> </p>
+        </td>
+        <td><p>Impact of brook trout on survival of Chinook salmon in Idaho.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="combine_NLCD_classes.html">combine_NLCD_classes()</a></code> </p>
+        </td>
+        <td><p>Combine multiple landcover classes into a single combined group</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="doves_PA.html">doves_PA</a></code> <code><a href="doves_PA.html">doves_PA</a></code> </p>
+        </td>
+        <td><p>PA Mourning doves</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="eaglesPA.html">eaglesPA</a></code> </p>
+        </td>
+        <td><p>Eagles in Pennsylvania dataset</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="eggs.html">eggs</a></code> </p>
+        </td>
+        <td><p>Bird eggs datatset.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="eggs_and_nests.html">eggs_and_nests</a></code> </p>
+        </td>
+        <td><p>Egg data combined with data on nests</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="eggs_and_nests2.html">eggs_and_nests2</a></code> </p>
+        </td>
+        <td><p>Subset of eggs_and_nests data the contains only Dome, Cup, and ground surface nests</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="expand_BBS_routes.html">expand_BBS_routes()</a></code> </p>
+        </td>
+        <td><p>Expand BBS data to include zeros when a species was not seen.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="milk.html">milk</a></code> </p>
+        </td>
+        <td><p>Mammal milk dataset</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="NA_to_zero.html">NA_to_zero()</a></code> </p>
+        </td>
+        <td><p>Change all NA values (missing vlaues) in a column to zero</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pikas.html">pikas</a></code> </p>
+        </td>
+        <td><p>Data on presence of pikas and marmots from Front Range Pika Project</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotTukeysHSD.html">plotTukeysHSD()</a></code> </p>
+        </td>
+        <td><p>Plot output of TukeyHSD() function when there are 3 groups</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sample_BBS_routes.html">sample_BBS_routes()</a></code> </p>
+        </td>
+        <td><p>Select random subset of Breeding Bird Survey (BBS) routes</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sample_dove_routes.html">sample_dove_routes()</a></code> </p>
+        </td>
+        <td><p>Select random subset of Breeding Bird Survey (BBS) routes</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="trillium.html">trillium</a></code> </p>
+        </td>
+        <td><p>Data on the size of Trillium from several sites in Crawford County, PA</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wetlands.html">wetlands</a></code> </p>
+        </td>
+        <td><p>Data on species richness in constructed wetlands at Pennsylvania Game Lands 297 in south western PA.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="woodcock_MI_3_years.html">woodcock_MI_3_years</a></code> </p>
+        </td>
+        <td><p>Subset of Woodcock call survey data from Michigan, USA</p></td>
+      </tr>
+    </tbody>
+    </table>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -281,11 +303,14 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

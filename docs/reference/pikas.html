@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Data on presence of pikas and marmots from Front Range Pika Project � pikas • wildlifeR</title>
+<title>Data on presence of pikas and marmots from Front Range Pika Project — pikas • wildlifeR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,27 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Data on presence of pikas and marmots from Front Range Pika Project — pikas" />
+
+<meta property="og:description" content="Original data had lat and long for most sites.  Elevations estimate
+using the elevatr package
+(https://cran.r-project.org/web/packages/elevatr/vignettes/introduction_to_elevatr.html)" />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +61,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">wildlifeR</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">wildlifeR</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -98,6 +116,7 @@
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -105,17 +124,21 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Data on presence of pikas and marmots from Front Range Pika Project</h1>
+    
+    <div class="hidden name"><code>pikas.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Original data had lat and long for most sites.  Elevations estimate
 using the elevatr package
 (https://cran.r-project.org/web/packages/elevatr/vignettes/introduction_to_elevatr.html)</p>
     
+    </div>
 
     <pre class="usage"><span class='no'>pikas</span></pre>
         
@@ -149,22 +172,22 @@ using the elevatr package
 <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggboxplot'>ggboxplot</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pikas</span>,
           <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"elev.m"</span>,
           <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"group"</span>,
-          <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"group"</span>)</div><div class='img'><img src='pikas-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+          <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"group"</span>)</div><div class='img'><img src='pikas-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>### Plot histograms</span>
 <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/gghistogram'>gghistogram</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pikas</span>,
           <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"elev.m"</span>,
-          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"All data"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='img'><img src='pikas-2.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"All data"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='img'><img src='pikas-2.png' alt='' width='700' height='433' /></div><div class='input'>
  <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/gghistogram'>gghistogram</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>pikas</span>,
           <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"elev.m"</span>,
           <span class='kw'>facet.by</span> <span class='kw'>=</span> <span class='st'>"group"</span>,
           <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"group"</span>,
-          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Faceted by group"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='img'><img src='pikas-3.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+          <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Faceted by group"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Using `bins = 30` by default. Pick better value with the argument `bins`.</span></div><div class='img'><img src='pikas-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## Plot means with 95% confidence intervals</span>
 <span class='fu'><a href='http://www.rdocumentation.org/packages/ggpubr/topics/ggerrorplot'>ggerrorplot</a></span>(<span class='no'>pikas</span>,
   <span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"group"</span>,
   <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"elev.m"</span>,
   <span class='kw'>desc_stat</span> <span class='kw'>=</span> <span class='st'>"mean_ci"</span>,
-  <span class='kw'>add</span> <span class='kw'>=</span> <span class='st'>"mean"</span>)</div><div class='img'><img src='pikas-4.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+  <span class='kw'>add</span> <span class='kw'>=</span> <span class='st'>"mean"</span>)</div><div class='img'><img src='pikas-4.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## 1-way ANOVA</span>
 
 <span class='co'>### null model</span>
@@ -178,11 +201,11 @@ using the elevatr package
 #&gt; 
 #&gt; Model 1: elev.m ~ 1
 #&gt; Model 2: elev.m ~ group
-#&gt;   Res.Df      RSS Df Sum of Sq    F  Pr(&gt;F)    
-#&gt; 1    358 46652447                              
-#&gt; 2    355 42172546  3   4479901 12.6 7.9e-08 ***
+#&gt;   Res.Df      RSS Df Sum of Sq     F    Pr(&gt;F)    
+#&gt; 1    358 46652447                                 
+#&gt; 2    355 42172546  3   4479901 12.57 7.903e-08 ***
 #&gt; ---
-#&gt; Signif. codes:  0 <U+0091>***<U+0092> 0.001 <U+0091>**<U+0092> 0.01 <U+0091>*<U+0092> 0.05 <U+0091>.<U+0092> 0.1 <U+0091> <U+0092> 1</div><div class='input'>
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</div><div class='input'>
 <span class='co'>## Pairwise comparisons after 1-way ANOVA</span>
 <span class='co'>### no corrections for multiple comparisons</span>
 <span class='fu'>pairwise.t.test</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>pikas</span>$<span class='no'>elev.m</span>, <span class='kw'>g</span> <span class='kw'>=</span> <span class='no'>pikas</span>$<span class='no'>group</span>,
@@ -192,9 +215,9 @@ using the elevatr package
 #&gt; data:  pikas$elev.m and pikas$group 
 #&gt; 
 #&gt;                  both.spp.absent both.spp.present marmots.only
-#&gt; both.spp.present 1e-08           -                -           
-#&gt; marmots.only     0.947           0.005            -           
-#&gt; pikas.only       2e-05           0.008            0.062       
+#&gt; both.spp.present 1.2e-08         -                -           
+#&gt; marmots.only     0.9469          0.0047           -           
+#&gt; pikas.only       1.6e-05         0.0084           0.0616      
 #&gt; 
 #&gt; P value adjustment method: none </div><div class='input'>
 <span class='co'>### Bonferonni correction</span>
@@ -205,9 +228,9 @@ using the elevatr package
 #&gt; data:  pikas$elev.m and pikas$group 
 #&gt; 
 #&gt;                  both.spp.absent both.spp.present marmots.only
-#&gt; both.spp.present 7e-08           -                -           
-#&gt; marmots.only     1.00            0.03             -           
-#&gt; pikas.only       1e-04           0.05             0.37        
+#&gt; both.spp.present 7.5e-08         -                -           
+#&gt; marmots.only     1.000           0.028            -           
+#&gt; pikas.only       9.8e-05         0.050            0.370       
 #&gt; 
 #&gt; P value adjustment method: bonferroni </div><div class='input'>
 <span class='co'>## Tukey test</span>
@@ -222,13 +245,13 @@ using the elevatr package
 #&gt; Fit: aov(formula = elev.m ~ group, data = pikas)
 #&gt; 
 #&gt; $group
-#&gt;                                     diff    lwr    upr p adj
-#&gt; both.spp.present-both.spp.absent  336.63  187.6 485.68 0.000
-#&gt; marmots.only-both.spp.absent        7.82 -295.0 310.66 1.000
-#&gt; pikas.only-both.spp.absent        217.14   88.9 345.37 0.000
-#&gt; marmots.only-both.spp.present    -328.81 -626.8 -30.81 0.024
-#&gt; pikas.only-both.spp.present      -119.49 -235.8  -3.16 0.042
-#&gt; pikas.only-marmots.only           209.32  -78.8 497.47 0.241
+#&gt;                                         diff        lwr        upr     p adj
+#&gt; both.spp.present-both.spp.absent  336.628875  187.57748 485.680266 0.0000001
+#&gt; marmots.only-both.spp.absent        7.815778 -295.02921 310.660764 0.9998938
+#&gt; pikas.only-both.spp.absent        217.136993   88.90408 345.369906 0.0000956
+#&gt; marmots.only-both.spp.present    -328.813098 -626.81307 -30.813127 0.0239624
+#&gt; pikas.only-both.spp.present      -119.491882 -235.82148  -3.162281 0.0415090
+#&gt; pikas.only-marmots.only           209.321216  -78.83038 497.472816 0.2406440
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -251,11 +274,14 @@ using the elevatr package
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

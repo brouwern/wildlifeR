@@ -3,7 +3,7 @@ title: "Data cleaning: Merging 2 large data sets with dplyr"
 subtitle: "Combining BBS bird counts & landcover data"
 author: "Nathan Brouwer    brouwern@gmail.com    @lobrowR"
 date: "`r Sys.Date()`"
-output: rmarkdown::pdf_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Merging w/ dplyr}
   %\VignetteEncoding{UTF-8}
