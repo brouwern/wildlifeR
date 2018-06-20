@@ -7,7 +7,7 @@
 NA_to_zero(dat, column, return = "df")
 }
 \arguments{
-\item{dat}{dataframe}
+\item{dat}{dataframe of USGS BBS data containing NAs that should be replaced with zeros}
 
 \item{column}{column within dataframe containing NAs that should be converted to a dataframe}
 

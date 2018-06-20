@@ -3,7 +3,7 @@
 \docType{data}
 \name{antlers}
 \alias{antlers}
-\title{Simulated data on the effects of diet on deer antlers.}
+\title{Simulated data on the effects of diet on deer antlers}
 \format{A data frame
 \describe{
   \item{diet}{Experimental diet during both spring and summer.  Hi.Hi = High quality diet in both season.  Hi.Lo = high quality diet in spring but poor in summer.  }

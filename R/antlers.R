@@ -1,4 +1,4 @@
-#' Simulated data on the effects of diet on deer antlers.
+#' Simulated data on the effects of diet on deer antlers
 #'
 #' Data simulated based on summary information in Asleson et al.
 #' (1997).  Deer were fed three different diets that varied in the

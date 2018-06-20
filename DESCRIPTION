@@ -1,6 +1,6 @@
 Package: wildlifeR
 Type: Package
-Title: Wildlife biology and animal ecology datasets and example analyses.
+Title: Wildlife biology and animal ecology datasets with example analyses.
 Version: 0.1.0
 Authors@R: person("Brouwer", "Nathan", email = "brouwern@gmail.com",
   role = c("aut", "cre"))
