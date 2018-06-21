@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Eagles in Pennsylvania dataset — eaglesPA • wildlifeR</title>
+<title>Eagles in West Virginia (WV) dataset — eaglesWV • wildlifeR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,14 @@
 
 
 
-<meta property="og:title" content="Eagles in Pennsylvania dataset — eaglesPA" />
+<meta property="og:title" content="Eagles in West Virginia (WV) dataset — eaglesWV" />
 
-<meta property="og:description" content="A dataset containing the number of nesting pairs of eagles found in Pennsylvania, USA, from 1980 through 2015.  Data is not available for all years and is given as NA." />
+<meta property="og:description" content="A dataset containing the number of nesting pairs of eagles found in West Virginia, USA, from 1980 through 2007  Data is not available for all years and is given as NA.
+Important dates:
+ 1963	417 pairs in all of continental USA
+ 1966	endangered spp act
+ 1967	listed
+ 1972	DDT banned" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -125,18 +130,23 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Eagles in Pennsylvania dataset</h1>
+    <h1>Eagles in West Virginia (WV) dataset</h1>
     
-    <div class="hidden name"><code>eaglesPA.Rd</code></div>
+    <div class="hidden name"><code>eaglesWV.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>A dataset containing the number of nesting pairs of eagles found in Pennsylvania, USA, from 1980 through 2015.  Data is not available for all years and is given as NA.</p>
+    <p>A dataset containing the number of nesting pairs of eagles found in West Virginia, USA, from 1980 through 2007  Data is not available for all years and is given as NA.
+Important dates:
+ 1963	417 pairs in all of continental USA
+ 1966	endangered spp act
+ 1967	listed
+ 1972	DDT banned</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>eaglesPA</span></pre>
+    <pre class="usage"><span class='no'>eaglesWV</span></pre>
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
@@ -148,17 +158,12 @@
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
     <p><a href='https://www.fws.gov/midwest/eagle/population/nos_state_tbl.html'>https://www.fws.gov/midwest/eagle/population/nos_state_tbl.html</a></p>
-<p><a href='http://www.media.pa.gov/pages/Game-Commission-Details.aspx?newsid=44'>http://www.media.pa.gov/pages/Game-Commission-Details.aspx?newsid=44</a></p>
-    
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Pennsyulvania Game Commission.  ND.  Bald Eagle: Haliaeetus leucocephalus. http://www.pgc.pa.gov/Wildlife/EndangeredandThreatened/Pages/BaldEagle.aspx</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'>## Plot number of eagles over time</span>
-<span class='fu'>plot</span>(<span class='no'>eagles</span> ~ <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>eaglesPA</span>)</div><div class='img'><img src='eaglesPA-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>plot</span>(<span class='no'>eagles</span> ~ <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>eaglesPA</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='img'><img src='eaglesWV-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -168,8 +173,6 @@
       <li><a href="#format">Format</a></li>
 
       <li><a href="#source">Source</a></li>
-
-      <li><a href="#references">References</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
