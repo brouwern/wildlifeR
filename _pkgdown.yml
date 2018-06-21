@@ -1,0 +1,38 @@
+development:
+  mode: unreleased
+
+reference:
+  - title: BBS
+    desc:  Datasets & functions related to analysis of USGS BBS data
+    contents:
+    - starts_with("BBS_")
+    - AOU_species_codes
+    - combine_NLCD_classes
+    - expand_BBS_routes
+    - sample_BBS_routes
+  - title: Doves
+    desc:  PA mourning dove data
+    contents:
+    - starts_with("doves_")
+    - sample_dove_routes
+  - title: Eagles
+    desc:  Time series of nesting bald eagles
+    contents:
+    - starts_with("eagles")
+  - title: Brook trout
+    desc:  Brook trout data from Whitlock & Scluter
+    contents:
+    - starts_with("brook_")
+  - title: eggs
+    contents:
+    - starts_with("eggs")
+  - title: Other
+    contents:
+    - milk
+    - pikas
+    - plotTukeysHSD
+    - NA_to_zero
+    - trillium
+    - wetlands
+    - woodcock_MI_3_years
+

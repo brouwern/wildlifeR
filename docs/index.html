@@ -22,7 +22,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-home">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">wildlifeR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0</span>
+        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased package">0.1.0</span>
       </span>
     </div>
 
@@ -82,7 +82,14 @@
   </ul>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/brouwern/wildlifeR">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -92,18 +99,32 @@
 
       
       </header><div class="row">
-  <div class="contents col-md-9">
-    Datasets from public repositories and published papers related to wildlife biology, animal ecology, and animal conservation.  Several datasets are derived from USGS data available from
-    the Migratory Bird Data Center (https://migbirdapps.fws.gov/mbdc/databases/db_selection.html).  Also includes extensions of dataset that 
-    appear in Whitlock &amp; Shulter's textbook Analysis of Biological Data, 2nd. ed.  Overall the datasets are biased towards migratory songbirds and 
-    white-tailed deer.  Example analyses include t-tests, paired t-tests, 1-way ANOVA, and regression.
-    wildlife biology, animal ecology, and animal conservation.  Includes extension of dataset that appearing Whitlock and Shulter's textbook Analysis of biological data, 2nd. ed. Biased towards migratory songbirds and white-tailed deer.
+  <div class="col-md-9 contents">
+    
+
+    
+    
+<p>The wildlifeR package.</p>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#load devtools</span>
+<span class="kw">library</span>(devtools)
+
+<span class="co">#download wildlifeR from github</span>
+<span class="kw">install_github</span>(<span class="st">"brouwern/wildlifeR"</span>)
+
+<span class="co">#load wildlifeR into your current R sessions</span>
+<span class="kw">library</span>(wildlifeR)</code></pre></div>
+</div>
   </div>
 
-  <div class="col-md-3" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Browse source code at <br><a href="https://github.com/brouwern/wildlifeR">https://​github.com/​brouwern/​wildlifeR</a>
+</li>
 <li>Report a bug at <br><a href="NA">NA</a>
 </li>
 </ul>
@@ -121,7 +142,8 @@
 </ul>
 </div>
 
-  </div>
+      </div>
+
 </div>
 
 

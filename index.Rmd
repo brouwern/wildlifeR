@@ -1,0 +1,18 @@
+---
+output: github_document
+---
+
+The wildlifeR package.
+
+## Installation
+
+```{r, eval = FALSE}
+#load devtools
+library(devtools)
+
+#download wildlifeR from github
+install_github("brouwern/wildlifeR")
+
+#load wildlifeR into your current R sessions
+library(wildlifeR)
+```

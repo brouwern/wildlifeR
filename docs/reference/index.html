@@ -58,7 +58,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wildlifeR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0</span>
+        <span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased package">0.1.0</span>
       </span>
     </div>
 
@@ -109,7 +109,12 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/brouwern/wildlifeR">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -136,23 +141,11 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
+          <h2 id="section-bbs" class="hasAnchor"><a href="#section-bbs" class="anchor"></a>BBS</h2>
+          <p class="section-desc"><p>Datasets &amp; functions related to analysis of USGS BBS data</p></p>
         </th>
       </tr>
       <tr>
-        
-        <td>
-          <p><code><a href="antlers.html">antlers</a></code> </p>
-        </td>
-        <td><p>Simulated data on the effects of diet on deer antlers</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="AOU_species_codes.html">AOU_species_codes</a></code> </p>
-        </td>
-        <td><p>American Ornithological Union (AOU) species codes for North-American birds</p></td>
-      </tr><tr>
         
         <td>
           <p><code><a href="BBS_PA.html">BBS_PA</a></code> </p>
@@ -179,15 +172,9 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="brook_trout.html">brook_trout</a></code> </p>
+          <p><code><a href="AOU_species_codes.html">AOU_species_codes</a></code> </p>
         </td>
-        <td><p>Brook trout impacts on Chinook salmon survival - original data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="brook_trout_ABD.html">brook_trout_ABD</a></code> </p>
-        </td>
-        <td><p>Impact of brook trout on survival of Chinook salmon in Idaho.</p></td>
+        <td><p>American Ornithological Union (AOU) species codes for North-American birds</p></td>
       </tr><tr>
         
         <td>
@@ -197,10 +184,44 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="expand_BBS_routes.html">expand_BBS_routes()</a></code> </p>
+        </td>
+        <td><p>Expand BBS data to include zeros when a species was not seen.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sample_BBS_routes.html">sample_BBS_routes()</a></code> </p>
+        </td>
+        <td><p>Select random subset of Breeding Bird Survey (BBS) routes</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-doves" class="hasAnchor"><a href="#section-doves" class="anchor"></a>Doves</h2>
+          <p class="section-desc"><p>PA mourning dove data</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
           <p><code><a href="doves_PA.html">doves_PA</a></code> <code><a href="doves_PA.html">doves_PA</a></code> </p>
         </td>
         <td><p>PA Mourning doves</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="sample_dove_routes.html">sample_dove_routes()</a></code> </p>
+        </td>
+        <td><p>Select random subset of Breeding Bird Survey (BBS) routes</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-eagles" class="hasAnchor"><a href="#section-eagles" class="anchor"></a>Eagles</h2>
+          <p class="section-desc"><p>Time series of nesting bald eagles</p></p>
+        </th>
+      </tr>
+      <tr>
         
         <td>
           <p><code><a href="eaglesOH.html">eaglesOH</a></code> </p>
@@ -218,7 +239,35 @@
           <p><code><a href="eaglesWV.html">eaglesWV</a></code> </p>
         </td>
         <td><p>Eagles in West Virginia (WV) dataset</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-brook-trout" class="hasAnchor"><a href="#section-brook-trout" class="anchor"></a>Brook trout</h2>
+          <p class="section-desc"><p>Brook trout data from Whitlock &amp; Scluter</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="brook_trout.html">brook_trout</a></code> </p>
+        </td>
+        <td><p>Brook trout impacts on Chinook salmon survival - original data</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="brook_trout_ABD.html">brook_trout_ABD</a></code> </p>
+        </td>
+        <td><p>Impact of brook trout on survival of Chinook salmon in Idaho.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-eggs" class="hasAnchor"><a href="#section-eggs" class="anchor"></a>eggs</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
         
         <td>
           <p><code><a href="eggs.html">eggs</a></code> </p>
@@ -236,30 +285,20 @@
           <p><code><a href="eggs_and_nests2.html">eggs_and_nests2</a></code> </p>
         </td>
         <td><p>Subset of eggs_and_nests data the contains only Dome, Cup, and ground surface nests</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="expand_BBS_routes.html">expand_BBS_routes()</a></code> </p>
-        </td>
-        <td><p>Expand BBS data to include zeros when a species was not seen.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="human_heartrate.html">human_heartrate</a></code> </p>
-        </td>
-        <td><p>Human heart rate data from American undergraduates</p></td>
-      </tr><tr>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-other" class="hasAnchor"><a href="#section-other" class="anchor"></a>Other</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
         
         <td>
           <p><code><a href="milk.html">milk</a></code> </p>
         </td>
         <td><p>Mammal milk dataset</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="NA_to_zero.html">NA_to_zero()</a></code> </p>
-        </td>
-        <td><p>Change all NA values (missing vlaues) in a column to zero</p></td>
       </tr><tr>
         
         <td>
@@ -275,15 +314,9 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="sample_BBS_routes.html">sample_BBS_routes()</a></code> </p>
+          <p><code><a href="NA_to_zero.html">NA_to_zero()</a></code> </p>
         </td>
-        <td><p>Select random subset of Breeding Bird Survey (BBS) routes</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="sample_dove_routes.html">sample_dove_routes()</a></code> </p>
-        </td>
-        <td><p>Select random subset of Breeding Bird Survey (BBS) routes</p></td>
+        <td><p>Change all NA values (missing vlaues) in a column to zero</p></td>
       </tr><tr>
         
         <td>
@@ -310,7 +343,12 @@
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#section-bbs">BBS</a></li>
+      <li><a href="#section-doves">Doves</a></li>
+      <li><a href="#section-eagles">Eagles</a></li>
+      <li><a href="#section-brook-trout">Brook trout</a></li>
+      <li><a href="#section-eggs">eggs</a></li>
+      <li><a href="#section-other">Other</a></li>
     </ul>
   </div>
 </div>
