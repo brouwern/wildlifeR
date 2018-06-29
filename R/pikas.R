@@ -38,7 +38,7 @@
 #'           x = "elev.m",
 #'           title = "All data")
 #'
-#'  gghistogram(data = pikas,
+#' gghistogram(data = pikas,
 #'           x = "elev.m",
 #'           facet.by = "group",
 #'           fill = "group",

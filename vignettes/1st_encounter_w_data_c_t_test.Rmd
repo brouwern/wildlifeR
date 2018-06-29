@@ -1,0 +1,185 @@
+---
+title: "Untitled"
+author: "Nathan Brouwer"
+date: "June 28, 2018"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+### Preliminaries
+
+#### Load packagtes
+```{r}
+library(wildlifeR)
+library(ggplot2)
+library(cowplot)
+library(ggpubr)
+library(dplyr)
+```
+
+#### Load data
+```{r}
+data(frogarms)
+```
+
+
+#### Subset your data
+
+The function make_my_data2L() will extact out a random subset of the data.  Change "my.code" to your school email address, minus the "@pitt.edu" or whatever your affiliation is.
+```{r}
+my.frogs <- make_my_data2L(dat = frogarms, 
+                           my.code = "nlb24", # <=  change this!
+                           cat.var = "sex",
+                           n.sample = 20, 
+                           with.rep = FALSE)
+
+```
+
+
+
+t-test used to tell if two groups are different
+
+
+### T-test
+```{r echo  = F}
+t.test(mass ~ sex, data = my.frogs)
+```
+spits out R's standard t.test table
+
+Save to object
+```{r}
+mass.t <-  t.test(mass ~ sex, data = my.frogs)
+```
+
+
+
+-----------------
+
+look at w/broom::glance.  relables thiugns a bit odd and would be nice to round.  will stick with original R output
+```{r}
+library(broom)
+glance(mass.t)
+```
+------------------
+
+
+```{r}
+mass.t
+```
+
+
+Check the means using dplyr
+```{r}
+my.frogs %>% group_by(sex) %>% summarize(mean.mass = mean(mass))
+```
+
+
+What does all of this mean?
+
+Quiz
+
+p = 
+p interpretation = 
+df = 
+why df fractional? (this one is hard!)
+t = 
+What would happen to p if t was bigger?
+What is a "95% CI"
+What is this a 95% CI for?
+
+
+
+What does the CI mean?
+
+```{r}
+plot_t_test_ES(mass.t)
+```
+
+
+
+
+Make a plot of the means with error bars.  Save to an object called gg.means
+
+```{r}
+gg.means <-ggerrorplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          desc_stat = "mean_ci") +
+  ggtitle("Group means & error bars")
+```
+
+Save effect size
+
+```{r}
+gg.ES <-plot_t_test_ES(mass.t) +
+  ggtitle("__________ & errorbars")
+```
+
+
+Plot both
+```{r}
+plot_grid(gg.means,gg.ES)
+```
+
+
+
+
+A hint
+```{r}
+gg.means <-ggerrorplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          desc_stat = "mean_ci") +
+  ylab("Mass (g)") +
+  xlab("Sex") +
+  ggtitle("Group means & error bars")
+
+
+gg.ES <-plot_t_test_ES(mass.t) +
+  ylab("Difference between groups (g)") +
+  ggtitle("__________ & errorbars")
+```
+
+```{r}
+plot_grid(gg.means,gg.ES)
+```
+
+
+
+
+Did anyone get a significant result?
+
+
+
+### Arm girth
+
+(do same thing for arm girth.  see the super significant values?)
+
+
+
+Now we are going to unpack this
+
+
+
+
+------------------------------
+
+There is a **major** flaw in this analysis.  consider the following graph where the mass is plotted on the x-axis and the arm girth is plottedon the y-axis.  Does arm girth vary just because of sex, or becasuse of sex and mass?
+
+This is ANCOVA.  Sometimes taught as an extension of ANOVA, or as a type of regression.  
+
+```{r}
+ggscatter(data = frogarms,
+          y = "arm",
+          x = "mass",
+          color = "sex")
+```
+
+------------------------------

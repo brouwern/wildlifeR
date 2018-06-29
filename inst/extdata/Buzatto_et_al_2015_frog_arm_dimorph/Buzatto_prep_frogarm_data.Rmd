@@ -1,0 +1,26 @@
+---
+title: "Prep frogarm data"
+author: "Nathan Brouwer"
+date: "June 28, 2018"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r }
+#prep file if needed
+file. <- here::here("inst/extdata/Buzatto_et_al_2015_frog_arm_dimorph/Buzatto_2015_Evolution_frog_arm_dimorphism_2.csv")
+
+frogarms <- read.csv(file., comment.char="#")
+names(frogarms)[1] <- "i.frog"
+
+frogarms$i.row <- 1:nrow(frogarms)
+frogarms <- frogarms[,c("i.row","i.frog","sex","mass","sv.length","forearm","arm")]
+save(frogarms, file = here::here("data/frogarms.RData"))
+```

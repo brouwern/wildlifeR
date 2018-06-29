@@ -1,0 +1,357 @@
+---
+title: "A first encounter with data: graphs"
+author: "Nathan Brouwer"
+date: "June 28, 2018"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### Preliminaries
+
+#### Load packagtes
+```{r}
+library(wildlifeR)
+library(ggplot2)
+library(cowplot)
+library(ggpubr)
+library(dplyr)
+```
+
+#### Load data
+```{r}
+data(frogarms)
+```
+
+
+#### Subset your data
+
+The function make_my_data2L() will extact out a random subset of the data.  Change "my.code" to your school email address, minus the "@pitt.edu" or whatever your affiliation is.
+```{r}
+my.frogs <- make_my_data2L(dat = frogarms, 
+                           my.code = "nlb24", # <=  change this!
+                           cat.var = "sex",
+                           n.sample = 20, 
+                           with.rep = FALSE)
+
+```
+
+
+
+### Boxplots
+
+Basic boxplot
+```{r}
+ggboxplot(data = my.frogs,
+          y = "mass",
+          x = "sex")
+```
+
+
+
+Notched boxplot.
+
+
+We'll use the original frogarms dataframe first for this
+THese aren't commonly used; the notches work kind of like confidence intervals to determine if medians are different.  
+```{r}
+ggboxplot(data = frogarms,
+          y = "mass",
+          x = "sex",
+          notch  = TRUE)
+```
+
+Now try your own subset of the data.  The Notch calculations likely get messed up with small samples sizes)
+```{r}
+ggboxplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          notch  = TRUE)
+```
+
+
+
+Add colored fill; note that it is "fill" not "color".  Color changes the color of the lines
+```{r}
+ggboxplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          notch  = TRUE,
+          fill = "sex")
+```
+
+We can turn off the notchign by adding a "#" character before it.  This is called "commenting out"
+
+```{r}
+ggboxplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          #notch  = TRUE,
+          fill = "sex")
+```
+
+
+Add raw data.    This works best with small datasts
+```{r}
+ggboxplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          #notch  = TRUE,
+          fill = "sex",
+          add = "point")
+```
+
+
+Jiter raw data
+This can be helpfu, though ggpubr::ggboxplot doesn't allow much control over the "jittering".  Jittering helpful when you have large datsets and want to avoid overlap in the points.
+```{r}
+ggboxplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          #notch  = TRUE,
+          fill = "sex",
+          add = "jitter")
+```
+
+
+
+Label axes
+```{r}
+ggboxplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          notch  = TRUE,
+          fill = "sex",
+          add = "jitter",
+          xlab = "Sex",      #x axis (horizontal)
+          ylab = "Mass (g)") #y axis (vertical)
+```
+
+Add title
+not usually done for publication but useful for keeping track of things and for presentations
+```{r}
+ggboxplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          notch  = TRUE,
+          fill = "sex",
+          add = "jitter",
+          xlab = "Sex",
+          ylab = "Mass (g)",
+          main = "Mass of Australian frogs by sex") #Main title
+```
+
+
+
+Move legend to bottom
+```{r}
+ggboxplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          notch  = TRUE,
+          fill = "sex",
+          add = "jitter",
+          xlab = "Sex",
+          ylab = "Mass (g)",
+          main = "Mass of frogs by sex",
+          legend = "bottom")
+```
+
+
+Change color pallete
+```{r}
+ggboxplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+         # notch  = TRUE,
+          fill = "sex",
+          add = "jitter",
+          xlab = "Sex",
+          ylab = "Mass (g)",
+          main = "Mass of frogs by sex",
+          legend = "bottom",
+          palette = c("green","blue"))
+```
+
+
+
+#### Plotting multple plots with cowplot::plot_grid
+
+We can save a plot to an R object
+```{r}
+gg.my.frogs <- ggboxplot(data = my.frogs,
+          y = "mass",
+          x = "sex")
+
+
+```
+
+
+Call just the object (eg, just type it into the console. or highlight jsut the word)
+```{r}
+gg.my.frogs
+```
+
+Make an object using the frogarms data
+```{r}
+gg.frogarms <- ggboxplot(data = frogarms, #use original data
+          y = "mass",
+          x = "sex")
+
+```
+
+
+Now plot both
+
+```{r}
+plot_grid(gg.my.frogs,
+          gg.frogarms)
+```
+
+
+
+Add labels.  Note that alignment is off sometimes.
+
+```{r}
+plot_grid(gg.my.frogs, 
+          gg.frogarms,
+          labels = c("a)My fogs","b)All the frogs"))
+```
+
+
+
+
+
+### Plot means with error bars
+
+Super hand function ggerrorplot()
+Default is mean +/- 1 standard error
+```{r}
+ggerrorplot(data = my.frogs,
+          y = "mass",
+          x = "sex")
+```
+
+
+
+Mean and se; note sd is not often used in publications
+```{r}
+ggerrorplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          desc_stat = "mean_sd")
+```
+
+
+Mean and 95% confidence interval
+```{r}
+ggerrorplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          desc_stat = "mean_ci")
+```
+
+
+Plot your data and original data
+```{r}
+#your data
+gg.my.frogs <- ggerrorplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          desc_stat = "mean_ci")
+
+#all of the data
+gg.all.frogs <- ggerrorplot(data = frogarms, #change data
+          y = "mass",
+          x = "sex",
+          desc_stat = "mean_ci")
+
+plot_grid(gg.my.frogs, gg.all.frogs)
+```
+
+Set colors
+```{r}
+ggerrorplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          desc_stat = "mean_ci",
+          color = "sex")
+```
+
+
+Add raw data.  kinda crazy
+```{r}
+ggerrorplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          desc_stat = "mean_ci",
+          color = "sex",
+          shape = "sex",
+          add = "point")
+```
+
+
+Jitter raw data.  even crazier
+```{r}
+ggerrorplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          desc_stat = "mean_ci",
+          color = "sex",
+          add = "jitter")
+```
+
+
+
+Back to just the means Increase size
+```{r}
+ggerrorplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          desc_stat = "mean_ci",
+          color = "sex",
+          size = 1.5) #
+```
+
+
+
+Move legend to the bottom
+
+?set all of this stuff as eval = F and have students figur eout how to add it?
+m aybe not - goal is just to do "1st encounter"
+```{r}
+ggerrorplot(data = my.frogs,
+          y = "mass",
+          x = "sex",
+          desc_stat = "mean_ci",
+          color = "sex",
+          size = 1.5,
+          xlab = "Sex",
+          ylab = "Mass (g)",
+          legend = "bottom") #
+```
+
+
+
+
+
+
+## arms
+```{r}
+ggerrorplot(data = frogarms,
+          y = "arm",
+          x = "sex",
+          desc_stat = "mean_ci",
+          color = "sex",
+          size = 1.5,
+          xlab = "Sex",
+          ylab = "Mass (g)",
+          legend = "bottom") #
+```
+
+

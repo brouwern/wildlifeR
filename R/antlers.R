@@ -41,7 +41,7 @@
 #'           x = "mass",
 #'           title = "All data")
 #'
-#'  gghistogram(data = antlers,
+#' gghistogram(data = antlers,
 #'           x = "mass",
 #'           facet.by = "diet",
 #'           fill = "diet",

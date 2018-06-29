@@ -3,6 +3,8 @@
 export(NA_to_zero)
 export(combine_NLCD_classes)
 export(expand_BBS_routes)
+export(make_my_data2L)
 export(plotTukeysHSD)
+export(plot_t_test_ES)
 export(sample_BBS_routes)
 export(sample_dove_routes)
