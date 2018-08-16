@@ -74,8 +74,8 @@ make_my_data2L <- function(dat,
   group2 <- sample(dat$i.rows.working[-i.group1],size = n.sample,replace = with.rep)
 
   #create new dataframe
-  my.dat <- rbind(frogarms[m,],
-                  frogarms[f,])
+  my.dat <- rbind(frogarms[group1],
+                  frogarms[group2,])
 
   return(my.dat)
 }
