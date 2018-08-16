@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Nathan Brouwer brouwern@gmail.com @lobrowR" />
+
+<meta name="date" content="2018-08-16" />
+
+<title>Intro to 1-way ANOVA: impacts of diet on deer antlers</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Intro to 1-way ANOVA: impacts of diet on deer antlers</h1>
+<h4 class="author"><em>Nathan Brouwer <a href="mailto:brouwern@gmail.com">brouwern@gmail.com</a> <span class="citation">@lobrowR</span></em></h4>
+<h4 class="date"><em>2018-08-16</em></h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The purpose of this lab is to learn the basics of 1-way ANOVA in R. We will explore data where white-tailed deer where fed different diets over the course of the spring and summer of one year.</p>
+<ul>
+<li>Diet 1: “Hi.Hi” = deer fed high protein diets during spring and summer</li>
+<li>Diet 2: “Hi.Lo” = deer fed high quality diets during spring, but low quality diet during summer</li>
+<li>Diet 3: “Lo.Hi” = deer fed low-protein diet during spring but high quality diet during summer.</li>
+</ul>
+<p>Note: there is no “Lo.Lo” treatment</p>
+<p>Analyis with 1-way ANOVA will allow us to determine whether</p>
+<ol style="list-style-type: decimal">
+<li>All of the means are similar or if at least one differs</li>
+<li>Which treatment, if any, is most likely impacting antler growth.</li>
+</ol>
+<div id="references" class="section level3">
+<h3>References</h3>
+<p>Data were simulated from summary parameters in:</p>
+<p>Asleson et al. 1997. Effects of seasonal protein restriction on antlerogenesis and body mass in adult male white-tailed deer. Journal of Wildlife Management 61.</p>
+<p>For more information see ?antlers</p>
+</div>
+</div>
+<div id="part-1-summary-stats-plotting-means" class="section level2">
+<h2>Part 1: Summary stats &amp; plotting means</h2>
+<div id="summary-stats-on-all-data" class="section level3">
+<h3>1) Summary stats on all data</h3>
+<p>In this section the grand mean on ALL the data is calculated; data is NOT broken up by treatment! Data is considered by subgroup below</p>
+<p>Load data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(wildlifeR)
+<span class="kw">data</span>(antlers)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># total sample size (all observations)</span>
+<span class="kw">dim</span>(antlers)</code></pre></div>
+<pre><code>## [1] 30  5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n.total &lt;-<span class="st"> </span><span class="kw">length</span>(antlers<span class="op">$</span>mass)
+
+<span class="co">#mean of ALL samples</span>
+<span class="kw">summary</span>(antlers)</code></pre></div>
+<pre><code>##     diet         mass           circum            beam      
+##  Hi.Hi:10   Min.   :346.0   Min.   : 57.95   Min.   :247.3  
+##  Hi.Lo:10   1st Qu.:526.9   1st Qu.: 87.85   1st Qu.:392.9  
+##  Lo.Hi:10   Median :648.4   Median : 96.67   Median :424.5  
+##             Mean   :635.9   Mean   : 99.43   Mean   :412.0  
+##             3rd Qu.:762.4   3rd Qu.:112.17   3rd Qu.:440.2  
+##             Max.   :919.3   Max.   :136.06   Max.   :568.2  
+##      spread     
+##  Min.   :223.8  
+##  1st Qu.:295.1  
+##  Median :346.0  
+##  Mean   :341.4  
+##  3rd Qu.:383.5  
+##  Max.   :459.7</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(antlers<span class="op">$</span>mass)</code></pre></div>
+<pre><code>## [1] 635.9164</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#variance of ALL samples</span>
+<span class="kw">var</span>(antlers<span class="op">$</span>mass)</code></pre></div>
+<pre><code>## [1] 25767.67</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#stdev of ALL samples</span>
+mass.sd &lt;-<span class="st"> </span><span class="kw">sd</span>(antlers<span class="op">$</span>mass)</code></pre></div>
+</div>
+<div id="standard-error-for-all-data" class="section level3">
+<h3>2) Standard error for all data</h3>
+<p>This ignores treatments. All data are combined / pooled.</p>
+<p>We’ll do this a couple different ways to show how R code can vary.</p>
+<p>Broken up into steps, saving an object at each stuep</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#square root of N</span>
+sqrt.n &lt;-<span class="st"> </span><span class="kw">sqrt</span>(n.total)
+
+<span class="co">#the see</span>
+mass.se &lt;-<span class="st"> </span>mass.sd<span class="op">/</span>sqrt.n
+
+mass.se</code></pre></div>
+<pre><code>## [1] 29.30738</code></pre>
+<p>Doing it a little “on fly”</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mass.se &lt;-<span class="st"> </span>mass.sd<span class="op">/</span><span class="kw">sqrt</span>(n.total)</code></pre></div>
+<p>Totally on the fly - nothing pre-saved as an object</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Using raw data</span>
+mass.se &lt;-<span class="st"> </span><span class="kw">sd</span>(antlers<span class="op">$</span>mass)<span class="op">/</span>
+<span class="st">             </span><span class="kw">sqrt</span>(<span class="kw">length</span>(antlers<span class="op">$</span>mass))</code></pre></div>
+</div>
+<div id="ci-for-all-data" class="section level3">
+<h3>3) 95% CI for all data</h3>
+<p>This is the 95% confidence interval around the overall/grand mean. W approximate the CI as 1.96*SE</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="fl">1.96</span><span class="op">*</span>mass.se</code></pre></div>
+<pre><code>## [1] 57.44246</code></pre>
+</div>
+<div id="calcualte-summary-stats-for-each-group" class="section level3">
+<h3>4) Calcualte summary stats for each group</h3>
+<ul>
+<li>Calculae the mean for each diet treatment using dplyr.<br />
+</li>
+<li>THe group_by() function split it up by treatment</li>
+<li>summarize() calcualtes the mean</li>
+<li>Recall the “%&gt;%” is called a “pipe”</li>
+</ul>
+<p>See pages 70-73 in “Getting started with R: An INtroduction for Biologists” for information on summarize() and group_by(). In particular see section 3.7.3 on page 72: “Method 2: Pipe, no nesting”</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)</code></pre></div>
+<pre><code>## Warning: package 'dplyr' was built under R version 3.5.1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">antlers <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(diet) <span class="op">%&gt;%</span>
+<span class="st">   </span><span class="kw">summarize</span>(<span class="dt">mass.mean =</span> <span class="kw">mean</span>(mass))</code></pre></div>
+<pre><code>## # A tibble: 3 x 2
+##   diet  mass.mean
+##   &lt;fct&gt;     &lt;dbl&gt;
+## 1 Hi.Hi      606.
+## 2 Hi.Lo      562.
+## 3 Lo.Hi      740.</code></pre>
+<p>We can get the SD like this</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">antlers <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(diet) <span class="op">%&gt;%</span>
+<span class="st">   </span><span class="kw">summarize</span>(<span class="dt">mass.sd =</span> <span class="kw">sd</span>(mass))</code></pre></div>
+<pre><code>## # A tibble: 3 x 2
+##   diet  mass.sd
+##   &lt;fct&gt;   &lt;dbl&gt;
+## 1 Hi.Hi    155.
+## 2 Hi.Lo    135.
+## 3 Lo.Hi    148.</code></pre>
+<p>And the sample size like this</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">antlers <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(diet) <span class="op">%&gt;%</span>
+<span class="st">   </span><span class="kw">summarize</span>(<span class="dt">mass.N =</span> <span class="kw">length</span>(mass))</code></pre></div>
+<pre><code>## # A tibble: 3 x 2
+##   diet  mass.N
+##   &lt;fct&gt;  &lt;int&gt;
+## 1 Hi.Hi     10
+## 2 Hi.Lo     10
+## 3 Lo.Hi     10</code></pre>
+<p>We can calcualte all of them like below. this time we’ll store the ouptut in an object “mass.means”</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mass.means &lt;-<span class="st"> </span>antlers <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(diet) <span class="op">%&gt;%</span>
+<span class="st">   </span><span class="kw">summarize</span>(<span class="dt">mass.mean =</span> <span class="kw">mean</span>(mass),
+             <span class="dt">mass.sd =</span> <span class="kw">sd</span>(mass),
+             <span class="dt">mass.N =</span> <span class="kw">length</span>(mass))</code></pre></div>
+</div>
+<div id="calcualte-the-3-se-values" class="section level3">
+<h3>5) Calcualte the 3 SE values</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mass.SEs &lt;-<span class="st"> </span>mass.means<span class="op">$</span>mass.sd<span class="op">/</span><span class="kw">sqrt</span>(mass.means<span class="op">$</span>mass.N)</code></pre></div>
+<p>Add them to the dataframme</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mass.means<span class="op">$</span>mass.SEs &lt;-<span class="st"> </span>mass.SEs</code></pre></div>
+<p>We can conver these to approximately 95% confidence intervals like this</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mass.means<span class="op">$</span>mass.CI95 &lt;-<span class="st"> </span>mass.means<span class="op">$</span>mass.SEs<span class="op">*</span><span class="fl">1.96</span></code></pre></div>
+<p>What do you notice about the relationship between the SD, SE, and 95% CI?</p>
+</div>
+</div>
+<div id="plot-the-3-mean-values" class="section level2">
+<h2>6) Plot the 3 mean values</h2>
+<p>We’ll plot means using ggpubr. We’ll give the function ggerrorplot() the raw data and it will calculate the means etc to make the plot.</p>
+<p>See the link below for more information <a href="http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/79-plot-meansmedians-and-error-bars/" class="uri">http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/79-plot-meansmedians-and-error-bars/</a></p>
+<p>mean_se mean_sd mean_range</p>
+<p>First, we’ll plot the means and their standard deviations SD</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggpubr)</code></pre></div>
+<pre><code>## Warning: package 'ggpubr' was built under R version 3.5.1</code></pre>
+<pre><code>## Warning: package 'ggplot2' was built under R version 3.5.1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggerrorplot</span>(antlers, 
+            <span class="dt">x =</span> <span class="st">&quot;diet&quot;</span>, 
+            <span class="dt">y =</span> <span class="st">&quot;mass&quot;</span>, 
+            <span class="dt">desc_stat =</span> <span class="st">&quot;mean_sd&quot;</span>,
+            <span class="dt">add =</span> <span class="st">&quot;mean&quot;</span>
+            )</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Next we’ll plot the standard errors. What happens to the x-axis?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggerrorplot</span>(antlers, 
+            <span class="dt">x =</span> <span class="st">&quot;diet&quot;</span>, 
+            <span class="dt">y =</span> <span class="st">&quot;mass&quot;</span>, 
+            <span class="dt">desc_stat =</span> <span class="st">&quot;mean_se&quot;</span>,
+            <span class="dt">add =</span> <span class="st">&quot;mean&quot;</span>
+            )</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>We can make a plot with both if we save the plots to R objects. We’ll use the argument ylim = c(400,1000) to make it so they both have the same y axes</p>
+<p>Note: We’ll need to load the gridExtra package</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;gridExtra&quot;</span>)
+plot1 &lt;-<span class="st"> </span><span class="kw">ggerrorplot</span>(antlers, 
+            <span class="dt">x =</span> <span class="st">&quot;diet&quot;</span>, 
+            <span class="dt">y =</span> <span class="st">&quot;mass&quot;</span>, 
+            <span class="dt">desc_stat =</span> <span class="st">&quot;mean_sd&quot;</span>,
+            <span class="dt">add =</span> <span class="st">&quot;mean&quot;</span>,
+            <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">400</span>,<span class="dv">900</span>) <span class="co">#set axes</span>
+            )
+
+plot2 &lt;-<span class="st"> </span><span class="kw">ggerrorplot</span>(antlers, 
+            <span class="dt">x =</span> <span class="st">&quot;diet&quot;</span>, 
+            <span class="dt">y =</span> <span class="st">&quot;mass&quot;</span>, 
+            <span class="dt">desc_stat =</span> <span class="st">&quot;mean_se&quot;</span>,
+            <span class="dt">add =</span> <span class="st">&quot;mean&quot;</span>,
+            <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">400</span>,<span class="dv">900</span>) <span class="co">#set axes</span>
+            )</code></pre></div>
+<p>Plot both plots. What do you notice about the standard errors?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">grid.arrange</span>(plot1,plot2)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>We can also easily make a plot using confience intervals.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggerrorplot</span>(antlers, 
+            <span class="dt">x =</span> <span class="st">&quot;diet&quot;</span>, 
+            <span class="dt">y =</span> <span class="st">&quot;mass&quot;</span>, 
+            <span class="dt">desc_stat =</span> <span class="st">&quot;mean_ci&quot;</span>,
+            <span class="dt">add =</span> <span class="st">&quot;mean&quot;</span>,
+            <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">400</span>,<span class="dv">900</span>) <span class="co">#set axes</span>
+            )</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p><strong>We have not calculated any p-values yet, but can you use the “inference by eye” approach to judge whether any of the means are likely to be “significantly” different based on the 95% confidence intervals?</strong></p>
+</div>
+<div id="part-2-omnibus-anova-test" class="section level2">
+<h2>Part 2: Omnibus ANOVA test</h2>
+<p>An “omnibus ANOVA test” (or “omnibus F test”) is used to gauge whether all the means are approximatley equal or whether at least one is likely to be different than the others. “Omnibus” means “overall”.</p>
+<div id="build-the-null-ho-and-alternative-ha-models" class="section level3">
+<h3>7 &amp; 8) Build the null (Ho) and alternative (Ha) models</h3>
+<p>We build a null modle represent the null hypothesis that there is no difference between the any of the groups. Not that we code “mass ~ 1” to represent this null model, which has just a single mean value for all of the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model.null &lt;-<span class="st"> </span><span class="kw">lm</span>(mass <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, 
+                 <span class="dt">data =</span> antlers)</code></pre></div>
+<p>We build an alternative model or “model of interest” to test the hypothesis we are interested in: that diet impacts antler growth in some way. This model will have 3 means: one for each treatment.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model.alt &lt;-<span class="st"> </span><span class="kw">lm</span>(mass <span class="op">~</span><span class="st"> </span>diet, 
+                 <span class="dt">data =</span> antlers)</code></pre></div>
+</div>
+</div>
+<div id="conduct-the-omnibus-test-and-get-the-anova-output" class="section level2">
+<h2>9-12) Conduct the Omnibus test and get the ANOVA output</h2>
+<p>Produce the ANOVA table using the anova() command. This will give us the F statistics (the test statistics for ANOVA), degrees of freedom, and our p-values. (It will also give us some other info that we’ll ignore for now but that is typically reported when you do an ANOAV)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(model.null,
+      model.alt)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: mass ~ 1
+## Model 2: mass ~ diet
+##   Res.Df    RSS Df Sum of Sq      F  Pr(&gt;F)  
+## 1     29 747262                              
+## 2     27 575719  2    171543 4.0225 0.02958 *
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<div id="optional" class="section level3">
+<h3>OPTIONAL:</h3>
+<p>If you are curious and things are going well, do the optional activities. These are completely optional</p>
+<div id="optional-the-summary-command-on-an-lm-object" class="section level4">
+<h4>Optional: The summary command on an lm() object</h4>
+<p>Look at the output and how it compares to what we did with anova() on the two models.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(model.null)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mass ~ 1, data = antlers)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -289.9 -109.0   12.5  126.5  283.4 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   635.92      29.31    21.7   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 160.5 on 29 degrees of freedom</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(model.alt)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mass ~ diet, data = antlers)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -322.09 -103.31   14.16   99.22  313.33 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   605.97      46.18  13.123 3.12e-13 ***
+## dietHi.Lo     -43.98      65.30  -0.673   0.5064    
+## dietLo.Hi     133.83      65.30   2.049   0.0503 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 146 on 27 degrees of freedom
+## Multiple R-squared:  0.2296, Adjusted R-squared:  0.1725 
+## F-statistic: 4.022 on 2 and 27 DF,  p-value: 0.02958</code></pre>
+</div>
+<div id="optional-the-anova-command-on-a-single-lm-object" class="section level4">
+<h4>Optional: The anova command on a single lm() object</h4>
+<p>Look at the output and how it compares to what we did with anova() on the two models.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(model.alt)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: mass
+##           Df Sum Sq Mean Sq F value  Pr(&gt;F)  
+## diet       2 171543   85772  4.0225 0.02958 *
+## Residuals 27 575719   21323                  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="optional-change-how-model-is-defined" class="section level4">
+<h4>Optional: Change how model is defined</h4>
+<p>We’ll add a “-1” to the model statemnt and call summary(). How does this differe from summary(model.alt)? (The difference is subtle…)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model.alt.<span class="dv">2</span>  &lt;-<span class="st"> </span><span class="kw">lm</span>(mass <span class="op">~-</span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>diet, <span class="dt">data =</span> antlers)
+
+<span class="kw">summary</span>(model.alt.<span class="dv">2</span>)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mass ~ -1 + diet, data = antlers)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -322.09 -103.31   14.16   99.22  313.33 
+## 
+## Coefficients:
+##           Estimate Std. Error t value Pr(&gt;|t|)    
+## dietHi.Hi   605.97      46.18   13.12 3.12e-13 ***
+## dietHi.Lo   561.99      46.18   12.17 1.80e-12 ***
+## dietLo.Hi   739.80      46.18   16.02 2.59e-15 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 146 on 27 degrees of freedom
+## Multiple R-squared:  0.9553, Adjusted R-squared:  0.9503 
+## F-statistic: 192.3 on 3 and 27 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="optional-plotting-model-diagnostics" class="section level4">
+<h4>Optional: Plotting model diagnostics</h4>
+<p>We can plot the “model diagnostics” using plot(). We will go into further details on this topic in the future.</p>
+<p>Note: the par(mfrow = c(2,2)) is a bit of cryptic R code that sets up the plotting window to have 4 panels</p>
+<p>Also note: we’ll use the ggplot2 addon library ggfortify for this, which has a fabulous function autoplot()</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#load the library</span>
+<span class="kw">library</span>(ggfortify)
+
+<span class="co">#plot the residuals</span>
+<span class="kw">autoplot</span>(model.alt)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+</div>
+</div>
+<div id="part-3-pairwise-comparisons" class="section level2">
+<h2>Part 3: Pairwise comparisons</h2>
+<p>The traditional way of doing a 1-way ANOVA is to follow up a “significant” Omnibus test with seperate t-tests that compare pair of means. This is called doing “pairwise” comparison - you go pair by pair doing t-tests.</p>
+<p>The function pairwise.t.test() is used. Note that p.adjust.method = “none” line, which means we are given raw p-values that have <em>not</em> been corrected fro muotipel comparisons (see below)</p>
+<div id="get-pairwise-p-valeus" class="section level3">
+<h3>13-15) Get pairwise p-valeus</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pairwise.t.test</span>(<span class="dt">x =</span> antlers<span class="op">$</span>mass,
+                <span class="dt">g =</span> antlers<span class="op">$</span>diet,
+                <span class="dt">p.adjust.method =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  antlers$mass and antlers$diet 
+## 
+##       Hi.Hi Hi.Lo
+## Hi.Lo 0.506 -    
+## Lo.Hi 0.050 0.011
+## 
+## P value adjustment method: none</code></pre>
+</div>
+</div>
+<div id="part-4-pairwise-comparisons-correcting-for-multiple-comparisons-effect-sizes" class="section level2">
+<h2>Part 4: Pairwise comparisons, correcting for multiple comparisons, &amp; effect sizes</h2>
+<p>The more t-tests you do, the more likely you are to get a “Significant” (low) p-value just due to chance. Rememeber - the definition of a p-value is such that it always leaves open the possiblity that the patterns you see are just due to random noise. This is called the “problem of multiple comparisons.”</p>
+<p>One way that is advocated to to deal with this issue of multiple comparisons is to increase p-values. One way of doing this this is to use a “Bonferroni” correction. This can be done using pairwise.t.test() and setting p.adjust.method = “bonferroni”</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pairwise.t.test</span>(<span class="dt">x =</span> antlers<span class="op">$</span>mass,
+                <span class="dt">g =</span> antlers<span class="op">$</span>diet,
+                <span class="dt">p.adjust.method =</span> <span class="st">&quot;bonferroni&quot;</span>)</code></pre></div>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  antlers$mass and antlers$diet 
+## 
+##       Hi.Hi Hi.Lo
+## Hi.Lo 1.000 -    
+## Lo.Hi 0.151 0.034
+## 
+## P value adjustment method: bonferroni</code></pre>
+<div id="build-model-with-aov-function" class="section level3">
+<h3>17) Build model with aov() function</h3>
+<p>When doing a 1-way ANOVA with three groups, a good option is to do a Tukey Test using the TukeyHSD() function. However, to do this you need first need to jump through a hoop: you need to redo the model model using the aov() function. (aov stands for “analysis of variance”)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model.alt.aov &lt;-<span class="st"> </span><span class="kw">aov</span>(mass <span class="op">~</span><span class="st"> </span>diet, 
+                     <span class="dt">data =</span> antlers)</code></pre></div>
+</div>
+<div id="get-p-values-with-tukeys-hsd" class="section level3">
+<h3>18) Get p-values with Tukey’s HSD</h3>
+<p>When the model is fit using aov() you can then use TukeyHSD(). This gives you p-values for each set of pairwise comparisons and, more importantly effect sizes and their confidence intervals for each comparison. Importantly, the p-values and CIs have been increased to deal with the fact that you are making multiple comparisons.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">TukeyHSD</span>(model.alt.aov)</code></pre></div>
+<pre><code>##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = mass ~ diet, data = antlers)
+## 
+## $diet
+##                  diff        lwr      upr     p adj
+## Hi.Lo-Hi.Hi -43.97973 -205.89517 117.9357 0.7807326
+## Lo.Hi-Hi.Hi 133.83308  -28.08236 295.7485 0.1198088
+## Lo.Hi-Hi.Lo 177.81281   15.89737 339.7282 0.0292046</code></pre>
+</div>
+<div id="plot-effect-sizes" class="section level3">
+<h3>19) Plot effect sizes</h3>
+<p>The wildlifeR package contains a function that makes nice plots (IMHO) of the output of the TukeyHSD function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))
+
+tukey.out &lt;-<span class="st"> </span><span class="kw">TukeyHSD</span>(model.alt.aov)
+
+<span class="kw">plotTukeysHSD</span>(tukey.out)
+<span class="kw">abline</span>(<span class="dt">h =</span> <span class="dv">0</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">lty =</span> <span class="dv">2</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+</div>
+<div id="summary-of-modeling-workflow" class="section level2">
+<h2>Summary of modeling workflow</h2>
+<p>First, we plot the means of the data with error bars</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggerrorplot</span>(antlers, 
+            <span class="dt">x =</span> <span class="st">&quot;diet&quot;</span>, 
+            <span class="dt">y =</span> <span class="st">&quot;mass&quot;</span>, 
+            <span class="dt">desc_stat =</span> <span class="st">&quot;mean_ci&quot;</span>,
+            <span class="dt">add =</span> <span class="st">&quot;mean&quot;</span>,
+            <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">400</span>,<span class="dv">900</span>) <span class="co">#set axes</span>
+            )</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Next, we fit a null and alternative model with the lm()</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model.null &lt;-<span class="st"> </span><span class="kw">lm</span>(mass <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> antlers)
+
+model.alt &lt;-<span class="st"> </span><span class="kw">lm</span>(mass <span class="op">~</span><span class="st"> </span>diet, <span class="dt">data =</span> antlers)</code></pre></div>
+<p>THen, we compare these two models with the anova() command</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(model.null,
+      model.alt)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: mass ~ 1
+## Model 2: mass ~ diet
+##   Res.Df    RSS Df Sum of Sq      F  Pr(&gt;F)  
+## 1     29 747262                              
+## 2     27 575719  2    171543 4.0225 0.02958 *
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<p>We can interpret the P-value for this. We can also carry out a Tukey’s HSD test to calcualte effect sizes with confidence intervals corrected for multiple comparisons</p>
+<p>First we have to re-fit the model with the aov() command</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model.alt.aov &lt;-<span class="st"> </span><span class="kw">aov</span>(mass <span class="op">~</span><span class="st"> </span>diet, 
+                     <span class="dt">data =</span> antlers)</code></pre></div>
+<p>Then we use TukeyHSD() on it (note it is Tukey, NOT Tukeys w/ an “s”)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">TukeyHSD</span>(model.alt.aov)</code></pre></div>
+<pre><code>##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = mass ~ diet, data = antlers)
+## 
+## $diet
+##                  diff        lwr      upr     p adj
+## Hi.Lo-Hi.Hi -43.97973 -205.89517 117.9357 0.7807326
+## Lo.Hi-Hi.Hi 133.83308  -28.08236 295.7485 0.1198088
+## Lo.Hi-Hi.Lo 177.81281   15.89737 339.7282 0.0292046</code></pre>
+<p>If I were to write this up in a paper I would say something like this:</p>
+<p>There was a significant impact of the diet treatment on the mass of deer antlers in the experiment (F = 4.02, P = 0.03). There was no significant difference between the “Hi-lo” and “Hi-Hi” diets (Effect Size = -44, Tukey’s HSD 95% CI for effect size = -206 to 118; p = 0.8) nor was there a difference between the Lo.Hi and the Hi.Hi. treatment (Effect size = 133, 95% CI = -28 to 296, p = 0.13). The only significant difference was between the Hi.Lo and the Lo.Hi diet (Effect Size = 178, 95% CI = 16 to 340, p = 0.029).</p>
+</div>
+<div id="exploring-regression-with-the-antler-data" class="section level2">
+<h2>Exploring regression with the antler data</h2>
+<p>The antler data has several response (y) variables: mass, circumference, beam length and spread. We can use regression to use one variable to predict the others.</p>
+<p>Let’s say we want to use the beam length (the straight part of the antler from the base of the skull to where the points branch) to predict the mass.</p>
+<p>The word equation would be mass ~ circum</p>
+<p>We could make the scatterplot with a regression line like this</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggscatter</span>(<span class="dt">data =</span> antlers,
+          <span class="dt">y =</span> <span class="st">&quot;mass&quot;</span>,
+          <span class="dt">x =</span> <span class="st">&quot;beam&quot;</span>,
+          <span class="dt">add =</span> <span class="st">&quot;reg.line&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>HOw do we interpret the confidence interval aroudn this plot? What do we predict the p value to be approxmatley for this regression line?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggscatter</span>(<span class="dt">data =</span> antlers,
+          <span class="dt">y =</span> <span class="st">&quot;mass&quot;</span>,
+          <span class="dt">x =</span> <span class="st">&quot;beam&quot;</span>,
+          <span class="dt">add =</span> <span class="st">&quot;reg.line&quot;</span>,
+          <span class="dt">conf.int =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAEgCAMAAABb4lATAAAAWlBMVEUAAAAAADoAAGYAOpAAZrY6AAA6ADo6AGY6Ojo6kNtmAABmADpmkJBmtrZmtv+QOgCQZgCQ2/+ZmZm2ZgC225C2/7a2///bkDrb////tmb/25D//7b//9v///9JMQYHAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAL80lEQVR4nO2djXbjJhBGtUncbbxttrHbVWyv3v81K5DtRJIFA8Pv8N1zNkdtosBwLQRITLoBiKbLXQEQFwgWDgQLB4KFA8HCgWDhMAXj81E6ECwcCBYOBAsHgoUDwcKBYOFAsHAg2ErX1RwlBNvouqoNQ7CFrqvbMARbgGDhyBbcd923d3VwWh1QThdB3X7Nho6jy/PubdQ6Hqh/nweU04VQtV+jocv+dfzaP3/8/qkOji/D/YByOigBk6HpUh2/6qt46J9+3Q8op4MSIAju3s5/6INR8O2AcjooAZOh6/Xavd0v5fuBPrXu0UcjEAZZW4Ktp4MCMBs6dt3Tfz/ew3TRuN5zYG/z8/dfQQZZ6NGzYG/yQNOk2leEasU8D34ZFusb/gsdELwiSXMYi7jsbwuT/eqAcPq8IAhekKY90j1sgN85iT7xCZ8mwe8MeYLBDAiWjrR7MFiSfxQd/XQQHQgWDgQLB4KFA8HCgWDhQLBwINhG5SusEGyh9mckEGym+qecEGymBsGHg+GbEGymeMEHheH7EGyhbL+HAwRzKdfv4Y7hhyC4Vg4HCBbM4QDBUjmsMfw0BFfGA70QLIaHdiFYClt6GYL7cY6gtpu1nISFSPTZ1LZef8G92onUtZ6EhUTU9RCTW47g3z/VNsKvmwqRhGWDmCuaVr18wUjCYiOaYILdAF304x3+Za/SJqWLJJimlzHIug6pkKPDTBy/VLsMwcfxUj3vXiHYTAS/DnIZgj9vvciTZSK4X0e93oJbzHTnIyqsYGe73Ct4vF7bmSb5mQro10cv/x7czEKH77UYyK+fXYZglQitU9dsgCQsVZDxDSxvuSzBViA4DCy9EEwni1+m3cSCbQUWTnq/fL0ZBFdu2UTWBY2yBNcv+YHMcH14ILeZBVdt+YHMYKOwkHqzC67U8iOZgQSH1VuG4PosxxEc2m1ZgquS/FAm028UvYUJrsfyQ5kMv5HsFinYVq0yCDgliubW1pI5BVuqJogoVmmtmFuwrX7hSb5WFdqmWwMWIdhWyZDMbqyxZQd06Nt25Qi21TQMs6Fx5EcLYeQxm60wwZba8vkqOOrDQX47hGmyAgXbqsyrcArBgdogSGuVKthWb/8aL3ror4ILXIRkN1TRgi1196zybIy18Ms0HDr4AI1UvGBbALzqr/wyDEeJnN0+dQi2RREEjuB4UXObpiLBtlC4eAqOHDAJU1SMFnl4et5weMG4+k0QKw1TUMw2yRs0r/LraOh+k4ZpxRST4Xuna6f15pKjo6TgopE8SAuGqlo/svc/IkzculJchEHJE50VQ42tgtVWQpfNZwXHyiN3YCYM1bYJ1nvPXLaP5o5V4SXQRO6AbBiqbhOsNhg65ejIHescb6WFxrOBof4WwZe96pNdUjjkjtWEIKVz/AV/NVq/YLH4Cz4+fwxbXTQEF4O34KmHrm6Q1RzegiehVU2TmsRb8O1uW/xCR+NQBaseue86fd/V3Dtjeo6O3LE2CVXwOKQ6716+dsE2ILgIiIYu+zede/TLKBmCq8BBsFq56lsU3HVd7iq40t2hGjq+XPbPH/r5UWuCdTvlrgSNbg3V0GU/jqCmNOCNCb42VO5qbPBA6by2ToacaFdw3I/DhtKtSkKwBUPbmc6IUQWi0jlUQ6t5cCOCPf3yDJuMuv5iqqFW58FeHbS7h5BK5xANNTsPjiY4mtEFDoLbnAe7t/jWGamUzqEaance7N789zPyKJ1DNdTQPJjT+iUoneNkyIlaBTvKKE/pHAheYHVjMlqE0jlUQ2MXrRE/yHpgqjKlc6iGxnlwf/tTlC0IrtfoAqIhtZB1ev4YevpSVl2CBSmdQxb8Npy//9L/hAgWq3QO0ZB6Z/Ly471uwY0onUM1pJawjq+VddGS7qW+kA0dX9RImj6IziMYSpc4GXIikWAYNVOhYCh1gWpotdBx3nWdXplOkKMDSv0hCv79czG6UpPiiDk6oDQURMFqHvyVaatZ7/YHoo0VgdI4EAVP+j6ZdgMPnO2jJqNQGgyi4E+jE6en//b6D0S7bACH0gyQBe8mD1eBfadTKL1spHDQP2oRnDvyRiAKXr7L0X+7Xq/I0VE4RMHLQdZ0rx3vu8jRUThEwctB1iRylIocHYVDFLwcZE1X9CngNAnEgSj4tpB1X8lSj5W007JzdGAwRxS8RiUU1t12yTk6MFyv8WEDHUzIIPj+g+Rf+iBURhWjA8EHa0/uGHjAAALgZMiJAgQT78GmzwGrCUKH44OTISdKEEzre9eCeZGviRafHSdDThQhmMRMMC9oE3mCczLkRD2C7z25W3zef+ouaWymCDzrv3l60sCc8JD1+IEZnVShmUJgVP/h6alicsQvuo5rOFGLmGLgVb4GwYzoiIIJP5MtROGCmdHRBFMv8yxhihbMi40q2KMjTxioXMG8wKboYglWJIpVpGBeTF+iiylYEz9gcYJ58SyiC3sP3iJq0MIE86JZh0dTx59KMdvNVDdetYoSzAvlcXwB1NGJEbkQwbwoiiJw+PUL5gXgR/QLO1wb1C6YV31PQixg2gnTCnUL5lXelzBL1DTY7VCtYF69WaQUrOE0RqWCebVmklywpiHBvCoHIIdfTQOCedUNRSa/EwEFT3tZ1E6kBElY6tFbAmEE3zejFbE3yashJMMXfNsIXMLuQp8WaAGW4P5qMvv+YJ/IgcYo+PhnZ0jC8ngsCbdlYRKs/sbOoNLP5svRET7g1rAP9zMmYQkZaKvYBedJwhIyxqYhCM6QhCVkhI1jEjzpTJ6EJXSIbWMeRSuTx7RJWIJH2DjmLvo4ToR0crRUSVjI1c65GFwV5TxscCo21+Oc+ihFsFupWR7I1kkRgp1L3RIM6ysKEOxR6oZgXNdrcgv2LHbbLwzPySmYU+5GBw3BS/IJ5hX8sDIQvCaTYF6pm7WB3xVZBPPKNFUHfpekF8wrEDiSVjCvMLCBqeNKKZhXFNjCOPRIJphXDtjGPHlIJJhXCjCRXzCvCGAht2BeAUVR6Cws5z2Y99sLo9h1lEyjaN5vLo86V0KjCeb93hKBYP0/3LOq1wIEDwXfpkJQZXBhBdf5ISdTY2gQLJzmBVdWXWes0R3VFlJyjo4a/dZVYVdswZ06JZi+daWy5qqwy3HEEttl393+SDRx81ldNC+4f/5nFOyyfbQuWhd8/uNd3YNdcnRUhoggTBiDUz2yEuySwqE2hPu1pFEa5UoXLB3jDn/VIW930bbTQQmYDPXXIcib3EGWfEgLHXKnSfKhrWQ55OgAZUFcqqTn6ABlEfyNDlAWECwcCBYOBAsHgoUDwcKBYOFAsHAgWDgQ7EKFD48h2IEaX/+AYDpVvsAFwXQgWDgQLJ0K/UKwE/X5hWDpQLBwIFg4ECwcCBYOBAuHKxgUSiDBoclRHdllQrDwMiFYeJmFCQahgWDhQLBwIFg4ECwcCBZOAYL7VR7MRULMOJiTcIbnslcLTC9JyxxKEKxSuszTQyzzRETBkoQzPFOGoiF1nNkFX/avKuPaiyHTS5xizUk4w3NLPpU2zvyCNUrwdq6mGNiScEYo8WoybZyFCO7Hjmo721oEjEk443D8c7wFvw5p4yxD8EkHvp0vMTz2JJzBuezVPf/4mjTOoQzBqsGfP1IGbk/CGYnxem1SsAozYddFSMIZq+TdW4Nd9DAFnm7wQUjCGYlRamuDrCnM8XOcePpgScIZnFxxZhf82dBpFwAsSTgjlKdMHpPHmV/wcFSdpTrYSogZqVhjEs4YBWaJswDBICYQLBwIFg4ECweChQPBwoFg4UCwcFoVPK0cNgAECweChdOu4L92+kWS6eGhPrguFp93f+/H/3PeXZeO66Zdweo1sN3r9X0wdaAe90z/MX7pu6dfCZ4Px6ddweqiHQ3q13bVc9rLj/ep59bfun6p/xJuV7B+/n57M+qq8qR6ZX38+aVymhWsX4gav55ur++oe/HTvzsIlsHiCh6+KIVgCVzvwc8fl/1Von698YQuWgh6qKx06oHzcPym33a87McJEwRLYJoH316RUnOi6Q2pq2kIBpUAwcKBYOFAsHAgWDgQLBwIFg4ECweChQPBwvkfVgbn2bq1iwgAAAAASUVORK5CYII=" /><!-- --></p>
+<p>The regression code for a null model would be</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mass.vs.beam.null &lt;-<span class="st"> </span><span class="kw">lm</span>(mass <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> antlers)</code></pre></div>
+<p>The alternative hypothesis would be represented by the model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mass.vs.beam.alt &lt;-<span class="st"> </span><span class="kw">lm</span>(mass <span class="op">~</span><span class="st"> </span>beam, <span class="dt">data =</span> antlers)</code></pre></div>
+<p>We can compare these models with the anova() command</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(mass.vs.beam.null,
+      mass.vs.beam.alt)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: mass ~ 1
+## Model 2: mass ~ beam
+##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+## 1     29 747262                           
+## 2     28 741623  1    5639.1 0.2129 0.6481</code></pre>
+<p>We can get the details of the regression line using the summary() command on the alternative model</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(mass.vs.beam.alt)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mass ~ beam, data = antlers)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -295.82 -116.91   10.78  121.10  280.90 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept) 542.0213   205.6510   2.636   0.0135 *
+## beam          0.2279     0.4939   0.461   0.6481  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 162.7 on 28 degrees of freedom
+## Multiple R-squared:  0.007546,   Adjusted R-squared:  -0.0279 
+## F-statistic: 0.2129 on 1 and 28 DF,  p-value: 0.6481</code></pre>
+<p>If I were writing up these results I would say something like this:</p>
+<p>“THere was a positive relationship between beam length and antler mass (slope = 0.22, SE = 0.49) but the relationship was not significant (F = 0.2, p = 0.6). The model was a very poor fit to the data and explained almost no variation in the data (R^2 = 0.008)”</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

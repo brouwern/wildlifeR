@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Nathan Brouwer brouwern@gmail.com @lobrowR" />
+
+<meta name="date" content="2018-08-16" />
+
+<title>Selecting different species and landovers from the wildlifeR package</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Selecting different species and landovers from the wildlifeR package</h1>
+<h4 class="author"><em>Nathan Brouwer <a href="mailto:brouwern@gmail.com">brouwern@gmail.com</a> <span class="citation">@lobrowR</span></em></h4>
+<h4 class="date"><em>2018-08-16</em></h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Most examples associated with the BBS data from the wildlifeR package relate to forest birds and how their abundance changes with variation in forest cover (eg the Scarlet Tanager and the Pileated Woodpecker). In this example we’ll look at urban and forest habitats.</p>
+<div id="installing-widlifer" class="section level3">
+<h3>Installing widlifeR</h3>
+<p>The current version of wildlifeR can be downloaded like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#load devtools</span>
+<span class="kw">library</span>(devtools)</code></pre></div>
+<pre><code>## Warning: package 'devtools' was built under R version 3.5.1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#download wildlifeR from github</span>
+<span class="kw">install_github</span>(<span class="st">&quot;brouwern/wildlifeR&quot;</span>)
+
+<span class="co">#load wildlifeR into your current R sessions</span>
+<span class="kw">library</span>(wildlifeR)</code></pre></div>
+</div>
+<div id="selecting-a-focal-bird-species" class="section level3">
+<h3>Selecting a focal bird species</h3>
+<p>We’ll look at the Brown Headed Cowbirds. Its alphabetic code is “BHCO”.</p>
+</div>
+<div id="determing-the-numeric-species-code" class="section level3">
+<h3>Determing the numeric species code</h3>
+<p>In their database the USGS uses AOU numeric codes, <strong>not</strong> alphabetic codes. We can look up numeric codes using the dataset AOU_species_codes included in wildlifeR.</p>
+<p>First, load the AOU code data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(AOU_species_codes)</code></pre></div>
+<p>Then make sure the dplyr package is loaded</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)</code></pre></div>
+<p>We can see the entry for BHCO and its numeric code in the “spp.num” code using the dplyr function filter()</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">AOU_species_codes <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(alpha.code <span class="op">==</span><span class="st"> &quot;BHCO&quot;</span>)</code></pre></div>
+<pre><code>##   spp.num alpha.code                 name            spp order
+## 1    4950       BHCO Brown-headed Cowbird Molothrus ater  1089</code></pre>
+<p>A more detailed walk through of this process can be found in the vignette “Data Cleaning: Filtering focal rows with dplyr”. This vignette can most easily be accessed at the wildlifeR website <a href="https://brouwern.github.io/wildlifeR/" class="uri">https://brouwern.github.io/wildlifeR/</a> .</p>
+<p>The filter() code above tells us that the the numeric code is 4950 We can use this number to extract just the BHCO data. We’ll save this data to an object called “BBA_PA_BHCO”. (Note that the species code is <strong>not</strong> the same row number of the dataframe).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_BHCO &lt;-<span class="st"> </span>BBS_PA <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Aou <span class="op">==</span><span class="st"> &quot;4950&quot;</span>)</code></pre></div>
+</div>
+<div id="selecting-a-focal-analysis-question" class="section level3">
+<h3>Selecting a focal analysis question</h3>
+<p>We’ll be examining this data:</p>
+<ul>
+<li>How does the abundance of a focal bird species in Pennsylvania vary with the type of habitat in the landscape.</li>
+</ul>
+</div>
+<div id="formatting-data-for-habitat-analyses" class="section level3">
+<h3>Formatting data for habitat analyses</h3>
+<div id="subsetting-bird-data" class="section level4">
+<h4>Subsetting bird data</h4>
+<p>The habitat data used wildlifeR was collected in 2006. We will therefore use the filter() command again to isolate just that year of data. (Note that “Year” has a capital “Y” while the rest is lowercase).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_BHCO_<span class="dv">2</span> &lt;-<span class="st"> </span>BBS_PA_BHCO <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Year <span class="op">==</span><span class="st"> </span><span class="dv">2006</span>)</code></pre></div>
+</div>
+<div id="preparing-habitat-data" class="section level4">
+<h4>Preparing habitat data</h4>
+<p>The habitat data are found in the dataframe BBS_PA_landcover_1km. For each BBS route the number of pixels of different habitat was determined using a GIS. These data are from the National Land Cover Dataset (NCLD) and each column is a different type of cover.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(BBS_PA_landcover_1km)</code></pre></div>
+<p>Urban cover classes are numbers 21 through 24. These represent variosu “developed” landcovers with different intensities of develoement and impervious surfaces. See the help file using ?BBS_PA_landcover_1km for more information. Forest land covers are numbers 41, 42, 43.</p>
+<p>W’ll isolate both the urban and forestlandcovers and the Route number in a new dataframe called BBS_PA_landcover_1km_2. We’ll also take the “SUM” column, which is the total number of pixels in the buffer around the BBS route (this varies somewhat between routes and so landcover needs to be expressed as a proportions; see below)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_landcover_1km_<span class="dv">2</span> &lt;-<span class="st"> </span>BBS_PA_landcover_1km <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(Route, 
+         NLCD.<span class="dv">21</span>, <span class="co"># Developed Open Space</span>
+         NLCD.<span class="dv">22</span>, <span class="co"># ... Low Intensity</span>
+         NLCD.<span class="dv">23</span>, <span class="co"># ... Medium Intensity</span>
+         NLCD.<span class="dv">24</span>, <span class="co"># ... High Intensity</span>
+         NLCD.<span class="dv">41</span>, <span class="co"># Deciduous forest</span>
+         NLCD.<span class="dv">42</span>, <span class="co"># Evergreen</span>
+         NLCD.<span class="dv">43</span>, <span class="co"># Mixed</span>
+         SUM)</code></pre></div>
+</div>
+<div id="combining-landcovers" class="section level4">
+<h4>Combining landcovers</h4>
+<div id="combining-urban-landcover-classes" class="section level5">
+<h5>Combining urban landcover classes</h5>
+<p>For the sake of simplicity let’s combine all four of these urban landcovers into a single “total.urban” land cover class. We’ll add up the four NCLD columns put the result into a new columns “total.urban.”</p>
+<p>We’ll use dplyr’s mutate() command to accheive this. We “pipe” the BBS_PA_landcover_1km_2 dataframe to mutate(); within mutate we say we want a new column “total.urban”, and that this new column will be built by adding up for columns from within BBS_PA_landcover_1km_2.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_landcover_1km_<span class="dv">2</span> &lt;-<span class="st"> </span>BBS_PA_landcover_1km_<span class="dv">2</span> <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">total.urban =</span>  NLCD.<span class="dv">21</span><span class="op">+</span>NLCD.<span class="dv">22</span><span class="op">+</span>NLCD.<span class="dv">23</span><span class="op">+</span>NLCD.<span class="dv">24</span>)</code></pre></div>
+<p>The results looks like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(BBS_PA_landcover_1km_<span class="dv">2</span>)</code></pre></div>
+<pre><code>##   Route NLCD.21 NLCD.22 NLCD.23 NLCD.24 NLCD.41 NLCD.42 NLCD.43   SUM
+## 1     1    9025    4861    1085     230   44953     563     797 98591
+## 2     2   11340    3425     142       6   25119    1130      48 82345
+## 3     3    5638    2078     344      34   34154     521      78 86328
+## 4     4    4757    1753     250      32   39813    1695      60 88526
+## 5     5    5273    1238     269      15   32244    5892    3518 97708
+## 6     6    3444     384      71       7   50529    4674   13320 87503
+##   total.urban
+## 1       15201
+## 2       14913
+## 3        8094
+## 4        6792
+## 5        6795
+## 6        3906</code></pre>
+</div>
+<div id="combining-forst-land-cover-classes" class="section level5">
+<h5>Combining forst land cover classes</h5>
+<p>We’ll do the same thing for the forest landcovers</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_landcover_1km_<span class="dv">2</span> &lt;-<span class="st"> </span>BBS_PA_landcover_1km_<span class="dv">2</span> <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">total.forest =</span>  NLCD.<span class="dv">41</span><span class="op">+</span>NLCD.<span class="dv">42</span><span class="op">+</span>NLCD.<span class="dv">43</span>)</code></pre></div>
+</div>
+</div>
+<div id="calculating-proportionages-of-habitat" class="section level4">
+<h4>Calculating proportionages of habitat</h4>
+<p>The raw habitat data are actual counts of the number of pixels classified as a given habitat by a GIS. The number of pixels varies a little bit between routes, so to make everything comparable we need to calculate the proportionage of each forest cover. This can be done by dividing each habitat class by the SUM column</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>urban.proportion &lt;-<span class="st"> </span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>total.urban<span class="op">/</span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>SUM
+
+BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>forest.proportion &lt;-<span class="st"> </span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>total.forest<span class="op">/</span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>SUM</code></pre></div>
+</div>
+<div id="merging-bird-counts-and-habitat-cover" class="section level4">
+<h4>Merging bird counts and habitat cover</h4>
+<p>Now we need to line up the data on the number of BHCO observed on each route in our BBA_PA_BHCO_2 dataframe with the habitat data in BBS_PA_landcover_1km_2. This can be done using the full_join() function in dplyr. This joins (combines) the two dataframes together.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_BHCO_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">full_join</span>(BBS_PA_BHCO_<span class="dv">2</span> ,
+                       BBS_PA_landcover_1km_<span class="dv">2</span>, 
+                       <span class="dt">by =</span> <span class="st">&quot;Route&quot;</span>)</code></pre></div>
+<p>The habitat data in BBS_PA_landcover_1km_2 contains data from each route in PA, but BHCO wasn’t seen on every route. To line things up dplyr has inserted NA value where data were missing from BBA_PA_BHCO_2. We can get rid of these NAs like this</p>
+<p>First, make all the “years” equal to 2006, all the Aou codes equal to 4950, and assign an alphabetic species code for each reference</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_BHCO_<span class="dv">3</span><span class="op">$</span>Year &lt;-<span class="st"> </span><span class="dv">2006</span>
+BBS_PA_BHCO_<span class="dv">3</span><span class="op">$</span>Aou &lt;-<span class="st"> </span><span class="dv">4950</span>
+BBS_PA_BHCO_<span class="dv">3</span><span class="op">$</span>name &lt;-<span class="st"> &quot;BHCO&quot;</span></code></pre></div>
+<p>There are NA values in the “StopTotal” column, which has our counts of the number of birds. We want these to be zero. We can fix this, using the function NA_to_zero() from the wildlifeR package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_BHCO_<span class="dv">4</span> &lt;-<span class="st"> </span><span class="kw">NA_to_zero</span>(<span class="dt">dat =</span> BBS_PA_BHCO_<span class="dv">3</span>,
+           <span class="dt">column =</span> <span class="st">&quot;SpeciesTotal&quot;</span>)</code></pre></div>
+<p>The data are now read for analysis. To save the data for future use use the write.csv() command.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write.csv</span>(BBS_PA_BHCO_<span class="dv">4</span>, <span class="dt">file =</span> <span class="st">&quot;BHCO_vs_forest_cover.csv&quot;</span>)</code></pre></div>
+</div>
+</div>
+</div>
+<div id="plotting-data" class="section level2">
+<h2>Plotting Data</h2>
+<div id="exploratory-analysis" class="section level3">
+<h3>Exploratory analysis</h3>
+<p>THis dataset contains an extreme outlier where &gt;75 cowbirds were seen. This is suspect to me. We can visualize this using a boxplot and a histogram</p>
+<div id="boxplot" class="section level4">
+<h4>Boxplot</h4>
+<p>The function ggboxplot() in the ggpubr package make boxplots.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggpubr)
+
+<span class="kw">ggboxplot</span>(<span class="dt">data =</span> BBS_PA_BHCO_<span class="dv">4</span>,
+         <span class="dt">y =</span> <span class="st">&quot;SpeciesTotal&quot;</span>,
+         <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>,
+         <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAMAAABlApw1AAAARVBMVEUAAAAAADoAAGYAOpAAZrY6AAA6ADo6AGY6Ojo6kNtmAABmtv+QOgCQ2/+2ZgC2///bkDrb////tmb/25D//7b//9v////+cdidAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAC10lEQVR4nO2b7XLCIBBFsdW2fkUaNe//qA2SBLRTwQT3Zu09P3Sm0w0cDDFCrmmUY9AdmAoF0FAAzT8VmJE2BdBQAA1GwJhiQwARMKacAQVGlWsXUD8HSkIBNBRAQwE0FEBDATQUQHOvK7XxbJvTxr0vs6qESXbltGn7ffzYP1YlR7Ir9u3Qfhbu5ZEqOVJdOa7W7atdXv9VkUB1Gfvqq50C6/wqQRJdOW3Wl9f379bCG5T8QVuARFfqRZi90UTQI1C5oe84rraZVZLc74o/gzqia6kagW7Q/ZvGU6ifApW7jFbh01AjYPtBry53FJlVorz0zVzpqqdAATQUQEMBNBRAQwE0FEBDATQUQEMBNK8tEPY1amOiRUY1AsNanFsfipdJtQj0a3HnnVvTqvRtMfX7Gn5p0epbWuz3NfyppG9tdNjX8Kd/Nwl0bXA0l4G/EsirEiPdlXYCaD2FPG3vtU7iYV9D7WV02NfQ+kUW9jWszluJwlVPgQJoKICGAmgogIYCaCiAhgJoKIAGI6A9S6k+zUqB+FiCVVG90Bw477qn7pVGUM67xb6xRm8EJSyJKo6g+GXF0hEU0e8BF0KJIygFLiGiV6G67fhVBCWrKtGooEAdrj3lNjgEBeoou1QugiInYM1TIihiArYLPZSOoEgJ+BSfo3AERUrA+jCr25opG0FRfzNHgfhYglVRvfKflCWhABoKoKGAZLPljkQBCkw8EgUoMPFIryhgnomIwKgDjW5uYrsUmNzco+2mIyjzFsh4cnfWkzjn2elZC+Q8vT7rU+gqP/DHkMz6E9Cd4GheQEB3BKVRnCPrURtBGfj1RYbnMYHbCMpk0L8HZtQsBdBQAA0F0FBgFMfPQ/qf8oAInDZvqgVqY1QL1GZ9+xTkBDBzgAIBCoyCAgEKjIICAd7MoaEAGgqgoQAaCqChABoKoKEAGgqgoQAaCqChABoKoKEAGgqg+QF6BQoylauHtAAAAABJRU5ErkJggg==" /><!-- --></p>
+</div>
+<div id="histograms" class="section level4">
+<h4>Histograms</h4>
+<p>gghistogram() makes histograms. Note that we use the arguement x = “SpeciesTotal”.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">gghistogram</span>(<span class="dt">data =</span> BBS_PA_BHCO_<span class="dv">4</span>,
+         <span class="dt">x =</span> <span class="st">&quot;SpeciesTotal&quot;</span>)</code></pre></div>
+<pre><code>## Warning: Using `bins = 30` by default. Pick better value with the argument
+## `bins`.</code></pre>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAMAAABlApw1AAAAVFBMVEUAAAAAADoAAGYAOpAAZrY6AAA6ADo6Ojo6kNtmAABmADpmkJBmtv+QOgCQZgCQtpCQ2/+2ZgC225C2/7a2///bkDrb////tmb/25D//7b//9v////If5FDAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAFvklEQVR4nO2dDXubIBDHadN0yZZuc5s1qd//ew7uAEFFDBI52vs/T7eU5sj95O0AJaKvXKK0A1vFAKXFAKX1RQEIYTNAaTFAaTFAaW0BEEo5nUnRsgPXoxAv6kUnxNPvsZWI2u+gRQe6w3t/O0uCTnrfOQSVAHy8neS/7fM/fNG8jKzIA1xf9TW/Hi89kPhW5AG6579nIU6GpEOAoemSB2iFdPnj7UVXf6cR1ALwpC98tQBQZ2QD8KrQYEUeAD2W3tfaiG9n5XdXbzfat3IgA+crHcggglDdqOqQqgwlIlYMkEMMkNGXJDFARl+SxAAZfUkSA2T0JUkMkNGXJDFARl+SxAAZfUkSA2T0JUkMkNGXJDFARl+SxAAZfUkSA2T0JUlRB5rDe1/tLmWvPFcAlSzu3r6ji85Oxu0szAp1BcvrBsDZyWgPPyVAHRscjbA6mbTr62/VBmrZYjIlYKWqjgLwNvkq2maFHZoJwGBFD+DjDauQritQc2qqQn0zuKjU6iZxqaMRqz7zNH1DU1M3CtuqIzUVDWTqtoiJMJSoZJeyEzNFELYiByDjBq8XilmRA7jXigFy6DNWoS7qP3EAd8RatCILEC8C4gBt5QBwr+4aK3IApheC4GGFFTmAe60+B0DpW/D9D1e323th56KV6AmUwigahdvV4zEpUQCceOFcfo0VOQAzI7t3ICMDUH0JVN8G6u+F7rRigBzyPxwWQsXM8tasFT0AXAO6OxolA/B5xoFaAfQIcD2aRgDL7fDL4i4lHYDROPDxJl+2IvosJSEAX3ZbILK8ThYAJa98ZIODOEDz/C+yxUQbQI1rkV1K0gCdacMLu5SUATCuiFWhkvP65U9ucRSIN2KiAGZqE+9GaQIMQ3J0IKMJoDe6leOLu5RkAWJWDJBDDNAzwDYxQM8A28QAPQNsEwPgT7nNyowlUD9AkVLIXAIMkOhKmhUD5BAD9AywTQzQM8A2MUBfB0Bsm3UMsF9gt+5TVq1OewCrs96qVZ+ybn/A/uirP/4/i7uTvFblvG6HJvaTQ9O81gEEjqwtpPsBAruUJPQ1AALbrCS0pRGT0JZulIQSB7Lyug9gvM260jqW+Ubz9W96lAcMsPZNlMUApcUApfWVAbrgwx72lmV8uHFyM/yQPJdHp8faS8jcUzrAOLxw/Te3LNuvIfFlk8N5wDMAAXNPyQCTAM/xzwavgRv5TfJCHhD6rni2PB1gEmKPpa5sO1/8JjmcB96uFzD3lA4wnuSMpU6aab4JMfNEi0kO54HH1ATMPSUDTKaZ47/LT76d1TMtzdgFmxzMA4+pCZj7ehRAN3Qe4YYQzMNNijSEB1Uh91EorOnTDGa+HsaocR6GDJgbPaYRt27NDfeloTy8g44ifekjulF7yzI6OLnCNjmUh77oAXNfjxjIhluWwbdpK7TJgTxMUsDc04ZQIjBP9m5ZbiAkmMgmz+dhK1XA3NVXDuZoiAFKiwFKiwFKKyMAzGCXx/25wxDnjibrLss2jvIB4DGBzYpDHaYaBWyez7sBYEw2e15jVBQAHM+vr7+Ow1fhDS9etDMmER6/vrgA+BV6Kl2dNYt/3bEKGQLpwAVrlPpqTohN1QsZ5YMzJhGiZax4GqCDtSDNqUoUzXYCgAunv4oTlhQO7zgxkQG9maEoZ2yiE+gjAE4PZCwNb1MnGCvG/QDABQGX94KOYFyv5o56WqicsYm3syVAAHwX/EWfD4HLczsC9O4D4BLALBKaOg4AduUQViCdNoAA8j1Y02R5/tmxBMxFVo/gWwDTp05LwPJieUxLAH7ZswqZXkjWbGwDjWoD+rP9NuA6hL/NtAFoId2eVUifkw/doJrqml4ILrJ6IRFtL6QSoSg6pwScXuikLz6sju3VBiAmeIK+48dxmPNizzQeB/D6mhmxPw6oufDhHabLDRbHPgBWkaWovGKAGVUPsKsYoLQYoLQYoLT+A3/8e7tuojAsAAAAAElFTkSuQmCC" /><!-- --></p>
+</div>
+</div>
+</div>
+<div id="removing-an-outlier3" class="section level2">
+<h2>Removing an outlier3</h2>
+<p>This observation is very very odd so I am going to remove it. Normally I would do a very thorough investigation of this datapoint and try to go back to the raw data if possible to determine what is going on. For the sake of this exercise, I will make the very strong assumption that its a complete error (eg typo during data entry) and remove it. This should only be done to your own data with extreme care, thorough documentation, and total tranparency.</p>
+<p>I can use a logical arguement using the “&gt;” operator to identify the row that the outlier is in.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">which</span>(BBS_PA_BHCO_<span class="dv">4</span><span class="op">$</span>SpeciesTotal <span class="op">&gt;</span><span class="st"> </span><span class="dv">75</span>)</code></pre></div>
+<pre><code>## [1] 76</code></pre>
+<p>I will save this row number to an object called “outlier.index” then set the value of SpeciesTotal in that row to NA</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outlier.index &lt;-<span class="st"> </span><span class="kw">which</span>(BBS_PA_BHCO_<span class="dv">4</span><span class="op">$</span>SpeciesTotal <span class="op">&gt;</span><span class="st"> </span><span class="dv">75</span>)
+
+BBS_PA_BHCO_<span class="dv">4</span><span class="op">$</span>SpeciesTotal[outlier.index] &lt;-<span class="st"> </span><span class="ot">NA</span></code></pre></div>
+<p>Again, I would normally only do this after very thorough investigation as to the origin of this extreme value.</p>
+</div>
+<div id="plotting-polished-graphs" class="section level2">
+<h2>Plotting polished graphs</h2>
+<p>We can visualize the relationship between the Brown-headed cowbird and forest cover using a scatterplot using the ggpubr extentsion to ggplot2. Since we’re examining two variables we’ll make a two-panel plot with total urban habitat (as a proportion) on the left and total forest habitat on the right.</p>
+<p>To set up this graph we’ll use the plotgrid() function from the cowplot library.</p>
+<p>First, we need to make to plots and assign them to R objects. We’ll call them urban.plot and forest.plot. Note that to make these plots look nice I do the following things</p>
+<ul>
+<li>Add a regression line using add = “reg.line”</li>
+<li>Add a confidence interval to the line using conf.int = TRUE,</li>
+<li>Label the x and y axes using xlab and ylab</li>
+<li>Change the shape of the points in the 2nd graph using shape = 23</li>
+<li>Change the fill color using fill = “geen”</li>
+</ul>
+<p>Note that you can only change hte fill color for certain shape numbers (21 through 25).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">urban.plot &lt;-<span class="st"> </span><span class="kw">ggscatter</span>(<span class="dt">data =</span> BBS_PA_BHCO_<span class="dv">4</span>,
+          <span class="dt">y =</span> <span class="st">&quot;SpeciesTotal&quot;</span>,
+          <span class="dt">x =</span> <span class="st">&quot;urban.proportion&quot;</span>,
+          <span class="dt">add =</span> <span class="st">&quot;reg.line&quot;</span>,
+          <span class="dt">conf.int =</span> <span class="ot">TRUE</span>,
+          <span class="dt">xlab =</span> <span class="st">&quot;Proportion urban habitat&quot;</span>,
+          <span class="dt">ylab =</span> <span class="st">&quot;Number of cowbirds&quot;</span>)
+
+forest.plot &lt;-<span class="st"> </span><span class="kw">ggscatter</span>(<span class="dt">data =</span> BBS_PA_BHCO_<span class="dv">4</span>,
+          <span class="dt">y =</span> <span class="st">&quot;SpeciesTotal&quot;</span>,
+          <span class="dt">x =</span> <span class="st">&quot;forest.proportion&quot;</span>,
+          <span class="dt">add =</span> <span class="st">&quot;reg.line&quot;</span>,
+          <span class="dt">conf.int =</span> <span class="ot">TRUE</span>,
+          <span class="dt">xlab =</span> <span class="st">&quot;Proportion forest habitat&quot;</span>,
+          <span class="dt">ylab =</span> <span class="st">&quot;Number of cowbirds&quot;</span>,
+          <span class="dt">shape =</span> <span class="dv">23</span>,
+          <span class="dt">fill =</span> <span class="st">&quot;green&quot;</span>)</code></pre></div>
+<p>Now I’ll use plot_grid() to layout the two panels</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cowplot)
+
+<span class="kw">plot_grid</span>(urban.plot, 
+          forest.plot,
+          <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>))</code></pre></div>
+<pre><code>## Warning: Removed 1 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="data-modeling" class="section level2">
+<h2>Data modeling</h2>
+<div id="modeling-habitat" class="section level3">
+<h3>Modeling habitat</h3>
+<p>Three models</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.null   &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, BBS_PA_BHCO_<span class="dv">4</span>)
+
+m.urban  &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span>urban.proportion, BBS_PA_BHCO_<span class="dv">4</span>)
+
+m.forest  &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span>forest.proportion, BBS_PA_BHCO_<span class="dv">4</span>)</code></pre></div>
+</div>
+<div id="present-results" class="section level3">
+<h3>Present results</h3>
+<div id="tidy-results" class="section level4">
+<h4>Tidy results</h4>
+<p>Look at “tidy” output using the tidy() function from the broom package. This is brief but doesn’t contain everything. For more info on broom see <a href="https://cran.r-project.org/web/packages/broom/vignettes/broom.html" class="uri">https://cran.r-project.org/web/packages/broom/vignettes/broom.html</a></p>
+<p>We’ll also set R to round things off for us a bit using the option options(digits=4)</p>
+<p>Note that the output of tidy() will often be in scientific notation, where “e-x” is used to indicate what is often written as “10^-x”. Eg, “5e-2” equals 5*10^-2, which equals 0.05. 5e-3 equals 0.005.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(broom)
+
+<span class="kw">options</span>(<span class="dt">digits=</span><span class="dv">3</span>)
+
+<span class="kw">tidy</span>(m.null)</code></pre></div>
+<pre><code>##          term estimate std.error statistic  p.value
+## 1 (Intercept)     3.74     0.451      8.29 1.01e-13</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tidy</span>(m.urban)</code></pre></div>
+<pre><code>##               term estimate std.error statistic  p.value
+## 1      (Intercept)     3.39     0.728     4.650 7.87e-06
+## 2 urban.proportion     3.17     5.061     0.626 5.32e-01</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tidy</span>(m.forest)</code></pre></div>
+<pre><code>##                term estimate std.error statistic  p.value
+## 1       (Intercept)     5.32      1.16      4.57 0.000011
+## 2 forest.proportion    -2.83      1.93     -1.47 0.144938</code></pre>
+</div>
+</div>
+<div id="full-results" class="section level3">
+<h3>Full results</h3>
+<p>Look at full output using summary()</p>
+<div id="full-results-null-model" class="section level4">
+<h4>Full results null model</h4>
+<p>The null model has only an interecept. Its summary() output is not particularly interesting. The intecept here is highly significant, but this really isn’t very useful to us.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(m.null)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = SpeciesTotal ~ 1, data = BBS_PA_BHCO_4)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+##  -3.74  -3.74  -1.74   2.26  26.26 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    3.743      0.451    8.29    1e-13 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.26 on 135 degrees of freedom
+##   (1 observation deleted due to missingness)</code></pre>
+
+</div>
+<div id="full-results-urban-landcover-model" class="section level4">
+<h4>Full results urban landcover model</h4>
+<p>The urban landcover model has two parameters: intercept and the slope. Note that R doesn’t provide names that are necessarily easy to understand. It also provides things printed out to lots of decimal places, which can be distracting, hence why we set options(digits=4).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(m.urban)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = SpeciesTotal ~ urban.proportion, data = BBS_PA_BHCO_4)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+##  -4.95  -3.66  -1.61   2.23  26.13 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         3.385      0.728    4.65  7.9e-06 ***
+## urban.proportion    3.170      5.061    0.63     0.53    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.28 on 134 degrees of freedom
+##   (1 observation deleted due to missingness)
+## Multiple R-squared:  0.00292,    Adjusted R-squared:  -0.00452 
+## F-statistic: 0.392 on 1 and 134 DF,  p-value: 0.532</code></pre>
+</div>
+<div id="full-results-forest-model" class="section level4">
+<h4>Full results forest model</h4>
+<p>The mixed forest model has the same basic format, though the values are different.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(m.forest)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = SpeciesTotal ~ forest.proportion, data = BBS_PA_BHCO_4)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+##  -5.26  -3.65  -1.57   2.36  25.63 
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)           5.32       1.16    4.57  1.1e-05 ***
+## forest.proportion    -2.83       1.93   -1.47     0.14    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.24 on 134 degrees of freedom
+##   (1 observation deleted due to missingness)
+## Multiple R-squared:  0.0158, Adjusted R-squared:  0.00844 
+## F-statistic: 2.15 on 1 and 134 DF,  p-value: 0.145</code></pre>
+</div>
+</div>
+<div id="hypothesis-testing" class="section level3">
+<h3>Hypothesis testing</h3>
+<p>P-values from the summary() command are not to be used for final analyses. To compare to models and get a p-value use the anova() command.</p>
+<div id="deciduous-versus-null" class="section level4">
+<h4>Deciduous versus null</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(m.null, 
+      m.urban)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: SpeciesTotal ~ 1
+## Model 2: SpeciesTotal ~ urban.proportion
+##   Res.Df  RSS Df Sum of Sq    F Pr(&gt;F)
+## 1    135 3742                         
+## 2    134 3731  1      10.9 0.39   0.53</code></pre>
+</div>
+<div id="mixed-versus-null" class="section level4">
+<h4>Mixed versus null</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(m.null, 
+      m.forest)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: SpeciesTotal ~ 1
+## Model 2: SpeciesTotal ~ forest.proportion
+##   Res.Df  RSS Df Sum of Sq    F Pr(&gt;F)
+## 1    135 3742                         
+## 2    134 3683  1      59.1 2.15   0.14</code></pre>
+</div>
+<div id="model-comparison" class="section level4">
+<h4>Model comparison</h4>
+<p>Compare models w/AIC</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(bbmle)
+<span class="kw">AICtab</span>(m.null,
+       m.urban,
+       m.forest)</code></pre></div>
+<pre><code>##          dAIC df
+## m.forest 0.0  3 
+## m.null   0.2  2 
+## m.urban  1.8  3</code></pre>
+</div>
+</div>
+</div>
+<div id="transformations" class="section level2">
+<h2>Transformations</h2>
+<div id="carry-out-log-transformation" class="section level3">
+<h3>Carry out log transformation</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_BHCO_<span class="dv">4</span> &lt;-<span class="st"> </span>BBS_PA_BHCO_<span class="dv">4</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">SpeciesTotal.log =</span> 
+                                             <span class="kw">log</span>(SpeciesTotal<span class="op">+</span><span class="dv">1</span>))</code></pre></div>
+</div>
+<div id="build-new-models" class="section level3">
+<h3>Build new models</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.null.log   &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal.log <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, BBS_PA_BHCO_<span class="dv">4</span>)
+
+m.urban.log  &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal.log <span class="op">~</span><span class="st"> </span>urban.proportion, BBS_PA_BHCO_<span class="dv">4</span>)
+
+m.forest.log  &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal.log <span class="op">~</span><span class="st"> </span>forest.proportion, BBS_PA_BHCO_<span class="dv">4</span>)</code></pre></div>
+</div>
+<div id="compare-with-anova" class="section level3">
+<h3>Compare with anova()</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(m.null.log,
+        m.urban.log)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: SpeciesTotal.log ~ 1
+## Model 2: SpeciesTotal.log ~ urban.proportion
+##   Res.Df RSS Df Sum of Sq    F Pr(&gt;F)
+## 1    135 138                         
+## 2    134 137  1     0.907 0.89   0.35</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(m.null.log,
+        m.forest.log)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: SpeciesTotal.log ~ 1
+## Model 2: SpeciesTotal.log ~ forest.proportion
+##   Res.Df RSS Df Sum of Sq    F Pr(&gt;F)
+## 1    135 138                         
+## 2    134 137  1     0.385 0.38   0.54</code></pre>
+</div>
+<div id="compare-with-aic" class="section level3">
+<h3>COmpare with AIC</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">AICtab</span>(m.null.log,
+       m.urban.log,
+       m.forest.log)</code></pre></div>
+<pre><code>##              dAIC df
+## m.null.log   0.0  2 
+## m.urban.log  1.1  3 
+## m.forest.log 1.6  3</code></pre>
+</div>
+<div id="model-curved-relationship" class="section level3">
+<h3>Model curved relationship</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.forest.log2  &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal.log <span class="op">~</span><span class="st"> </span>urban.proportion <span class="op">+</span>
+<span class="st">                      </span><span class="kw">I</span>(forest.proportion<span class="op">^</span><span class="dv">2</span>), BBS_PA_BHCO_<span class="dv">4</span>)</code></pre></div>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

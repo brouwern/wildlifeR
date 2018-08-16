@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Nathan Brouwer brouwern@gmail.com @lobrowR" />
+
+<meta name="date" content="2018-08-16" />
+
+<title>Analyzing USGS BBS data from the wildlifeR package</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Analyzing USGS BBS data from the wildlifeR package</h1>
+<h4 class="author"><em>Nathan Brouwer <a href="mailto:brouwern@gmail.com">brouwern@gmail.com</a> <span class="citation">@lobrowR</span></em></h4>
+<h4 class="date"><em>2018-08-16</em></h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The <strong>wildlifeR</strong> package contains data and code for analyzing a number of datasets related to wildlife ecology, animal conservation, and evolution. The focal dataset is currently the USGS Breeding Bird Survey Data for the entire state of Pennsylvania. Other datasets include data from the USGS woodcock survey, Pika distribution data from citsci.org, avian life history data, and the nutritional composition dozens of species of mammals. wildlifeR is being developed to allow students freedom to explore interesting, real-world datasets and generate their own focal questions.</p>
+</div>
+<div id="using-the-wildlifer-package" class="section level2">
+<h2>Using the wildlifeR package</h2>
+<p>The first step to using wildlifeR is to select a dataset. Currently the USGS BBS data is the most developed; what follows is a step by step exploration the BBS data and the kinds of questions that can easily be explored using the data, pre-programmed R functions in wildlifeR, and tutorials (“vignettes”) included in the package.</p>
+<div id="installing-widlifer" class="section level3">
+<h3>Installing widlifeR</h3>
+<p>wildlifeR can be downloaded from the website github.com using the following code using the devtools package. Note that devtools must be installed from the website cran.corm before <strong>widlifeR</strong> can installed. Also, wildlife relies on the ggplot2, ggpubr, and dplyr packages which all must be downloaded for it to work.</p>
+<p>The current version of wildlifeR can be downloaded like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#load devtools</span>
+<span class="kw">library</span>(devtools)
+
+<span class="co">#download wildlifeR from github</span>
+<span class="kw">install_github</span>(<span class="st">&quot;brouwern/wildlifeR&quot;</span>)
+
+<span class="co">#load wildlifeR into your current R sessions</span>
+<span class="kw">library</span>(wildlifeR)</code></pre></div>
+</div>
+<div id="the-usgs-bbs-data" class="section level3">
+<h3>The USGS BBS data</h3>
+<p>The focal dataset in wildlifeR is all USGS BBS data from PA from the 1960s to the present The data are loaded using data(BBS_PA). Additional information about the data, such as what is contained in each column, can be obtained from help via: ?BBS_PA.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(BBS_PA)</code></pre></div>
+<p>BBS_PA is a massive dataset of almost 1/4 millions rows.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BBS_PA)</code></pre></div>
+<pre><code>## [1] 244185      8</code></pre>
+</div>
+<div id="selecting-a-focal-bird-species" class="section level3">
+<h3>Selecting a focal bird species</h3>
+<p>A good place to start with the <strong>widlifeR</strong> package is to select a focal bird species to study. This is done by first identifying the alphabetic and/or numeric code used by the American Ornithological Union (AOU) to identify the bird.</p>
+<p>For BBS data songbird species will work best; raptors, ducks, waterfowl etc not so much because they are much more rarely observed. There is sufficient data in the surveys on some game birds such as mourning doves, but not others such as woodcocks.</p>
+<p>An excellent website for basic information on birds is the Cornell Lab of Ornithology’s <a href="https://www.allaboutbirds.org/" class="uri">https://www.allaboutbirds.org/</a>.</p>
+<p>Once you have identified a species you are interested in you need to determine the four-letter code used by the AOU. Often this is the first letter or two of each word in the name. eg, the Louisiana waterthrush is LOWA, the Robin is AMRO for “American Robin”“, the Cardinal is NOCA for”Northern Cardinal.“”</p>
+<p>You can get complete lists of species codes from the Institute for Bird Populations website at <a href="https://www.birdpop.org/pages/birdSpeciesCodes.php" class="uri">https://www.birdpop.org/pages/birdSpeciesCodes.php</a> . The links on the right sidebar open PDFs with all of the codes.</p>
+<p>As an example we’ll look at the Pileated woodpecker. Its alphabetic code is “PIWO”.</p>
+</div>
+<div id="determing-the-numeric-species-code" class="section level3">
+<h3>Determing the numeric species code</h3>
+<p>In their database the USGS uses AOU numeric codes, <strong>not</strong> alphabetic codes. We can look up numeric codes using the dataset AOU_species_codes included in wildlifeR.</p>
+<p>First, load the AOU code data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(AOU_species_codes)</code></pre></div>
+<p>Then make sure the dplyr package is loaded</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)</code></pre></div>
+<p>We can see the entry for PIWO and its numeric code in the “spp.num” code using the dplyr function filter()</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">AOU_species_codes <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(alpha.code <span class="op">==</span><span class="st"> &quot;PIWO&quot;</span>)</code></pre></div>
+<pre><code>##   spp.num alpha.code                name                spp order
+## 1    4050       PIWO Pileated Woodpecker Dryocopus pileatus   599</code></pre>
+<p>A more detailed walk through of this process can be found in the vignette “Data Cleaning: Filtering focal rows with dplyr”. This vignette can most easily be accessed at the wildlifeR website <a href="https://brouwern.github.io/wildlifeR/" class="uri">https://brouwern.github.io/wildlifeR/</a> .</p>
+<p>The filter() code above tells us that the the numeric code is 4050. We can use this number to extract just the Pileated woodpecker (PIWO) data from the BBS_PA dataset. We’ll save this data to an object called “BBA_PA_PIWO”. (Note that the species code is <strong>not</strong> the same row number of the dataframe).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_PIWO &lt;-<span class="st"> </span>BBS_PA <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Aou <span class="op">==</span><span class="st"> &quot;4050&quot;</span>)</code></pre></div>
+</div>
+<div id="selecting-a-focal-analysis-question" class="section level3">
+<h3>Selecting a focal analysis question</h3>
+<p>While numerous questions can be addressed using BBS data, the supporting datasets, code and vignettes are currently designed to allow students to investigate two questions:</p>
+<ol style="list-style-type: decimal">
+<li>How does the abundance of a focal bird species in Pennsylvania vary with the type of habitat in the landscape.</li>
+<li>How has the abundance of a bird species in PA changed over time.</li>
+</ol>
+<p>TO make these analyses manageable they are formatted in very different ways. For analyses using habitat variables, data from all BBS routes are merged with land-cover data from a GIS. For analyses investigating changes in abundance, that data are reformatted to isolate independent samples from each year of interest.</p>
+</div>
+<div id="formatting-data-for-habitat-analyses" class="section level3">
+<h3>Formatting data for habitat analyses</h3>
+<div id="subsetting-bird-data" class="section level4">
+<h4>Subsetting bird data</h4>
+<p>The habitat data used wildlifeR was collected in 2006. We will therefore use the filter() command again to isolate just that year of data. (Note that “Year” has a capital “Y” while the rest is lowercase).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_PIWO_<span class="dv">2</span> &lt;-<span class="st"> </span>BBS_PA_PIWO <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Year <span class="op">==</span><span class="st"> </span><span class="dv">2006</span>)</code></pre></div>
+<p>There are about 90 BBS routes in Pennsylvania. The subset of data we have generate will have only those where the PIWo was observed in 2006. If PIWO was not seen on a route in 2006, it it not included in the dataset. Stated another way, if a bird was not seen on a route in a given year, there is no data for that route. Therefore, there are no observations of zero in the dataset. These data are therefore not appropriate for analysis as-is. This zeros, however, will get interested below.</p>
+</div>
+<div id="preparing-habitat-data" class="section level4">
+<h4>Preparing habitat data</h4>
+<p>The habitat data are found in the dataframe BBS_PA_landcover_1km. For each BBS route the number of pixels of different habitat was determined using a GIS. These data are from the National Land Cover Dataset (NCLD) and each column is a different type of cover.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(BBS_PA_landcover_1km)</code></pre></div>
+<p>For cover classes are numbers 41 (deciduous), 42 (evergreen) and 43 (mixed). The select() function in dplyr can be used to isolate these focal columns. We’ll isolate just them and the Route number in a new dataframe called BBS_PA_landcover_1km_2. (So see what each landover is see the help file via ?BBS_PA_landcover_1km)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_landcover_1km_<span class="dv">2</span> &lt;-<span class="st"> </span>BBS_PA_landcover_1km <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(Route, 
+         NLCD.<span class="dv">41</span>, <span class="co"># Deciduous Forest</span>
+         NLCD.<span class="dv">42</span>, <span class="co"># Evergreen</span>
+         NLCD.<span class="dv">43</span>, <span class="co"># Mixed</span>
+         SUM)</code></pre></div>
+</div>
+<div id="calculating-percentages-of-habitat" class="section level4">
+<h4>Calculating percentages of habitat</h4>
+<p>The raw habitat data are actual counts of the number of pixels classified as a given habitat by a GIS. The number of pixels varies a little bit between routes, so to make everything comparable we need to calculate the percentage of each forest cover. This can be done by dividing each habitat class by the SUM column</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>decid.percent &lt;-<span class="st"> </span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>NLCD.<span class="dv">41</span><span class="op">/</span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>SUM
+
+BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>conifer.percent &lt;-<span class="st"> </span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>NLCD.<span class="dv">42</span><span class="op">/</span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>SUM
+
+BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>mixed.forest.percent &lt;-<span class="st"> </span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>NLCD.<span class="dv">42</span><span class="op">/</span>BBS_PA_landcover_1km_<span class="dv">2</span><span class="op">$</span>SUM</code></pre></div>
+</div>
+<div id="merging-bird-counts-and-habitat-cover" class="section level4">
+<h4>Merging bird counts and habitat cover</h4>
+<p>Now we need to line up the data on the number of PIWO observed on each route in our BBA_PA_PIWO_2 dataframe with the habitat data in BBS_PA_landcover_1km_2. This can be done using the full_join() function in dplyr. This joins the two dataframes together.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_PIWO_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">full_join</span>(BBS_PA_PIWO_<span class="dv">2</span> ,
+                       BBS_PA_landcover_1km_<span class="dv">2</span>, 
+                       <span class="dt">by =</span> <span class="st">&quot;Route&quot;</span>)</code></pre></div>
+<p>The habitat data in BBS_PA_landcover_1km_2 contains data from each route in PA, but PIWO wasn’t seen on every route. To line things up dplyr has inserted NA value where data were missing from BBA_PA_PIWO_2. We can get rid of these NAs like this</p>
+<p>First, make all the “years” equal to 2006, all the Aou codes equal to 6080, and assign an alphabetic species code for each reference</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_PIWO_<span class="dv">3</span><span class="op">$</span>Year &lt;-<span class="st"> </span><span class="dv">2006</span>
+BBS_PA_PIWO_<span class="dv">3</span><span class="op">$</span>Aou &lt;-<span class="st"> </span><span class="dv">6080</span>
+BBS_PA_PIWO_<span class="dv">3</span><span class="op">$</span>name &lt;-<span class="st"> &quot;PIWO&quot;</span></code></pre></div>
+<p>There are NA values in the “StopTotal” column, which has our counts of the number of birds. We want these to be zero. We can fix this, using the function NA_to_zero()</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_PIWO_<span class="dv">4</span> &lt;-<span class="st"> </span><span class="kw">NA_to_zero</span>(<span class="dt">dat =</span> BBS_PA_PIWO_<span class="dv">3</span>,
+           <span class="dt">column =</span> <span class="st">&quot;SpeciesTotal&quot;</span>)</code></pre></div>
+<p>If you compare the dataset BBS_PA_SCTA_3 to BBS_PA_SCTA_4 that was made with set_NA_SpeciesTotal_to_zero() you can see that the NAs were removed</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#with NAs</span>
+<span class="kw">summary</span>(BBS_PA_PIWO_<span class="dv">3</span><span class="op">$</span>SpeciesTotal)</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##     1.0     1.0     1.0     1.8     2.2     4.0      85</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#with NAs removed by set_NA_SpeciesTotal_to_zero()</span>
+<span class="kw">summary</span>(BBS_PA_PIWO_<span class="dv">4</span><span class="op">$</span>SpeciesTotal)</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00    0.00    0.00    0.69    1.00    4.00</code></pre>
+<p>The data are now read for analysis. To save the data for future use use the write.csv() command.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write.csv</span>(BBS_PA_PIWO_<span class="dv">4</span>, <span class="dt">file =</span> <span class="st">&quot;PIWO_vs_forest_cover.csv&quot;</span>)</code></pre></div>
+</div>
+</div>
+<div id="formatting-data-for-analysis-of-change-over-time" class="section level3">
+<h3>Formatting data for analysis of change over time</h3>
+<p>There are numerous ways to analyze change over time. However, the most typical ways require fairly advanced stats. This is because when something is monitored repeatedly over time it violates assumptions about random sampling that are central to standard statistical methods.</p>
+<p>In order to allow this type of analysis to be done with fairly simple stats, the wildlifeR has a function sample_BBS_routes() which randomly allocates each available BBS route to a different year. Each route is only used once and therefore each datapoint is independent of all the others. (Though this does not solve the issue that BBS routes are themselves not randomly selected from the landscape).</p>
+<p>To begin, select several years over which to investigate change in bird abundance. Recent years such as 2000, 2005 and 2010 work well.</p>
+<p>Note that sample_BBS_routes() requires the package Hmisc to be downloaded to work.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PIWO_00_05_<span class="dv">10</span> &lt;-<span class="st"> </span><span class="kw">sample_BBS_routes</span>(<span class="dt">dat =</span> BBS_PA_PIWO,
+                  <span class="dt">years =</span> <span class="kw">c</span>(<span class="dv">2000</span>,<span class="dv">2005</span>,<span class="dv">2010</span>),
+                  <span class="dt">aou.code =</span> <span class="dv">4050</span>)</code></pre></div>
+<pre><code>## 40 40 40</code></pre>
+<p>The data can be plotted to investigate change over time.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(ggpubr)
+<span class="kw">ggerrorplot</span>(<span class="dt">data =</span> PIWO_00_05_<span class="dv">10</span>,
+   <span class="dt">y =</span> <span class="st">&quot;SpeciesTotal&quot;</span>,
+   <span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>,
+   <span class="dt">desc_stat =</span> <span class="st">&quot;mean_ci&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>The data can be saved using write.csv()</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write.csv</span>(PIWO_00_05_<span class="dv">10</span>, <span class="dt">file =</span> <span class="st">&quot;PIWO_00_05_10.csv&quot;</span>)</code></pre></div>
+</div>
+</div>
+<div id="data-exploration" class="section level2">
+<h2>Data Exploration</h2>
+<ul>
+<li>Once a dataset has been created for a focal species and question the data needs to be explored.</li>
+<li>Plotting all the data allows us to get a feel for what it actually is.</li>
+<li>We can also look for outliers and anything odd.</li>
+</ul>
+<div id="exploring-abundance-habitat-data" class="section level3">
+<h3>Exploring abundance-habitat data</h3>
+<p>Boxplots, histograms, and scatterplots can be used to explore the data</p>
+<div id="boxplots" class="section level4">
+<h4>Boxplots</h4>
+<p>We can make boxplots using the ggboxplot() funciton and lay themout in a grid using the plot_grid() function from the cowplot package.</p>
+<p>First, make boxplots for each of our variables in our dataframe: abundance, and the three landcover variables.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## number of birds seen
+plot.spp.total &lt;-<span class="st"> </span><span class="kw">ggboxplot</span>(<span class="dt">data =</span> BBS_PA_PIWO_<span class="dv">4</span>,
+          <span class="dt">y =</span> <span class="st">&quot;SpeciesTotal&quot;</span>,
+          <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)
+
+## Deciduous landcover
+plot.decid.percent &lt;-<span class="st"> </span><span class="kw">ggboxplot</span>(<span class="dt">data =</span> BBS_PA_PIWO_<span class="dv">4</span>,
+          <span class="dt">y =</span> <span class="st">&quot;decid.percent&quot;</span>,
+          <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)
+
+## Coniferous landcover
+plot.confir.percent &lt;-<span class="st"> </span><span class="kw">ggboxplot</span>(<span class="dt">data =</span> BBS_PA_PIWO_<span class="dv">4</span>,
+          <span class="dt">y =</span> <span class="st">&quot;conifer.percent&quot;</span>,
+          <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)
+
+## Mixed forest landcover
+plot.mixed.percent &lt;-<span class="st"> </span><span class="kw">ggboxplot</span>(<span class="dt">data =</span> BBS_PA_PIWO_<span class="dv">4</span>,
+          <span class="dt">y =</span> <span class="st">&quot;mixed.forest.percent&quot;</span>,
+          <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)</code></pre></div>
+<p>Layout the four plots in a grid.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cowplot)
+
+<span class="kw">plot_grid</span>(plot.spp.total, 
+          plot.decid.percent,
+          plot.confir.percent, 
+          plot.mixed.percent,
+          <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>,
+                     <span class="st">&quot;C&quot;</span>,<span class="st">&quot;D&quot;</span>))</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="histograms" class="section level4">
+<h4>Histograms</h4>
+<p>First, make histograms for each of our variables in our dataframe: abundance, and the three landcover variables. Histograms will be save for each variable (we’ll re-use the names from above).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## number of birds seen
+plot.spp.total &lt;-<span class="st"> </span><span class="kw">gghistogram</span>(<span class="dt">data =</span> BBS_PA_PIWO_<span class="dv">4</span>,
+          <span class="dt">x =</span> <span class="st">&quot;SpeciesTotal&quot;</span>,
+          <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)</code></pre></div>
+<pre><code>## Warning: Using `bins = 30` by default. Pick better value with the argument
+## `bins`.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Deciduous landcover
+plot.decid.percent &lt;-<span class="st"> </span><span class="kw">gghistogram</span>(<span class="dt">data =</span> BBS_PA_PIWO_<span class="dv">4</span>,
+          <span class="dt">x =</span> <span class="st">&quot;decid.percent&quot;</span>,
+          <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)</code></pre></div>
+<pre><code>## Warning: Using `bins = 30` by default. Pick better value with the argument
+## `bins`.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Coniferous landcover
+plot.confir.percent &lt;-<span class="st"> </span><span class="kw">gghistogram</span>(<span class="dt">data =</span> BBS_PA_PIWO_<span class="dv">4</span>,
+          <span class="dt">x =</span> <span class="st">&quot;conifer.percent&quot;</span>,
+          <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)</code></pre></div>
+<pre><code>## Warning: Using `bins = 30` by default. Pick better value with the argument
+## `bins`.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Mixed forest landcover
+plot.mixed.percent &lt;-<span class="st"> </span><span class="kw">gghistogram</span>(<span class="dt">data =</span> BBS_PA_PIWO_<span class="dv">4</span>,
+          <span class="dt">x =</span> <span class="st">&quot;mixed.forest.percent&quot;</span>,
+          <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)</code></pre></div>
+<pre><code>## Warning: Using `bins = 30` by default. Pick better value with the argument
+## `bins`.</code></pre>
+<p>Layout the four plots in a grid.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cowplot)
+
+<span class="kw">plot_grid</span>(plot.spp.total, 
+          plot.decid.percent,
+          plot.confir.percent, 
+          plot.mixed.percent,
+          <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>,
+                     <span class="st">&quot;C&quot;</span>,<span class="st">&quot;D&quot;</span>))</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="scatter-plot" class="section level4">
+<h4>Scatter plot</h4>
+<p>This data represents the relationship between the habitat variable (x axis) and the number of birds observed (y-axis). A “smoother” can be added to visualize the approximate relationship between the variables. As above, we can make multiple plots, save them to objects, and use plot_grid() to visualiz them all on the same plot.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(ggpubr)
+
+<span class="kw">ggscatter</span>(<span class="dt">data =</span> BBS_PA_PIWO_<span class="dv">4</span>,
+          <span class="dt">y =</span> <span class="st">&quot;SpeciesTotal&quot;</span>,
+          <span class="dt">x =</span> <span class="st">&quot;conifer.percent&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+</div>
+<div id="exploring-abudance-time-data" class="section level3">
+<h3>Exploring abudance-time data</h3>
+<div id="boxplot" class="section level4">
+<h4>Boxplot</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggboxplot</span>(<span class="dt">data =</span> PIWO_00_05_<span class="dv">10</span>,
+            <span class="dt">y =</span> <span class="st">&quot;SpeciesTotal&quot;</span>,
+            <span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="histograms-1" class="section level4">
+<h4>Histograms</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">gghistogram</span>(<span class="dt">data =</span> PIWO_00_05_<span class="dv">10</span>,
+            <span class="dt">x =</span> <span class="st">&quot;SpeciesTotal&quot;</span>,
+            <span class="dt">facet.by =</span> <span class="st">&quot;Year&quot;</span>)</code></pre></div>
+<pre><code>## Warning: Using `bins = 30` by default. Pick better value with the argument
+## `bins`.</code></pre>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="plotting-means-and-error-bars" class="section level4">
+<h4>Plotting means and error bars</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggerrorplot</span>(<span class="dt">data =</span> PIWO_00_05_<span class="dv">10</span>,
+   <span class="dt">y =</span> <span class="st">&quot;SpeciesTotal&quot;</span>,
+   <span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>,
+   <span class="dt">desc_stat =</span> <span class="st">&quot;mean_ci&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+</div>
+</div>
+<div id="data-modeling" class="section level2">
+<h2>Data modeling</h2>
+<div id="modeling-habitat" class="section level3">
+<h3>Modeling habitat</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.null   &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, BBS_PA_PIWO_<span class="dv">4</span>)
+
+m.decid  &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span>decid.percent, BBS_PA_PIWO_<span class="dv">4</span>)
+
+m.mixed  &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span>mixed.forest.percent, BBS_PA_PIWO_<span class="dv">4</span>)</code></pre></div>
+</div>
+<div id="present-results" class="section level3">
+<h3>Present results</h3>
+<div id="tidy-results" class="section level4">
+<h4>Tidy results</h4>
+<p>Look at “tidy” output using the tidy() function from the broom package. This is brief but doesn’t contain everything.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(broom)
+
+<span class="kw">tidy</span>(m.null)</code></pre></div>
+<pre><code>##          term estimate std.error statistic  p.value
+## 1 (Intercept)    0.693    0.0953      7.28 2.44e-11</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tidy</span>(m.decid)</code></pre></div>
+<pre><code>##            term estimate std.error statistic p.value
+## 1   (Intercept)  -0.0299     0.240    -0.124 0.90113
+## 2 decid.percent   1.5837     0.486     3.257 0.00142</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tidy</span>(m.mixed)</code></pre></div>
+<pre><code>##                   term estimate std.error statistic  p.value
+## 1          (Intercept)    0.147     0.117      1.26 2.10e-01
+## 2 mixed.forest.percent   16.122     2.415      6.67 5.89e-10</code></pre>
+</div>
+</div>
+<div id="full-results" class="section level3">
+<h3>Full results</h3>
+<p>Look at full output using summary()</p>
+<div id="full-results-null-model" class="section level4">
+<h4>Full results null model</h4>
+<p>The null model has only an interecept. Its summary() output is not particularly interesting.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(m.null)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = SpeciesTotal ~ 1, data = BBS_PA_PIWO_4)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -0.693 -0.693 -0.693  0.307  3.307 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   0.6934     0.0953    7.28  2.4e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.12 on 136 degrees of freedom</code></pre>
+</div>
+<div id="full-results-deciduous-forest-model" class="section level4">
+<h4>Full results deciduous forest model</h4>
+<p>The deciduous forest moel has two parameters, the intercept and the slope. Note that R doesn’t provide names that are necessarily easy to understand. It also provides things printed out to lots of decimal places, which can be distracting.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(m.decid)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = SpeciesTotal ~ decid.percent, data = BBS_PA_PIWO_4)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -1.278 -0.698 -0.329  0.294  3.745 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)    -0.0299     0.2404   -0.12   0.9011   
+## decid.percent   1.5837     0.4863    3.26   0.0014 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.08 on 135 degrees of freedom
+## Multiple R-squared:  0.0729, Adjusted R-squared:  0.066 
+## F-statistic: 10.6 on 1 and 135 DF,  p-value: 0.00142</code></pre>
+</div>
+<div id="full-results-mixed-forest-model" class="section level4">
+<h4>Full results mixed forest model</h4>
+<p>The mixed forest model has the same basic format, though the values are different.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(m.mixed)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = SpeciesTotal ~ mixed.forest.percent, data = BBS_PA_PIWO_4)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -1.707 -0.460 -0.219  0.241  3.455 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)             0.147      0.117    1.26     0.21    
+## mixed.forest.percent   16.122      2.415    6.67  5.9e-10 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.971 on 135 degrees of freedom
+## Multiple R-squared:  0.248,  Adjusted R-squared:  0.243 
+## F-statistic: 44.5 on 1 and 135 DF,  p-value: 5.89e-10</code></pre>
+</div>
+</div>
+<div id="hypothesis-testing" class="section level3">
+<h3>Hypothesis testing</h3>
+<p>P-values from the summary() command are not to be used for final analyses. To compare to models and get a p-value use the anova() command.</p>
+<div id="deciduous-versus-null" class="section level4">
+<h4>Deciduous versus null</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(m.null, m.decid)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: SpeciesTotal ~ 1
+## Model 2: SpeciesTotal ~ decid.percent
+##   Res.Df RSS Df Sum of Sq    F Pr(&gt;F)   
+## 1    136 169                            
+## 2    135 157  1      12.3 10.6 0.0014 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="mixed-versus-null" class="section level4">
+<h4>Mixed versus null</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(m.null, m.mixed)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: SpeciesTotal ~ 1
+## Model 2: SpeciesTotal ~ mixed.forest.percent
+##   Res.Df RSS Df Sum of Sq    F  Pr(&gt;F)    
+## 1    136 169                              
+## 2    135 127  1        42 44.5 5.9e-10 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="model-comparison" class="section level4">
+<h4>Model comparison</h4>
+<p>Compare models w/AIC</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(bbmle)
+<span class="kw">AICtab</span>(m.null,
+       m.decid,
+       m.mixed)</code></pre></div>
+<pre><code>##         dAIC df
+## m.mixed  0.0 3 
+## m.decid 28.7 3 
+## m.null  37.1 2</code></pre>
+</div>
+</div>
+<div id="modeling-variation-over-time" class="section level3">
+<h3>Modeling variation over time</h3>
+<p>Make sure Year is a factor, NOT a numeri variable</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PIWO_00_05_<span class="dv">10</span><span class="op">$</span>Year &lt;-<span class="st"> </span><span class="kw">factor</span>(PIWO_00_05_<span class="dv">10</span><span class="op">$</span>Year)</code></pre></div>
+<p>Model variation over time</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.time.null &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span><span class="dv">1</span> , <span class="dt">data =</span> PIWO_00_05_<span class="dv">10</span>)
+m.time.year &lt;-<span class="st"> </span><span class="kw">lm</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span>Year , <span class="dt">data =</span> PIWO_00_05_<span class="dv">10</span>)</code></pre></div>
+<div id="regression-summary-of-anova" class="section level4">
+<h4>Regression summary of ANOVA</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(broom)
+<span class="kw">tidy</span>(m.time.null)</code></pre></div>
+<pre><code>##          term estimate std.error statistic p.value
+## 1 (Intercept)    0.875     0.123       7.1   1e-10</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tidy</span>(m.time.year)</code></pre></div>
+<pre><code>##          term estimate std.error statistic p.value
+## 1 (Intercept)    0.475     0.209      2.27  0.0251
+## 2    Year2005    0.425     0.296      1.44  0.1538
+## 3    Year2010    0.775     0.296      2.62  0.0100</code></pre>
+</div>
+<div id="model-comparison-1" class="section level4">
+<h4>Model comparison</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(bbmle)
+<span class="kw">AICtab</span>(m.time.null,
+       m.time.year)</code></pre></div>
+<pre><code>##             dAIC df
+## m.time.year 0.0  4 
+## m.time.null 2.9  2</code></pre>
+</div>
+<div id="multiple-comparisons" class="section level4">
+<h4>Multiple comparisons</h4>
+<p>Refit model w/aov()</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.time.year.aov &lt;-<span class="st"> </span><span class="kw">aov</span>(SpeciesTotal <span class="op">~</span><span class="st"> </span>Year , <span class="dt">data =</span> PIWO_00_05_<span class="dv">10</span>)</code></pre></div>
+<p>Carry out multiple comparsions</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">TukeyHSD</span>(m.time.year.aov)</code></pre></div>
+<pre><code>##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = SpeciesTotal ~ Year, data = PIWO_00_05_10)
+## 
+## $Year
+##            diff     lwr  upr p adj
+## 2005-2000 0.425 -0.2778 1.13 0.326
+## 2010-2000 0.775  0.0722 1.48 0.027
+## 2010-2005 0.350 -0.3528 1.05 0.466</code></pre>
+<p>Plot Tukey output</p>
+<p>First, save output</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tukey.out &lt;-<span class="st"> </span><span class="kw">TukeyHSD</span>(m.time.year.aov)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotTukeysHSD</span>(tukey.out)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+</div>
+</div>
+<div id="acknowledgements" class="section level2">
+<h2>Acknowledgements</h2>
+<p>I thank the students of Design &amp; Analysis at California University of Pennsylvania for working this code and these exercises during its development. Brian Trevalline, Brandon Hoening, and Emily Scott also tested the package and parts of the code.</p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Nathan Brouwer brouwern@gmail.com @lobrowR" />
+
+<meta name="date" content="2018-08-16" />
+
+<title>Data Cleaning: Filtering focal rows with dplyr</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Data Cleaning: Filtering focal rows with dplyr</h1>
+<h3 class="subtitle"><em>Reducing the size of a dataframe to isolate focal rows</em></h3>
+<h4 class="author"><em>Nathan Brouwer <a href="mailto:brouwern@gmail.com">brouwern@gmail.com</a> <span class="citation">@lobrowR</span></em></h4>
+<h4 class="date"><em>2018-08-16</em></h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This vignette walks through the process of isolating a subset of a dataframe using the dplyr command filter(). In particular we’ll use filter() to isolate rows of data that correspond to partiular species of birds from a very large dataset. To do this, we’ll have to learn a bit about row the row indices that identify which row data occur in within a dataframe.</p>
+</div>
+<div id="learning-objectives" class="section level2">
+<h2>Learning objectives</h2>
+<ul>
+<li>Determine row indices using which()</li>
+<li>Practice using the package dplyr
+<ul>
+<li>use dplyr filter</li>
+</ul></li>
+</ul>
+</div>
+<div id="packages" class="section level2">
+<h2>Packages</h2>
+<ul>
+<li>dplyr</li>
+<li>wildlifeR</li>
+</ul>
+</div>
+<div id="r-code" class="section level2">
+<h2>R code</h2>
+<div id="load-libraries" class="section level3">
+<h3>Load Libraries</h3>
+<p>The codes used by the American Ornithological Union (AOU) and BBS data for Pennsylvania are in the wildlifeR package. We’ll use the dplyr package to “reshape” into the proper format for analysis.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(wildlifeR)
+<span class="kw">library</span>(dplyr)
+<span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(ggpubr)</code></pre></div>
+</div>
+<div id="data" class="section level3">
+<h3>Data</h3>
+<p>We’ll use 2 datasets:</p>
+<ol style="list-style-type: decimal">
+<li>AOU codes for each species of bird in North American</li>
+<li>Bird counts from the BBS data for PA, and</li>
+</ol>
+<p>You can learn more about these data sets using the help command ?BBS_PA and ?AOU_species_codes</p>
+<p>Load both sets of data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## AOU species codes
+<span class="kw">data</span>(AOU_species_codes)
+
+## BBS data for PA
+<span class="kw">data</span>(BBS_PA)</code></pre></div>
+</div>
+</div>
+<div id="bbs-bird-count-data" class="section level2">
+<h2>BBS bird count data</h2>
+<p>Look at the BBS_PA data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(BBS_PA)</code></pre></div>
+<pre><code>##   countrynum statenum Route RPID Year  Aou StopTotal SpeciesTotal
+## 1        840       72     1  101 1970 1940         2            2
+## 2        840       72     1  101 1970 2730         1            1
+## 3        840       72     1  101 1970 3091         2            2
+## 4        840       72     1  101 1970 3131         1            1
+## 5        840       72     1  101 1970 3160        21           30
+## 6        840       72     1  101 1970 3250         1            2</code></pre>
+<p>This contains information on every bird species on every BBS route in Pennsylvania since the 1960s.</p>
+<p>Using the dim() command we can see that this is a VERY big file</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BBS_PA)</code></pre></div>
+<pre><code>## [1] 244185      8</code></pre>
+<p>Almost 1/4 million rows! This would be a very very big spreadsheet. When data files get this big we often do things to save space both in terms of file size and also on the screen when viewing it. Note that even though this datafile is about birds, there are no bird names (nor names of countries or states). Everything is coded using numbers.</p>
+<p>To identify birds in the BBS dataset the USGS uses codes designated by the Aou (American Ornithological Union). These are typically 4 number codes unique to each species.</p>
+</div>
+<div id="aou-species-code-dataframe" class="section level2">
+<h2>AOU Species code dataframe</h2>
+<p>The dataset we loaded above with the command data(AOU_species_codes) loaded dataset with all of the Aou numeric codes and the corresponding common and latin nmaes of the speices.</p>
+<p>Using dim() we can see that there are &gt;1000 different species identified in this dataset</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(AOU_species_codes)</code></pre></div>
+<pre><code>## [1] 1175    5</code></pre>
+<p>Look at the data themselves</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(AOU_species_codes)</code></pre></div>
+<pre><code>##   spp.num alpha.code                  name                       spp order
+## 1      10       WEGR         Western Grebe Aechmophorus occidentalis    96
+## 2      11       CLGR         Clark's Grebe      Aechmophorus clarkii    98
+## 3      12       WCGR Western/Clark's Grebe                    hybrid    97
+## 4      20       RNGR      Red-necked Grebe        Podiceps grisegena    94
+## 5      30       HOGR          Horned Grebe          Podiceps auritus    93
+## 6      40       EAGR           Eared Grebe      Podiceps nigricollis    95</code></pre>
+<p>This dataframe tells us the following thigns</p>
+<ul>
+<li>spp.num: a numeric code for each species</li>
+<li>alapha.code: a 4-letter alphabetic code for each species</li>
+<li>name: the common name for each species</li>
+<li>spp: scientific name</li>
+<li>order: taxonomic order</li>
+</ul>
+<p>We want to use the alphabetic code and/or the common name to indentify the numeric species code. We can then use this numeric code to isoalted data from the BBS dataset.</p>
+<div id="determine-the-code-for-the-european-starling" class="section level3">
+<h3>Determine the code for the European starling</h3>
+<p>If we know the 4-letter alphabetic code we can use the which() command to locate the numeric code.</p>
+<p>For example, the code for the European starling is “EUST”. The follwoing code determine which ROW NUMBER the European startling occur in within the AOU_species_codes dataframe (and saves it to an object “EUST.row.number”)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EUST.row.number &lt;-<span class="st"> </span><span class="kw">which</span>(AOU_species_codes<span class="op">$</span>alpha.code <span class="op">==</span><span class="st"> &quot;EUST&quot;</span>)</code></pre></div>
+<p>If you google “AOU species codes” you can usually locate a PDF or website with the codes.</p>
+<p>What we have retrived with which() is a number that is the ROW that has “EUST” in it is</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EUST.row.number</code></pre></div>
+<pre><code>## [1] 643</code></pre>
+<p>The number happens to be ‘r EUST.row.number’</p>
+<p>We can look at what is in row ‘r EUST.row.number’ like this, but giving R the dataframe and using square brackets [ ]. Note the comma after “EUST.row.number”.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">AOU_species_codes[EUST.row.number, ]</code></pre></div>
+<pre><code>##     spp.num alpha.code              name              spp order
+## 717    4930       EUST European Starling Sturnus vulgaris   864</code></pre>
+<p>Or like this. Again , note the comma after “643”.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">AOU_species_codes[<span class="dv">643</span>, ]</code></pre></div>
+<pre><code>##     spp.num alpha.code              name              spp order
+## 717    4930       EUST European Starling Sturnus vulgaris   864</code></pre>
+<p>This tells us that the in row 643 there is data on the European starling, Sturnus vulgaris. In particular, it has a species number of 4930. This number is what we need to extract European starling data from the BBS_PA dataframe.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EUST.numeric.code &lt;-<span class="st"> </span><span class="dv">4940</span></code></pre></div>
+</div>
+</div>
+<div id="dplyr-and-filter" class="section level2">
+<h2>dplyr and filter()</h2>
+<p>which() is the classic way of doing this in R. You can do the exact same thing with the dplyr function filter(). Note the use of the “pipe” “%&gt;%” which connects the dataset AOU_species_codes with the filter command.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">AOU_species_codes <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(alpha.code <span class="op">==</span><span class="st"> &quot;EUST&quot;</span>)</code></pre></div>
+<pre><code>##   spp.num alpha.code              name              spp order
+## 1    4930       EUST European Starling Sturnus vulgaris   864</code></pre>
+<p>More on dplyr and filter() below.</p>
+<div id="optionaladvanced-advanced-searching-using-grep" class="section level3">
+<h3>OPTIONAL/ADVANCED: Advanced searching using grep</h3>
+<p>The above approach requires that you know the alphabetic species code, which we fed to the which(). R has a flexible search tool called grep() that allows you to search for text, parts of words, and parts of sentences. grep() allows us to search using words like this within the “$name” column.</p>
+<p>We can get the same result as above like this</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">grep</span>(<span class="st">&quot;European starling&quot;</span>, 
+     AOU_species_codes<span class="op">$</span>name,
+     <span class="dt">ignore.case =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## [1] 643</code></pre>
+<p>If we use just the word starling, though, we can more than one number. Each of these is a row number where the word “starling” occurs.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">grep</span>(<span class="st">&quot;starling&quot;</span>, 
+     AOU_species_codes<span class="op">$</span>name,
+     <span class="dt">ignore.case =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## [1]  643 1129 1130 1138</code></pre>
+<p>We can save thse numbers to an R object then see what they pull up in the AOU names dataframe</p>
+<p>Store the row numbers</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i.starling &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;starling&quot;</span>, 
+     AOU_species_codes<span class="op">$</span>name,
+     <span class="dt">ignore.case =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>See what they correspond to</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">AOU_species_codes[i.starling, ]</code></pre></div>
+<pre><code>##      spp.num alpha.code                 name               spp order
+## 717     4930       EUST    European Starling  Sturnus vulgaris   864
+## 1235    8640       SAST      Samoan Starling Aplonis atrifusca   863
+## 1236    8650       POST  Polynesian Starling Aplonis tabuensis   862
+## 1244    8720       MIST Micronesian Starling     Aplonis opaca   861</code></pre>
+<p>There are 4 species of starling in the AOU_species_codes dataframe.</p>
+<p>We could also use “European” with grep. There are 4 birds with this word in thei common name</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#store the row numbers</span>
+i.European &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;European&quot;</span>, 
+     AOU_species_codes<span class="op">$</span>name,
+     <span class="dt">ignore.case =</span> <span class="ot">TRUE</span>)
+
+<span class="co">#see what they match</span>
+AOU_species_codes[i.European, ]</code></pre></div>
+<pre><code>##     spp.num alpha.code                       name                 spp
+## 195    1380       EGWT European Green-winged Teal  Anas crecca crecca
+## 373    2710       EUGP     European Golden-Plover Pluvialis apricaria
+## 717    4930       EUST          European Starling    Sturnus vulgaris
+## 781    5261       EUGO         European Goldfinch Carduelis carduelis
+##     order
+## 195    57
+## 373   289
+## 717   864
+## 781  1154</code></pre>
+<p>grep() is very flexible and can take parts of works. Let’s try just “Euor”</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#store the row numbers</span>
+i.Euro &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;Euro&quot;</span>, 
+     AOU_species_codes<span class="op">$</span>name,
+     <span class="dt">ignore.case =</span> <span class="ot">TRUE</span>)
+
+<span class="co">#see what they match</span>
+AOU_species_codes[i.Euro, ]</code></pre></div>
+<pre><code>##     spp.num alpha.code                       name                 spp
+## 195    1380       EGWT European Green-winged Teal  Anas crecca crecca
+## 373    2710       EUGP     European Golden-Plover Pluvialis apricaria
+## 717    4930       EUST          European Starling    Sturnus vulgaris
+## 781    5261       EUGO         European Goldfinch Carduelis carduelis
+##     order
+## 195    57
+## 373   289
+## 717   864
+## 781  1154</code></pre>
+<p>It would work also wiht “pean”, “star”, or any other set of letters.</p>
+</div>
+</div>
+<div id="isolate-rows-from-a-large-dataframe-using-dplyrs-filter-function" class="section level2">
+<h2>Isolate rows from a large dataframe using dplyr’s filter function</h2>
+<p>Above we used the which() and dplyr::filter() functiosn to figure out the Aou code for our focal bird. Now we’ll use that infromation to create a more manageable subset of BBS data.</p>
+<p>First, load dplyr if you haven’t. THen use the big BBS_PA dataset in conjuction with a pipe and filter() to subset just the European starling data. Note that use the “&lt;-” operation to send all the output to a new dataframe</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#load dplyr</span>
+ <span class="co">#library(dplyr)</span>
+
+<span class="co">#filter just the Euro starling</span>
+BBS_PA_EUST &lt;-<span class="st"> </span>BBS_PA <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Aou <span class="op">==</span><span class="st"> </span><span class="dv">4940</span>)</code></pre></div>
+<p>Here I gave filter the Aou code 4940. I could also have given it the ojbect I made above that stored the number</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#object with the code</span>
+EUST.numeric.code</code></pre></div>
+<pre><code>## [1] 4940</code></pre>
+<p>Use the object instead of the number 4940</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BBS_PA_EUST &lt;-<span class="st"> </span>BBS_PA <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Aou <span class="op">==</span><span class="st"> </span>EUST.numeric.code)</code></pre></div>
+<p>The BBS_PA_EUST contains just rows from BBS_PA that contain the numeric code 4940 in the Aou column.</p>
+<p>Let’s look at what we’ve done. Call dim() on the original BBS_PA data and the subset BBS_PA_EUST and see how the See how the dataframe has change.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BBS_PA)</code></pre></div>
+<pre><code>## [1] 244185      8</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BBS_PA_EUST)</code></pre></div>
+<pre><code>## [1] 1615    8</code></pre>
+<p>We’ve gone froma 1/4 million row dataframe BBS_PA to a 1600 row dataframe BBS_PA_EUST.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(BBS_PA_EUST)</code></pre></div>
+<pre><code>##    countrynum     statenum      Route             RPID          Year     
+##  Min.   :840   Min.   :72   Min.   :  1.00   Min.   :101   Min.   :1966  
+##  1st Qu.:840   1st Qu.:72   1st Qu.: 16.00   1st Qu.:101   1st Qu.:1984  
+##  Median :840   Median :72   Median : 35.00   Median :101   Median :1997  
+##  Mean   :840   Mean   :72   Mean   : 82.77   Mean   :101   Mean   :1995  
+##  3rd Qu.:840   3rd Qu.:72   3rd Qu.: 62.00   3rd Qu.:101   3rd Qu.:2006  
+##  Max.   :840   Max.   :72   Max.   :907.00   Max.   :101   Max.   :2016  
+##       Aou         StopTotal      SpeciesTotal  
+##  Min.   :4940   Min.   : 1.00   Min.   : 1.00  
+##  1st Qu.:4940   1st Qu.: 1.00   1st Qu.: 2.00  
+##  Median :4940   Median : 3.00   Median : 6.00  
+##  Mean   :4940   Mean   : 4.21   Mean   :10.75  
+##  3rd Qu.:4940   3rd Qu.: 6.00   3rd Qu.:14.00  
+##  Max.   :4940   Max.   :20.00   Max.   :78.00</code></pre>
+<div id="what-next" class="section level3">
+<h3>What next?</h3>
+<p>This vignette shows how to take a really big dataframe and isolate just the subset of data that is required. In the wildlifeR two analayzes with these data are outlined: analysis of change over time, and analysis of abundance versus landcover.</p>
+<ol style="list-style-type: decimal">
+<li>If you want to examine change in a spcies over time, see the vignette … which uses the wildlifeR function sample_BBS_routes() to create a simple dataframe for looking at change over time.</li>
+<li>If you want to examine change in abundance versus a landcover variable see “Data Cleaning: Merging 2 large data sets with dplyr”, which is an extended vignette which reviews what we’ve done here and extends it to access and merge-in landcover data.</li>
+</ol>
+</div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<div id="books" class="section level3">
+<h3>Books</h3>
+<p>A good introduction to using dplyr is:</p>
+<p>Beckerman et al’s book “Getting start with R: An introduction for biologists” 2nd ed.</p>
+</div>
+<div id="websites" class="section level3">
+<h3>Websites</h3>
+<p>“Selecting columns and renaming are so easy with dplyr” <a href="https://blog.exploratory.io/selecting-columns-809bdd1ef615" class="uri">https://blog.exploratory.io/selecting-columns-809bdd1ef615</a></p>
+</div>
+</div>
+<div id="references-1" class="section level2">
+<h2>References</h2>
+<div id="books-1" class="section level3">
+<h3>Books</h3>
+<p>A good introduction to using dplyr is:</p>
+<p>Beckerman et al’s book “Getting start with R: An introduction for biologists” 2nd ed.</p>
+</div>
+<div id="websites-1" class="section level3">
+<h3>Websites</h3>
+<p>“Selecting columns and renaming are so easy with dplyr” <a href="https://blog.exploratory.io/selecting-columns-809bdd1ef615" class="uri">https://blog.exploratory.io/selecting-columns-809bdd1ef615</a></p>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
