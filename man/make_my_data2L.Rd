@@ -24,7 +24,11 @@ Currently only works with data with 2-levels.  Notes that if the size of the dat
 \examples{
 #Subset frogarms data
 data(frogarms)
-my.frogs <- make_my_data2L(dat = frogarms, my.code = "nlb24",cat.var = "sex",n.sample = 20, with.rep = FALSE)
+my.frogs <- make_my_data2L(dat = frogarms,
+                           my.code = "nlb24",
+                           cat.var = "sex",
+                           n.sample = 20,
+                           with.rep = FALSE)
 
 summary(my.frogs)
 

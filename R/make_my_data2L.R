@@ -12,7 +12,11 @@
 #' @examples
 #' #Subset frogarms data
 #' data(frogarms)
-#' my.frogs <- make_my_data2L(dat = frogarms, my.code = "nlb24",cat.var = "sex",n.sample = 20, with.rep = FALSE)
+#' my.frogs <- make_my_data2L(dat = frogarms,
+#'                            my.code = "nlb24",
+#'                            cat.var = "sex",
+#'                            n.sample = 20,
+#'                            with.rep = FALSE)
 #'
 #' summary(my.frogs)
 #'
@@ -56,7 +60,7 @@ make_my_data2L <- function(dat,
   set.seed(seed = my.seed)
 
   cat("\n")
-  cat("NOTE: This function only works properly for data with TWO levels to the categorical variable")
+  cat("NOTE: This function only works properly for data with TWO levels to the categorical var.")
   cat("\n eg male vs. female; it doesn't work for >2 levels (eg red vs blue vs. green)")
 
   #extract levels of categorical varibale
@@ -74,8 +78,8 @@ make_my_data2L <- function(dat,
   group2 <- sample(dat$i.rows.working[-i.group1],size = n.sample,replace = with.rep)
 
   #create new dataframe
-  my.dat <- rbind(frogarms[group1],
-                  frogarms[group2,])
+  my.dat <- rbind(dat[group1,],
+                  dat[group2,])
 
   return(my.dat)
 }
